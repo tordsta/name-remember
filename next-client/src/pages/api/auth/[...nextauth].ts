@@ -12,12 +12,12 @@ export const authOptions = {
     //   clientSecret: process.env.APPLE_SECRET ?? "",
     // }),
     FacebookProvider({
-      clientId: process.env.FACEBOOK_ID ?? "",
-      clientSecret: process.env.FACEBOOK_SECRET ?? "",
+      clientId: process.env.FACEBOOK_ID as string,
+      clientSecret: process.env.FACEBOOK_SECRET as string,
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID ?? "",
-      clientSecret: process.env.GOOGLE_SECRET ?? "",
+      clientId: process.env.GOOGLE_ID as string,
+      clientSecret: process.env.GOOGLE_SECRET as string,
       authorization: {
         params: {
           prompt: "consent",
@@ -27,8 +27,8 @@ export const authOptions = {
       },
     }),
     GithubProvider({
-      clientId: process.env.GITHUB_ID ?? "",
-      clientSecret: process.env.GITHUB_SECRET ?? "",
+      clientId: process.env.GITHUB_ID as string,
+      clientSecret: process.env.GITHUB_SECRET as string,
     }),
   ],
 };
