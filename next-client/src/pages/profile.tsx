@@ -1,3 +1,4 @@
+import LoginButton from "@/components/loginButton";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 
@@ -31,6 +32,7 @@ export default function Profile() {
           height={100}
         />
       )}
+      <LoginButton />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import LoginButton from "@/components/loginButton";
 import { useSession } from "next-auth/react";
+import UserEmblem from "@/components/userEmblem";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,12 +13,22 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        {status === "unauthenticated" && <h1>Frontpage</h1>}
-        {status === "authenticated" && <h1>Dashboard</h1>}
-        <LoginButton />
-      </div>
+    <main className="flex flex-col items-center justify-between min-h-screen">
+      {status === "unauthenticated" && (
+        <>
+          <h1>Frontpage</h1>
+          <LoginButton />
+        </>
+      )}
+      {status === "authenticated" && (
+        <>
+          <div className="flex w-full justify-between border-b border-white">
+            <h1 className="text-4xl font-bold mx-8 my-4">Name Remember</h1>
+            <UserEmblem />
+          </div>
+          <h1>Dashboard</h1>
+        </>
+      )}
     </main>
   );
 }
