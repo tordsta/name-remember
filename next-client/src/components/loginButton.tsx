@@ -1,5 +1,6 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
+import StyledButton from "./style/button";
 
 export default function LoginButton() {
   const { data: session } = useSession();
@@ -9,25 +10,19 @@ export default function LoginButton() {
     console.log(session);
     return (
       <>
-        <button
-          className="border-2 border-white rounded-md px-4 py-2 font-bold"
+        <StyledButton
           onClick={() => {
             signOut();
           }}
         >
           Sign out
-        </button>
+        </StyledButton>
       </>
     );
   }
   return (
     <>
-      <button
-        className="border-2 border-white rounded-md px-4 py-2 font-bold"
-        onClick={() => signIn()}
-      >
-        Sign in
-      </button>
+      <StyledButton onClick={() => signIn()}>Sign in</StyledButton>
     </>
   );
 }
