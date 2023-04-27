@@ -23,7 +23,9 @@ export default function Home() {
       {status === "authenticated" && (
         <>
           <div className="flex w-full justify-between border-b border-white">
-            <h1 className="text-4xl font-bold mx-8 my-4">Name Remember</h1>
+            <h1 className="text-2xl sm:text-4xl font-bold mx-8 my-6">
+              Name Remember
+            </h1>
             <UserEmblem />
           </div>
           <h1>Dashboard</h1>

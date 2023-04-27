@@ -11,7 +11,7 @@ export default function UserEmblem() {
 
   return (
     <Link href="/profile" className="flex gap-4 mx-4 my-auto">
-      <div>
+      <div className="hidden sm:block">
         <p className="text-lg">{session?.user?.name}</p>
         <p className="text-sm">{session?.user?.email}</p>
       </div>
