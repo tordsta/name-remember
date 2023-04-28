@@ -1,8 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { initializeApp } from "firebase/app";
-import { DocumentData, getFirestore } from "firebase/firestore";
-import { collection, getDocs } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 import { cert } from "firebase-admin/app";
 
 const firebaseConfig = {
@@ -27,15 +26,15 @@ export const firebase = initializeApp(firebaseConfig);
 export const firestoreDB = getFirestore(firebase);
 //const analytics = getAnalytics(app);
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<string>
-) {
-  const querySnapshot = await getDocs(collection(firestoreDB, "users"));
-  let users: { id: string; data: DocumentData }[] = [];
-  querySnapshot.forEach((doc) => {
-    users.push({ id: doc.id, data: doc.data() });
-  });
-  const querySuccess = querySnapshot.empty ? false : true;
-  res.status(200).json("Firestore connection status: " + querySuccess);
-}
+// export async function handler(
+//   req: NextApiRequest,
+//   res: NextApiResponse<string>
+// ) {
+//   const querySnapshot = await getDocs(collection(firestoreDB, "users"));
+//   let users: { id: string; data: DocumentData }[] = [];
+//   querySnapshot.forEach((doc) => {
+//     users.push({ id: doc.id, data: doc.data() });
+//   });
+//   const querySuccess = querySnapshot.empty ? false : true;
+//   res.status(200).json("Firestore connection status: " + querySuccess);
+// }
