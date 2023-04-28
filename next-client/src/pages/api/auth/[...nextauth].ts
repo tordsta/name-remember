@@ -4,9 +4,12 @@ import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import SlackProvider from "next-auth/providers/slack";
+import { FirestoreAdapter } from "@next-auth/firebase-adapter";
+import { firestoreDB } from "src/utils/firebase";
 
 export const authOptions = {
-  secret: process.env.NEXT_AUTH ?? "",
+  secret: process.env.NEXT_AUTH as string,
+  adapter: FirestoreAdapter(firestoreDB),
   providers: [
     // AppleProvider({
     //   clientId: process.env.APPLE_ID ?? "",
