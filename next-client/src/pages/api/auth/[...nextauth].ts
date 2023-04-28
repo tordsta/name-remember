@@ -8,6 +8,7 @@ import { FirestoreAdapter } from "@next-auth/firebase-adapter";
 import { firestoreDB } from "../../../utils/firebase";
 
 export const authOptions = {
+  debug: true,
   secret: process.env.NEXT_AUTH as string,
   adapter: FirestoreAdapter(firestoreDB as any),
   providers: [

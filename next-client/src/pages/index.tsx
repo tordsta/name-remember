@@ -9,14 +9,18 @@ export default function Home() {
   const { data: session, status } = useSession();
 
   if (status === "loading") {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex flex-col items-center justify-between min-h-screen">
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   return (
     <main className="flex flex-col items-center justify-between min-h-screen">
       {status === "unauthenticated" && (
         <>
-          <h1>Frontpage</h1>
+          <h1>Front page</h1>
           <LoginButton />
         </>
       )}
