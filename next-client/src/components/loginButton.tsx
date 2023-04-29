@@ -1,6 +1,6 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
-import StyledButton from "./style/button";
+import StyledButton, { GreenButton } from "./style/buttons";
 
 export default function LoginButton() {
   const { data: session } = useSession();
@@ -22,7 +22,7 @@ export default function LoginButton() {
   }
   return (
     <>
-      <StyledButton onClick={() => signIn()}>Sign in</StyledButton>
+      <GreenButton onClick={() => signIn()}>Sign in</GreenButton>
     </>
   );
 }
