@@ -20,8 +20,8 @@ export default function Home() {
 
   return (
     <main className="flex flex-col items-center justify-between min-h-screen">
-      {false && status === "unauthenticated" && <FrontPage />}
-      {status === "unauthenticated" && (
+      {status === "unauthenticated" && <FrontPage />}
+      {status === "authenticated" && (
         <>
           <div className="flex w-full justify-between border-b border-white">
             <h1 className="text-2xl sm:text-4xl font-bold mx-8 my-6">
