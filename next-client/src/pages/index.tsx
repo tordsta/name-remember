@@ -2,6 +2,8 @@ import { Inter } from "next/font/google";
 import LoginButton from "@/components/loginButton";
 import { useSession } from "next-auth/react";
 import UserEmblem from "@/components/userEmblem";
+import FrontPage from "@/components/frontpage";
+import StyledButton from "@/components/style/buttons";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,29 +20,8 @@ export default function Home() {
 
   return (
     <main className="flex flex-col items-center justify-between min-h-screen">
+      {false && status === "unauthenticated" && <FrontPage />}
       {status === "unauthenticated" && (
-        <div className="flex flex-col flex-grow justify-center md:justify-between items-center my-8 md:my-20 mx-2">
-          <h1 className="text-4xl md:text-7xl font-bold">Name Remember</h1>
-          <h2 className="text-xl md:text-2xl text-center mt-2">
-            Never forget names again! <br /> Memorize names with Name Remember.
-          </h2>
-          {/* carousel with screenshots of app */}
-          <div className="h-64 bg-rose-600 mt-4">
-            carousel with screenshots of app
-          </div>
-          <div className="mt-4 flex flex-col items-center">
-            <h3 className="font-bold text-2xl mb-2">Sign in now!</h3>
-            <LoginButton />
-          </div>
-          <div className="mt-4 md:mb-8 text-center">
-            <h3 className="font-bold">How it works:</h3>
-            <p>1. Upload photos of the people to remember.</p>
-            <p>2. Set an memorizing interval.</p>
-            <p>3. Practice, practice, practice.</p>
-          </div>
-        </div>
-      )}
-      {status === "authenticated" && (
         <>
           <div className="flex w-full justify-between border-b border-white">
             <h1 className="text-2xl sm:text-4xl font-bold mx-8 my-6">
@@ -48,7 +29,33 @@ export default function Home() {
             </h1>
             <UserEmblem />
           </div>
-          <h1>Dashboard</h1>
+          <div className="flex flex-col md:flex-row flex-grow justify-start md:justify-between items-center my-8 md:my-20 mx-2">
+            <div className="flex flex-col text-center justify-center items-center">
+              <StyledButton
+                onClick={() => console.log("clicked start memorization")}
+              >
+                <p>Start Memorization</p>
+              </StyledButton>
+              <div className="mt-8">
+                <p>Everyone</p> {/*current list name*/}
+                <ul>
+                  <li>Per</li>
+                  <li>Knut</li>
+                  <li>Paal</li>
+                </ul>
+                <StyledButton onClick={() => {}}>Add Person</StyledButton>
+              </div>
+            </div>
+            <div className="mt-8">
+              <p>My lists</p>
+              <ul>
+                <li>Everyone</li>
+                <li>New job</li>
+                <li>Family reunion</li>
+              </ul>
+              <StyledButton onClick={() => {}}>Create new list</StyledButton>
+            </div>
+          </div>
         </>
       )}
     </main>
