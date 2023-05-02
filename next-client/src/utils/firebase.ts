@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
+import { initFirestore } from "@next-auth/firebase-adapter";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { cert } from "firebase-admin/app";
@@ -22,8 +23,16 @@ const firebaseConfig = {
   measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
 
-export const firebase = initializeApp(firebaseConfig);
-export const firestoreDB = getFirestore(firebase);
+export const firestore = initFirestore({
+  credential: cert({
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY,
+  }),
+});
+
+//export const firebase = initializeApp(firebaseConfig);
+//export const firestoreDB = getFirestore(firebase);
 //const analytics = getAnalytics(app);
 
 // export async function handler(
