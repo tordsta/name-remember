@@ -51,7 +51,7 @@ export default function Home() {
               <ul>
                 <li>Everyone</li>
                 <li>New job</li>
-                <li>Family reunion</li>
+                <li>Family reunion 2018</li>
               </ul>
               <StyledButton onClick={() => {}}>Create new list</StyledButton>
             </div>
