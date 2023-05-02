@@ -1,16 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { initFirestore } from "@next-auth/firebase-adapter";
-import { cert } from "firebase-admin/app";
+import { initializeApp } from "firebase/app";
+//import { initFirestore } from "@next-auth/firebase-adapter";
+import {
+  getDocs,
+  collection,
+  DocumentData,
+  getFirestore,
+} from "firebase/firestore";
 
 const firebaseConfig = {
-  credential: cert({
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY
-      ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/gm, "\n")
-      : undefined,
-  }),
   apiKey: process.env.FIREBASE_API_KEY,
   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
   projectId: process.env.FIREBASE_PROJECT_ID,
@@ -21,7 +20,9 @@ const firebaseConfig = {
   measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
 
-export const firestore = initFirestore(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
+//export const firestore = initFirestore(firebaseConfig);
 
 //const analytics = getAnalytics(app);
 

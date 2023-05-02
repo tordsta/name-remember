@@ -5,12 +5,20 @@ import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import SlackProvider from "next-auth/providers/slack";
 import { FirestoreAdapter } from "@next-auth/firebase-adapter";
-import { firestore } from "../../../utils/firebase";
+import { cert } from "firebase-admin/app";
 
 export const authOptions = {
   debug: true,
   secret: process.env.NEXT_AUTH as string,
-  adapter: FirestoreAdapter(firestore),
+  adapter: FirestoreAdapter({
+    credential: cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY
+        ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/gm, "\n")
+        : undefined,
+    }),
+  }),
   providers: [
     // AppleProvider({
     //   clientId: process.env.APPLE_ID ?? "",

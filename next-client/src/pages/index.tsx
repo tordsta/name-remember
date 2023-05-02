@@ -10,6 +10,12 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
   const { data: session, status } = useSession();
 
+  const handleCreateList = async () => {
+    console.log("create list");
+    const res = await fetch("/api/crud");
+    console.log(res);
+  };
+
   if (status === "loading") {
     return (
       <div className="flex flex-col items-center justify-between min-h-screen">
@@ -53,7 +59,9 @@ export default function Home() {
                 <li>New job</li>
                 <li>Family reunion 2018</li>
               </ul>
-              <StyledButton onClick={() => {}}>Create new list</StyledButton>
+              <StyledButton onClick={handleCreateList}>
+                Create new list
+              </StyledButton>
             </div>
           </div>
         </>
