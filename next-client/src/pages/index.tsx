@@ -12,7 +12,8 @@ export default function Home() {
 
   const handleCreateList = async () => {
     console.log("create list");
-    const res = await fetch("/api/crud");
+    const name = "Test";
+    const res = await fetch(`/api/crud/createList?name=${name}`);
     console.log(res);
   };
 
