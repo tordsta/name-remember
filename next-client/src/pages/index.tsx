@@ -4,18 +4,12 @@ import { useSession } from "next-auth/react";
 import UserEmblem from "@/components/userEmblem";
 import FrontPage from "@/components/frontpage";
 import StyledButton from "@/components/style/buttons";
+import Lists from "@/components/Lists";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const { data: session, status } = useSession();
-
-  const handleCreateList = async () => {
-    console.log("create list");
-    const name = "Test";
-    const res = await fetch(`/api/crud/createList?name=${name}`);
-    console.log(res);
-  };
 
   if (status === "loading") {
     return (
@@ -53,17 +47,7 @@ export default function Home() {
                 <StyledButton onClick={() => {}}>Add Person</StyledButton>
               </div>
             </div>
-            <div className="mt-8">
-              <p>My lists</p>
-              <ul>
-                <li>Everyone</li>
-                <li>New job</li>
-                <li>Family reunion 2018</li>
-              </ul>
-              <StyledButton onClick={handleCreateList}>
-                Create new list
-              </StyledButton>
-            </div>
+            <Lists />
           </div>
         </>
       )}
