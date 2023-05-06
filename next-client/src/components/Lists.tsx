@@ -1,10 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StyledButton, { SmallButton } from "./style/buttons";
 import Modal from "react-modal";
+import { Lists } from "@/utils/types";
 
 export default function Lists() {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [apiFeedback, setApiFeedback] = useState("");
+  const [lists, setLists] = useState<Array<Lists>>();
+
+  useEffect(() => {
+    fetch("/api/crud/getLists").then((res) => {
+      if (res.ok) {
+        res.json().then((data) => {
+          setLists(JSON.parse(data));
+        });
+      }
+    });
+  }, [apiFeedback]);
 
   const handleCreateList = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -20,7 +32,6 @@ export default function Lists() {
     } else {
       setApiFeedback(JSON.stringify(res.body));
     }
-    console.log(res);
   };
 
   function openModal() {
@@ -32,16 +43,18 @@ export default function Lists() {
     setIsOpen(false);
     setApiFeedback("");
   }
+  console.log("Lists", typeof lists, lists);
 
   return (
-    <div className="mt-8">
-      <p>My lists</p>
-      <ul>
-        <li>Everyone</li>
-        <li>New job</li>
-        <li>Family reunion 2018</li>
+    <div className="mt-8 mx-2">
+      <p className="text-lg font-bold">My lists</p>
+      <ul className="mb-2">
+        {Array.isArray(lists) &&
+          lists.map((list) => {
+            return <li key={list.id}>{list.data.name}</li>;
+          })}
       </ul>
-      <StyledButton onClick={openModal}>Create new list</StyledButton>
+      <SmallButton onClick={openModal}>Create new list</SmallButton>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
