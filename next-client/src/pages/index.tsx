@@ -1,9 +1,9 @@
 import { Inter } from "next/font/google";
-import LoginButton from "@/components/loginButton";
+import LoginButton from "@/components/LoginButton";
 import { useSession } from "next-auth/react";
-import UserEmblem from "@/components/userEmblem";
-import FrontPage from "@/components/frontpage";
-import StyledButton from "@/components/style/buttons";
+import UserEmblem from "@/components/UserEmblem";
+import FrontPage from "@/components/FrontPage";
+import StyledButton from "@/components/style/Buttons";
 import Lists from "@/components/Lists";
 
 const inter = Inter({ subsets: ["latin"] });

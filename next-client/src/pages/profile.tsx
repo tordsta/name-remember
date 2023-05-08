@@ -1,5 +1,5 @@
-import LoginButton from "@/components/loginButton";
-import StyledLink from "@/components/style/link";
+import LoginButton from "@/components/LoginButton";
+import StyledLink from "@/components/style/Link";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";

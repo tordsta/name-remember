@@ -1,4 +1,4 @@
-import LoginButton from "./loginButton";
+import LoginButton from "@/components/LoginButton";
 
 export default function FrontPage() {
   return (
@@ -8,9 +8,7 @@ export default function FrontPage() {
         Never forget names again! <br /> Memorize names with Name Remember.
       </h2>
       {/* carousel with screenshots of app */}
-      <div className="h-64 bg-rose-600 mt-4">
-        carousel with screenshots of app
-      </div>
+      <div className="h-64 mt-4">{/* carousel with screenshots of app */}</div>
       <div className="mt-4 flex flex-col items-center">
         <h3 className="font-bold text-2xl mb-2">Sign in now!</h3>
         <LoginButton />

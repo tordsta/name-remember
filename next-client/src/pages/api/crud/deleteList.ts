@@ -1,4 +1,4 @@
-import { collection, doc, setDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, setDoc } from "firebase/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
@@ -17,19 +17,9 @@ export default async function handler(
       res.end();
       return;
     }
-    //    db.collection('users').doc(user_id).set({foo:'bar'}, {merge: true})
+
     const listsRef = collection(db, "lists");
-    await setDoc(
-      doc(listsRef, name + "_" + email),
-      {
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        owner: email,
-        name: name,
-        people: [],
-      },
-      { merge: true }
-    )
+    await deleteDoc(doc(listsRef, name + "_" + email))
       .then(() => {
         res.status(200).json("Document successfully written!");
       })
