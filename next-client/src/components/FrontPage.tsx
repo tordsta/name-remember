@@ -1,4 +1,4 @@
-import LoginButton from "./LoginButton";
+import LoginButton from "@/components/LoginButton";
 
 export default function FrontPage() {
   return (
