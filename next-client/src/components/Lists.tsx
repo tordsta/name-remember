@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import StyledButton, { SmallButton } from "./style/Buttons";
 import Modal from "react-modal";
 import { Lists } from "@/utils/types";
+import Button from "./style/Button";
 
 export default function Lists() {
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -77,14 +77,19 @@ export default function Lists() {
                   <p className="font-bold">{list.data.name}</p>
                   <p>People: {list.data.people.length}</p>
                 </div>
-                <SmallButton onClick={() => handleDeleteList(list.data.name)}>
+                <Button
+                  style="small"
+                  onClick={() => handleDeleteList(list.data.name)}
+                >
                   Delete
-                </SmallButton>
+                </Button>
               </li>
             );
           })}
       </ul>
-      <SmallButton onClick={openModal}>Create new list</SmallButton>
+      <Button style="small" onClick={openModal}>
+        Create new list
+      </Button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -101,9 +106,9 @@ export default function Lists() {
       >
         <div className="flex flex-col items-center justify-center mx-4 my-2">
           <div className="flex w-full items-center justify-end mb-4">
-            <SmallButton onClick={closeModal}>
+            <Button style={"small"} onClick={closeModal}>
               <p className="text-sm">Close</p>
-            </SmallButton>
+            </Button>
           </div>
           <p className="text-xl mb-4">Create new list</p>
           <form

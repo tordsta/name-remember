@@ -1,5 +1,5 @@
 import LoginButton from "@/components/LoginButton";
-import StyledLink from "@/components/style/Link";
+import CustomLink from "@/components/style/Link";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,7 +36,7 @@ export default function Profile() {
       )}
       <LoginButton />
       <div className="fixed bottom-0 sm:bottom-auto sm:top-0 w-full align-middle border sm:border-0 border-black dark:border-white">
-        <StyledLink href="/">
+        <CustomLink href="/">
           <div className="flex items-center justify-center gap-1 w-full py-2 pr-3 pl-0 sm:pt-8">
             <div className="invert-0 dark:invert">
               <Image
@@ -49,7 +49,7 @@ export default function Profile() {
             </div>
             Back
           </div>
-        </StyledLink>
+        </CustomLink>
       </div>
     </div>
   );

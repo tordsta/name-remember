@@ -1,9 +1,8 @@
 import { Inter } from "next/font/google";
-import LoginButton from "@/components/LoginButton";
 import { useSession } from "next-auth/react";
 import UserEmblem from "@/components/UserEmblem";
 import FrontPage from "@/components/FrontPage";
-import StyledButton from "@/components/style/Buttons";
+import Button from "@/components/style/Button";
 import Lists from "@/components/Lists";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -32,11 +31,9 @@ export default function Home() {
           </div>
           <div className="flex flex-col md:flex-row flex-grow justify-start md:justify-between items-center my-8 md:my-20 mx-2">
             <div className="flex flex-col text-center justify-center items-center">
-              <StyledButton
-                onClick={() => console.log("clicked start memorization")}
-              >
+              <Button onClick={() => console.log("clicked start memorization")}>
                 <p>Start Memorization</p>
-              </StyledButton>
+              </Button>
               <div className="mt-8">
                 <p>Everyone</p> {/*current list name*/}
                 <ul>
@@ -44,7 +41,7 @@ export default function Home() {
                   <li>Knut</li>
                   <li>Paal</li>
                 </ul>
-                <StyledButton onClick={() => {}}>Add Person</StyledButton>
+                <Button onClick={() => {}}>Add Person</Button>
               </div>
             </div>
             <Lists />
