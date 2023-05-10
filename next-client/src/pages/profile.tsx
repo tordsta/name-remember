@@ -2,7 +2,6 @@ import LoginButton from "@/components/LoginButton";
 import CustomLink from "@/components/style/Link";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import Link from "next/link";
 
 export default function Profile() {
   const { data: session, status } = useSession();

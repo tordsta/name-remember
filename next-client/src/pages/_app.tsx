@@ -1,6 +1,9 @@
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import { Analytics } from "@vercel/analytics/react";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
 
 export default function App({
   Component,
@@ -10,9 +13,11 @@ export default function App({
   pageProps: any;
 }) {
   return (
-    <SessionProvider session={session}>
-      <Component {...pageProps} />
-      <Analytics />
-    </SessionProvider>
+    <QueryClientProvider client={queryClient}>
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+        <Analytics />
+      </SessionProvider>
+    </QueryClientProvider>
   );
 }

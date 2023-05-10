@@ -1,33 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Modal from "react-modal";
 import { Lists } from "@/utils/types";
 import Button from "./style/Button";
+import { usePeopleLists } from "@/hooks/usePeopleLists";
 
 export default function Lists() {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [apiFeedback, setApiFeedback] = useState("");
-  const [lists, setLists] = useState<Array<Lists>>();
-  const [invalidateData, setInvalidateData] = useState(false);
-
-  useEffect(() => {
-    fetch("/api/crud/getLists").then((res) => {
-      if (res.ok) {
-        res.json().then((data) => {
-          console.log("lists data", data.length, JSON.stringify(data));
-          //chars not elements
-          if (data.length < 5) {
-            fetch("/api/crud/createList?name=Everyone").then((res) => {
-              if (res.ok) {
-                setInvalidateData(!invalidateData);
-              }
-            });
-          } else {
-            setLists(JSON.parse(data));
-          }
-        });
-      }
-    });
-  }, [setApiFeedback, invalidateData]);
+  const { data, isLoading, isFetching } = usePeopleLists();
 
   const handleCreateList = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -37,7 +17,6 @@ export default function Lists() {
     const res = await fetch(`/api/crud/createList?name=${name}`);
     if (res.ok) {
       setApiFeedback("List created");
-      setInvalidateData(!invalidateData);
       setTimeout(() => {
         closeModal();
       }, 1500);
@@ -48,11 +27,6 @@ export default function Lists() {
 
   const handleDeleteList = async (name: string) => {
     const res = await fetch(`/api/crud/deleteList?name=${name}`);
-    if (res.ok) {
-      setInvalidateData(!invalidateData);
-    } else {
-      alert(JSON.stringify(res.body));
-    }
   };
 
   function openModal() {
@@ -69,8 +43,9 @@ export default function Lists() {
     <div className="mt-8 mx-2">
       <p className="text-lg font-bold">My lists</p>
       <ul className="mb-2">
-        {Array.isArray(lists) &&
-          lists.map((list) => {
+        <li>{data && data.length}</li>
+        {/* {Array.isArray(data) &&
+          data.map((list) => {
             return (
               <li key={list.id} className="flex">
                 <div className="flex flex-col">
@@ -85,7 +60,7 @@ export default function Lists() {
                 </Button>
               </li>
             );
-          })}
+          })} */}
       </ul>
       <Button style="small" onClick={openModal}>
         Create new list

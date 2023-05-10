@@ -1,0 +1,69 @@
+
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  email_verified BOOLEAN DEFAULT false,
+  image TEXT,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE people (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name VARCHAR(50) NOT NULL,
+  image TEXT,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE people_lists(
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name VARCHAR(50) NOT NULL,
+  owner_id UUID NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+     CONSTRAINT fk_owner
+      FOREIGN KEY(owner_id) 
+	  REFERENCES users(id)
+);
+
+CREATE TABLE people_in_lists (
+  people_id UUID not null,
+  people_list_id UUID not null,
+  created_at TIMESTAMP DEFAULT NOW(),
+  CONSTRAINT fk_people
+    FOREIGN KEY(people_id) 
+	REFERENCES people(id),
+  CONSTRAINT fk_people_list
+    FOREIGN KEY(people_list_id) 
+	REFERENCES people_lists(id)
+);
+
+CREATE TABLE accounts (
+  id SERIAL PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES users(id),
+  provider_id VARCHAR(255) NOT NULL,
+  provider_type VARCHAR(255) NOT NULL,
+  provider_account_id VARCHAR(255) NOT NULL,
+  refresh_token TEXT,
+  access_token TEXT NOT NULL,
+  expires_at TIMESTAMP WITH TIME ZONE,
+  token_type VARCHAR(255),
+  scope TEXT,
+  id_token TEXT,
+  session_state TEXT
+);
+
+CREATE TABLE verification_tokens (
+  identifier VARCHAR(255) PRIMARY KEY,
+  token TEXT NOT NULL,
+  expires TIMESTAMP WITH TIME ZONE NOT NULL
+);
+
+CREATE TABLE auth_sessions (
+  id SERIAL PRIMARY KEY,
+  expires TIMESTAMP WITH TIME ZONE NOT NULL,
+  session_token TEXT NOT NULL,
+  user_id UUID NOT NULL REFERENCES users(id)
+);
