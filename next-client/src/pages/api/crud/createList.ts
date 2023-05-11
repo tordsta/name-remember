@@ -6,6 +6,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string>
 ) {
+  res.status(200).json("Error writing document");
   // const session = await getServerSession(req, res, authOptions);
   // if (session) {
   //   const { email } = session.user?.email ? session.user : { email: null };

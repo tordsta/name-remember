@@ -5,13 +5,15 @@ export default function Button({
   typeSubmit,
   children,
 }: {
-  style?: undefined | string | "small" | "green";
-  onClick: () => void;
+  style?: undefined | string | "small" | "green" | "cancel" | "submit";
+  onClick?: () => void;
   onSubmit?: () => void;
   typeSubmit?: boolean;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }) {
-  let twString;
+  let twString: string;
+  let elements: React.ReactNode | undefined;
+
   switch (style) {
     case undefined:
       twString =
@@ -25,6 +27,16 @@ export default function Button({
       twString =
         "bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded";
       break;
+    case "cancel":
+      twString =
+        "border border-black dark:border-white bg-rose-400 rounded px-2 py-1 h-min";
+      elements = <p className="text-lg">Cancel</p>;
+      break;
+    case "submit":
+      twString =
+        "border border-black dark:border-white bg-emerald-400 rounded px-2 py-1 h-min";
+      elements = <p className="text-lg">Submit</p>;
+      break;
     default:
       twString = style;
   }
@@ -36,7 +48,8 @@ export default function Button({
       onSubmit={onSubmit}
       type={typeSubmit ? "submit" : "button"}
     >
-      {children}
+      {children && children}
+      {elements && elements}
     </button>
   );
 }

@@ -3,11 +3,12 @@ import Modal from "react-modal";
 import { Lists } from "@/utils/types";
 import Button from "./style/Button";
 import { usePeopleLists } from "@/hooks/usePeopleLists";
+import DefaultModal from "./Modal";
 
 export default function Lists() {
-  const [modalIsOpen, setIsOpen] = useState(false);
-  const [apiFeedback, setApiFeedback] = useState("");
   const { data, isLoading, isFetching } = usePeopleLists();
+
+  const [openSignal, setOpenSignal] = useState(false);
 
   const handleCreateList = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -15,29 +16,16 @@ export default function Lists() {
     const name = (event.target as any)["listName"].value;
     console.log("create list, name:" + name);
     const res = await fetch(`/api/crud/createList?name=${name}`);
-    if (res.ok) {
-      setApiFeedback("List created");
-      setTimeout(() => {
-        closeModal();
-      }, 1500);
-    } else {
-      setApiFeedback(JSON.stringify(res.body));
-    }
+    // if (res.ok) {
+    //   setApiFeedback("List created");
+    // } else {
+    //   setApiFeedback(JSON.stringify(res.body));
+    // }
   };
 
   const handleDeleteList = async (name: string) => {
     const res = await fetch(`/api/crud/deleteList?name=${name}`);
   };
-
-  function openModal() {
-    setApiFeedback("");
-    setIsOpen(true);
-  }
-
-  function closeModal() {
-    setIsOpen(false);
-    setApiFeedback("");
-  }
 
   return (
     <div className="mt-8 mx-2">
@@ -62,52 +50,32 @@ export default function Lists() {
             );
           })} */}
       </ul>
-      <Button style="small" onClick={openModal}>
+      <Button style="small" onClick={() => setOpenSignal(true)}>
         Create new list
       </Button>
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        style={{
-          content: {
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            transform: "translate(-50%, -50%)",
-          },
-        }}
-      >
+      <DefaultModal openSignal={openSignal}>
         <div className="flex flex-col items-center justify-center mx-4 my-2">
-          <div className="flex w-full items-center justify-end mb-4">
-            <Button style={"small"} onClick={closeModal}>
-              <p className="text-sm">Close</p>
-            </Button>
-          </div>
+          <div className="flex w-full items-center justify-end mb-4"></div>
           <p className="text-xl mb-4">Create new list</p>
           <form
             onSubmit={handleCreateList}
             className="flex flex-col items-center justify-center gap-4"
           >
-            <label className="flex flex-col items-center justify-center gap-1">
+            <label className="flex  flex-col items-center justify-center gap-1">
               List name
               <input
                 name="listName"
                 type="text"
-                className="border border-black dark:border-white rounded mx-2"
+                className="border border-black rounded mx-2"
               />
             </label>
-            <p>{apiFeedback}</p>
-            <button
-              type="submit"
-              className="border border-black dark:border-white rounded-md px-2 py-1 h-min"
-            >
-              <p className="font-bold">Create List</p>
-            </button>
+            <div className="flex gap-2">
+              <Button style={"cancel"} onClick={() => setOpenSignal(false)} />
+              <Button style="submit" typeSubmit={true} />
+            </div>
           </form>
         </div>
-      </Modal>
+      </DefaultModal>
     </div>
   );
 }
