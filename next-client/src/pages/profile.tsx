@@ -2,24 +2,21 @@ import LoginButton from "@/components/LoginButton";
 import CustomLink from "@/components/style/Link";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import AccessDeniedScreen from "@/components/AccessDeniedScreen";
 
 export default function Profile() {
   const { data: session, status } = useSession();
+  const router = useRouter();
 
   if (status === "loading") {
     return <p>Loading...</p>;
   }
 
   if (status === "unauthenticated") {
-    return <p>Access Denied</p>;
+    router.push("/");
+    return <AccessDeniedScreen />;
   }
-
-  console.log(
-    "Session:",
-    JSON.stringify(session),
-    "Status:",
-    JSON.stringify(status)
-  );
 
   return (
     <div className="flex flex-col gap-4 justify-center items-center min-h-screen">
