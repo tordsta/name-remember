@@ -1,96 +1,98 @@
 import { sql } from "@vercel/postgres";
-import { User, Account, Session } from "next-auth";
+import { Account } from "next-auth";
+import {
+  Adapter,
+  AdapterAccount,
+  AdapterSession,
+  AdapterUser,
+  VerificationToken,
+} from "next-auth/adapters";
 
-type DatabaseUser = {
-  id: string;
-  name: string;
-  email: string;
-  email_verified: string;
-  image: string;
-};
-
-type DatabaseAccount = {
-  id: string;
-  user_id: string;
-  provider_id: string;
-  provider_type: string;
-  provider_account_id: string;
-  refresh_token: string;
-  access_token: string;
-  expires_at: number;
-  token_type: string;
-  scope: string;
-  id_token: string;
-  session_state: string;
-};
-
-type DatabaseVerificationToken = {
-  identifier: string;
-  token: string;
-  expires: string;
-};
-
-type DatabaseAuthSession = {
-  id: string;
-  expires: string;
-  session_token: string;
-  user_id: string;
-};
-
-export default function vercelPostgresAdapter() {
+export default function vercelPostgresAdapter(): Adapter {
   try {
-    const createUser = async (user: User) => {
+    const createUser = async (
+      user: Omit<AdapterUser, "id">
+    ): Promise<AdapterUser> => {
       const { rows } = await sql`
         INSERT INTO users (name, email, image) 
         VALUES (${user.name}, ${user.email}, ${user.image}) 
         RETURNING id, name, email, email_verified, image`;
-      return rows[0];
+      const newUser: AdapterUser = {
+        ...rows[0],
+        id: rows[0].id.toString(),
+        emailVerified: rows[0].email_verified,
+        email: rows[0].email,
+      };
+      return newUser;
     };
 
-    const getUser = async (id: DatabaseUser["id"]) => {
+    const getUser = async (id: string) => {
       const { rows } = await sql`
           SELECT *
           FROM users
           WHERE id = ${id};
         `;
-      return rows[0];
+      return {
+        ...rows[0],
+        id: rows[0].id.toString(),
+        emailVerified: rows[0].email_verified,
+        email: rows[0].email,
+      };
     };
 
-    const getUserByEmail = async (email: DatabaseUser["email"]) => {
+    const getUserByEmail = async (email: string) => {
       const { rows } = await sql`SELECT * FROM users WHERE email = ${email}`;
-      return rows[0];
+      return rows[0]
+        ? {
+            ...rows[0],
+            id: rows[0].id.toString(),
+            emailVerified: rows[0].email_verified,
+            email: rows[0].email,
+          }
+        : null;
     };
 
     const getUserByAccount = async ({
       provider,
       providerAccountId,
     }: {
-      provider: DatabaseAccount["provider_id"];
-      providerAccountId: DatabaseAccount["provider_account_id"];
-    }) => {
+      provider: string;
+      providerAccountId: string;
+    }): Promise<AdapterUser | null> => {
       const { rows } = await sql`
       SELECT u.* 
       FROM users u join accounts a on u.id = a.user_id 
       WHERE a.provider_id = ${provider} 
       AND a.provider_account_id = ${providerAccountId}`;
-      return {
-        email: rows[0].email,
-        emailVerified: rows[0].email_verified,
-        id: rows[0].id,
-      };
+      const user = rows[0]
+        ? {
+            email: rows[0].email,
+            emailVerified: rows[0].email_verified,
+            id: rows[0].id,
+          }
+        : null;
+      return user;
     };
 
-    const updateUser = async (user: DatabaseUser) => {
+    const updateUser = async (
+      user: Partial<AdapterUser> & Pick<AdapterUser, "id">
+    ): Promise<AdapterUser> => {
       const { rows } = await sql`
             UPDATE users
             SET name = ${user.name}, email = ${user.email}, image = ${user.image}
             WHERE id = ${user.id}
             RETURNING id, name, email, image;
             `;
-      return rows[0];
+      const updatedUser: AdapterUser = {
+        ...rows[0],
+        id: rows[0].id.toString(),
+        emailVerified: rows[0].email_verified,
+        email: rows[0].email,
+      };
+      return updatedUser;
     };
 
-    const deleteUser = async (userId: DatabaseUser["id"]) => {
+    const deleteUser = async (userId: string) => {
       await sql`DELETE FROM users WHERE id = ${userId}`;
       return;
     };
@@ -100,24 +102,26 @@ export default function vercelPostgresAdapter() {
       userId,
       expires,
     }: {
-      sessionToken: DatabaseAuthSession["session_token"];
-      userId: DatabaseUser["id"];
-      expires: DatabaseAuthSession["expires"];
-    }) => {
+      sessionToken: string;
+      userId: string;
+      expires: Date;
+    }): Promise<AdapterSession> => {
+      const expiresString = expires.toDateString();
       await sql`
         INSERT INTO auth_sessions (user_id, expires, session_token) 
-        VALUES (${userId}, ${expires}, ${sessionToken})
+        VALUES (${userId}, ${expiresString}, ${sessionToken})
       `;
-      return {
+      const createdSession: AdapterSession = {
         sessionToken,
         userId,
         expires,
       };
+      return createdSession;
     };
 
     const getSessionAndUser = async (
-      sessionToken: DatabaseAuthSession["session_token"]
-    ) => {
+      sessionToken: string
+    ): Promise<{ session: AdapterSession; user: AdapterUser } | null> => {
       const session = await sql`
         SELECT * 
         FROM auth_sessions 
@@ -126,10 +130,28 @@ export default function vercelPostgresAdapter() {
         SELECT * 
         FROM users 
         WHERE id = ${session.rows[0].user_id}`;
-      return { session: session.rows[0], user: rows[0] };
+      const expiresDate = new Date(session.rows[0].expires);
+      const sessionAndUser: { session: AdapterSession; user: AdapterUser } = {
+        session: {
+          sessionToken: session.rows[0].session_token,
+          userId: session.rows[0].user_id,
+          expires: expiresDate,
+        },
+        user: {
+          id: rows[0].id,
+          emailVerified: rows[0].email_verified,
+          email: rows[0].email,
+          name: rows[0].name,
+          image: rows[0].image,
+        },
+      };
+
+      return sessionAndUser;
     };
 
-    const updateSession = async (session: Session) => {
+    const updateSession = async (
+      session: Partial<AdapterSession> & Pick<AdapterSession, "sessionToken">
+    ): Promise<AdapterSession | null | undefined> => {
       console.log(
         "Unimplemented function! updateSession in vercelPostgresAdapter. Session:",
         JSON.stringify(session)
@@ -137,9 +159,7 @@ export default function vercelPostgresAdapter() {
       return;
     };
 
-    const deleteSession = async (
-      sessionToken: DatabaseAuthSession["session_token"]
-    ) => {
+    const deleteSession = async (sessionToken: string) => {
       await sql`
           DELETE FROM auth_sessions
           WHERE session_token = ${sessionToken};
@@ -147,7 +167,9 @@ export default function vercelPostgresAdapter() {
       return;
     };
 
-    const linkAccount = async (account: Account) => {
+    const linkAccount = async (
+      account: AdapterAccount
+    ): Promise<AdapterAccount | null | undefined> => {
       await sql`
         INSERT INTO accounts (
             user_id, 
@@ -193,11 +215,16 @@ export default function vercelPostgresAdapter() {
       identifier,
       expires,
       token,
-    }: DatabaseVerificationToken) => {
+    }: VerificationToken): Promise<VerificationToken | null | undefined> => {
       const { rows } = await sql`
         INSERT INTO verification_tokens (identifier, token, expires) 
-        VALUES (${identifier}, ${token}, ${expires})`;
-      return rows[0];
+        VALUES (${identifier}, ${token}, ${expires.toString()})`;
+      const createdToken: VerificationToken = {
+        identifier: rows[0].identifier,
+        token: rows[0].token,
+        expires: rows[0].expires,
+      };
+      return createdToken;
     };
 
     //Return verification token from the database and delete it so it cannot be used again.
@@ -205,8 +232,8 @@ export default function vercelPostgresAdapter() {
       identifier,
       token,
     }: {
-      identifier: DatabaseVerificationToken["identifier"];
-      token: DatabaseVerificationToken["token"];
+      identifier: string;
+      token: string;
     }) => {
       const { rows } = await sql`
         SELECT * FROM verification_tokens 
@@ -223,7 +250,6 @@ export default function vercelPostgresAdapter() {
       };
     };
 
-    // Return the adapter object
     return {
       createUser,
       getUser,
@@ -244,3 +270,39 @@ export default function vercelPostgresAdapter() {
     throw error;
   }
 }
+
+// interface DatabaseUser extends User {
+//   id: string;
+//   name: string;
+//   email: string;
+//   email_verified: string;
+//   image: string;
+// }
+
+// interface DatabaseAccount extends Account {
+//   id: string;
+//   user_id: string;
+//   provider_id: string;
+//   provider_type: string;
+//   provider_account_id: string;
+//   refresh_token: string;
+//   access_token: string;
+//   expires_at: number;
+//   token_type: string;
+//   scope: string;
+//   id_token: string;
+//   session_state: string;
+// }
+
+// interface DatabaseVerificationToken extends VerificationToken {
+//   identifier: string;
+//   token: string;
+//   expires: Date;
+// }
+
+// interface DatabaseAuthSession extends Session {
+//   id: string;
+//   expires: string;
+//   session_token: string;
+//   user_id: string;
+// }
