@@ -28,8 +28,13 @@ export default function Lists() {
   };
 
   const handleDeleteList = async (id: string) => {
-    //await fetch(`/api/crud/deleteList?id=${id}`);
-    console.log("delete list with id: " + id);
+    await notifyPromiseFetch({
+      url: "/api/crud/deleteList?id=" + id,
+      pending: "... processing",
+      success: `List deleted!`,
+      error: "Error: Could not delete list.",
+    });
+    queryClient.invalidateQueries({ queryKey: ["peopleLists"] });
   };
 
   return (
