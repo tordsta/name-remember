@@ -1,28 +1,31 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
+import { sql } from "@vercel/postgres";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string>
 ) {
-  // const session = await getServerSession(req, res, authOptions);
-  // if (session) {
-  //   const { email } = session.user?.email ? session.user : { email: null };
-  //   if (!email) {
-  //     res.status(401).json(JSON.stringify("No email found"));
-  //     res.end();
-  //   }
-  //   let lists: Array<Object> = [];
-  //   const listsRef = collection(db, "lists");
-  //   const qLists = query(listsRef, where("owner", "==", email));
-  //   const querySnapshot = await getDocs(qLists);
-  //   querySnapshot.forEach((doc) => {
-  //     lists.push({ id: doc.id, data: doc.data() });
-  //   });
-  //   res.status(200).json(JSON.stringify(lists));
-  // } else {
-  //   res.status(401);
-  // }
-  // res.end();
+  const session = await getServerSession(req, res, authOptions);
+  console.log("session", session);
+  if (session) {
+    const email = session.user?.email || null;
+    if (!email) {
+      console.log("Missing email", email);
+      res.status(400).json("Missing email");
+    }
+    try {
+      const { rows } = await sql`
+      WITH user_id AS (
+        SELECT id FROM users WHERE email = ${email}
+      )
+      SELECT id, name, owner_id FROM people_lists WHERE owner_id = (SELECT id FROM user_id);`;
+      res.status(200).json(JSON.stringify(rows));
+    } catch (error) {
+      console.log(error);
+      res.status(500).json("Error querying people_lists" + error);
+    }
+  }
+  res.status(401).json("Unauthorized");
 }

@@ -31,19 +31,6 @@ export default function Home() {
         </div>
         <Lists />
       </div>
-      <button
-        onClick={async () => {
-          const resp = await notifyPromiseFetch({
-            url: "/api/crud/createList",
-            pending: "Promise is pending",
-            success: "Promise resolved 👌",
-            error: "Promise rejected 🤯",
-          });
-          console.log("resp", resp);
-        }}
-      >
-        Click me
-      </button>
     </>
   );
 }

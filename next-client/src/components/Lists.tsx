@@ -4,51 +4,58 @@ import { Lists } from "@/utils/types";
 import Button from "./style/Button";
 import { usePeopleLists } from "@/hooks/usePeopleLists";
 import DefaultModal from "./Modal";
+import { notifyPromiseFetch } from "./Notify";
 
 export default function Lists() {
-  const { data, isLoading, isFetching } = usePeopleLists();
+  const { data, isLoading, error } = usePeopleLists();
 
   const [openSignal, setOpenSignal] = useState(false);
 
   const handleCreateList = async (event: React.FormEvent) => {
     event.preventDefault();
+    setOpenSignal(false);
 
     const name = (event.target as any)["listName"].value;
-    console.log("create list, name:" + name);
-    const res = await fetch(`/api/crud/createList?name=${name}`);
-    // if (res.ok) {
-    //   setApiFeedback("List created");
-    // } else {
-    //   setApiFeedback(JSON.stringify(res.body));
-    // }
+    {
+      await notifyPromiseFetch({
+        url: "/api/crud/createList?name=" + name,
+        pending: "... processing",
+        success: `List ${name} created!`,
+        error: "Error: Could not create list.",
+      });
+    }
   };
 
-  const handleDeleteList = async (name: string) => {
-    const res = await fetch(`/api/crud/deleteList?name=${name}`);
+  const handleDeleteList = async (id: string) => {
+    //await fetch(`/api/crud/deleteList?id=${id}`);
+    console.log("delete list with id: " + id);
   };
 
   return (
     <div className="mt-8 mx-2">
       <p className="text-lg font-bold">My lists</p>
       <ul className="mb-2">
-        <li>{data && data.length}</li>
-        {/* {Array.isArray(data) &&
-          data.map((list) => {
-            return (
-              <li key={list.id} className="flex">
-                <div className="flex flex-col">
-                  <p className="font-bold">{list.data.name}</p>
-                  <p>People: {list.data.people.length}</p>
-                </div>
-                <Button
-                  style="small"
-                  onClick={() => handleDeleteList(list.data.name)}
-                >
-                  Delete
-                </Button>
-              </li>
-            );
-          })} */}
+        {isLoading && <li>Loading... </li>}
+        {!isLoading && !error && data && Array.isArray(data) && (
+          <>
+            {data.map((list) => {
+              return (
+                <li key={list.id} className="flex">
+                  <div className="flex flex-col">
+                    <p className="font-bold">{list.name}</p>
+                    <p>People: 6</p>
+                  </div>
+                  <Button
+                    style="small"
+                    onClick={() => handleDeleteList(list.id)}
+                  >
+                    Delete
+                  </Button>
+                </li>
+              );
+            })}
+          </>
+        )}
       </ul>
       <Button style="small" onClick={() => setOpenSignal(true)}>
         Create new list
