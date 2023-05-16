@@ -5,8 +5,10 @@ import Button from "./style/Button";
 import { usePeopleLists } from "@/hooks/usePeopleLists";
 import DefaultModal from "./Modal";
 import { notifyPromiseFetch } from "./Notify";
+import { useQuery, useQueryClient } from "react-query";
 
 export default function Lists() {
+  const queryClient = useQueryClient();
   const { data, isLoading, error } = usePeopleLists();
 
   const [openSignal, setOpenSignal] = useState(false);
@@ -16,14 +18,13 @@ export default function Lists() {
     setOpenSignal(false);
 
     const name = (event.target as any)["listName"].value;
-    {
-      await notifyPromiseFetch({
-        url: "/api/crud/createList?name=" + name,
-        pending: "... processing",
-        success: `List ${name} created!`,
-        error: "Error: Could not create list.",
-      });
-    }
+    await notifyPromiseFetch({
+      url: "/api/crud/createList?name=" + name,
+      pending: "... processing",
+      success: `List ${name} created!`,
+      error: "Error: Could not create list.",
+    });
+    queryClient.invalidateQueries({ queryKey: ["peopleLists"] });
   };
 
   const handleDeleteList = async (id: string) => {
