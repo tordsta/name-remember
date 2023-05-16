@@ -14,6 +14,7 @@ export default async function handler(
     if (!email) {
       console.log("Missing email", email);
       res.status(400).json("Missing email");
+      return;
     }
     try {
       const { rows } = await sql`
@@ -22,9 +23,11 @@ export default async function handler(
       )
       SELECT id, name, owner_id FROM people_lists WHERE owner_id = (SELECT id FROM user_id);`;
       res.status(200).json(JSON.stringify(rows));
+      return;
     } catch (error) {
       console.log(error);
       res.status(500).json("Error querying people_lists" + error);
+      return;
     }
   }
   res.status(401).json("Unauthorized");
