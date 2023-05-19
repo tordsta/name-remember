@@ -22,6 +22,7 @@
     "next-auth": "^4.22.1",
     "postcss": "8.4.21",
     "postgres": "^3.3.4",
+    "postmark": "^3.0.18",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-modal": "^3.16.1",
