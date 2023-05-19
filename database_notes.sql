@@ -23,6 +23,8 @@ CREATE TABLE people_lists(
   owner_id UUID NOT NULL,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW(),
+  reminder_trigger_time TIMESTAMP,
+  trigger_frequency VARCHAR(255),
   CONSTRAINT unique_owner_id_name UNIQUE (owner_id, name),
      CONSTRAINT fk_owner
       FOREIGN KEY(owner_id) 

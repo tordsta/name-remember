@@ -11,6 +11,8 @@ export type Lists = {
     owner: string;
     name: string;
     people: Array<string>;
+    reminder_trigger_time: string | null;
+    trigger_frequency: string | null;
   };
 };
 
