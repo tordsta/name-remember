@@ -3,10 +3,12 @@ import Lists from "@/components/Lists";
 import UserEmblem from "@/components/UserEmblem";
 import { useState } from "react";
 import { usePeopleList } from "@/hooks/usePeopleList";
+import useAddPeople from "@/hooks/useAddPeople";
 
 export default function Home() {
   const [currentList, setCurrentList] = useState<string | null>(null);
   const { data, isLoading, error } = usePeopleList({ id: currentList });
+  const addPeople = useAddPeople();
 
   return (
     <>
@@ -27,10 +29,32 @@ export default function Home() {
               {!isLoading && !error && data && (
                 <div>
                   <p className="text-2xl font-bold">{data.name}</p>
+                  {data.people_in_list &&
+                    data.people_in_list.length > 0 &&
+                    data.people_in_list.map((person) => {
+                      return (
+                        <div key={person.id}>
+                          <p>
+                            {person.fname} {person.lname}
+                          </p>
+                        </div>
+                      );
+                    })}
                 </div>
               )}
             </div>
-            <Button onClick={() => {}}>Add Person</Button>
+            <Button
+              onClick={() => {
+                if (currentList) {
+                  addPeople.mutate({
+                    listId: currentList,
+                    person: { fname: "test" },
+                  });
+                }
+              }}
+            >
+              Add Person
+            </Button>
           </div>
         </div>
         <Lists currentList={currentList} setCurrentList={setCurrentList} />

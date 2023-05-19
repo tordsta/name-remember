@@ -14,14 +14,9 @@ const useDeleteList = () => {
   const queryClient = useQueryClient();
 
   return useMutation(deleteList, {
-    onMutate: async (id) => {
-      await queryClient.cancelQueries(["peopleLists", id]);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["peopleLists"] });
-    },
     onSettled: (id) => {
-      queryClient.invalidateQueries(["peopleLists", id]);
+      queryClient.invalidateQueries(["peopleLists"]);
+      queryClient.invalidateQueries(["peopleList", id]);
     },
   });
 };

@@ -5,7 +5,7 @@ import { sql } from "@vercel/postgres";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<string>
+  res: NextApiResponse
 ) {
   const session = await getServerSession(req, res, authOptions);
   if (session) {
@@ -24,23 +24,57 @@ export default async function handler(
         listId === ""
       ) {
         const { rows } = await sql`
-        WITH user_id AS (
-          SELECT id FROM users WHERE email = ${email}
-          )
-          SELECT *
-          FROM people_lists 
-          WHERE owner_id = (SELECT id FROM user_id);`;
-        res.status(200).json(JSON.stringify(rows[0]));
+        SELECT 
+          pl.id,
+          pl.name,
+          json_agg(
+            row_to_json(
+              (SELECT tmp FROM (SELECT p.id, p.fname, p.lname) tmp)
+            )
+          ) AS "people_in_list"
+        FROM 
+          people_lists pl
+        JOIN 
+          people_in_lists pil ON pl.id = pil.people_list_id
+        JOIN 
+          people p ON p.id = pil.people_id
+        WHERE
+          pl.owner_id = (SELECT id FROM users WHERE email = ${email})
+        GROUP BY 
+          pl.id, pl.name
+        `;
+        res.status(200).json(rows[0]);
         return;
       } else {
         const { rows } = await sql`
-        WITH user_id AS (
-          SELECT id FROM users WHERE email = ${email}
-          )
-          SELECT *
-          FROM people_lists 
-          WHERE owner_id = (SELECT id FROM user_id) AND id = ${listId};`;
-        res.status(200).json(JSON.stringify(rows[0]));
+        SELECT 
+          pl.id,
+          pl.name,
+          COALESCE(
+            json_agg(
+              CASE WHEN p.id IS NOT NULL THEN
+                row_to_json(
+                  (SELECT tmp FROM (SELECT p.id, p.fname, p.lname) tmp)
+                )
+              ELSE
+                NULL
+              END
+            ) FILTER (WHERE p.id IS NOT NULL),
+            '[]'::json
+          ) AS "people_in_list"
+        FROM 
+          people_lists pl
+        LEFT JOIN 
+          people_in_lists pil ON pl.id = pil.people_list_id
+        LEFT JOIN 
+          people p ON p.id = pil.people_id
+        WHERE
+          pl.owner_id = (SELECT id FROM users WHERE email = ${email})
+          AND pl.id = ${listId}
+        GROUP BY 
+          pl.id, pl.name
+        `;
+        res.status(200).json(rows[0]);
         return;
       }
     } catch (error) {

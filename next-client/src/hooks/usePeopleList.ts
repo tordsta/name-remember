@@ -1,17 +1,18 @@
+import { Person } from "@/utils/types";
 import { UseQueryResult, useQuery } from "react-query";
 
 type FetchPeopleListData = {
   id: string;
   name: string;
-  owner_id: string;
+  people_in_list: Array<Person>;
 };
 
 export const usePeopleList = ({
   id,
 }: {
   id: string | null;
-}): UseQueryResult<FetchPeopleListData> => {
-  return useQuery(["peopleLists", id], async () => {
+}): UseQueryResult<FetchPeopleListData | null> => {
+  return useQuery(["peopleList", id], async () => {
     if (!id) {
       id = "";
     }
@@ -19,7 +20,12 @@ export const usePeopleList = ({
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
-    const data: FetchPeopleListData = await JSON.parse(await response.json());
+    let data: FetchPeopleListData | null = null;
+    try {
+      data = await response.json();
+    } catch (e) {
+      console.error("Failed to parse JSON:", e);
+    }
     return data;
   });
 };

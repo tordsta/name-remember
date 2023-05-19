@@ -13,3 +13,11 @@ export type Lists = {
     people: Array<string>;
   };
 };
+
+export type Person = {
+  id?: string;
+  fname?: string;
+  mname?: string;
+  lname?: string;
+  image?: string;
+};

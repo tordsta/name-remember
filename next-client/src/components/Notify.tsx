@@ -21,18 +21,26 @@ export const notifyError = (message: string) => toast.error(message, options);
 
 export const notifyPromiseFetch = async ({
   url,
+  body,
   pending,
   success,
   error,
 }: {
   url: string;
+  body?: any;
   pending: string;
   success: string;
   error: string;
 }) => {
   const res = await toast.promise(
     new Promise((resolve, reject) => {
-      fetch(url).then((res) => {
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: body,
+      }).then((res) => {
         if (res.ok) {
           resolve(res);
         } else {
