@@ -13,7 +13,6 @@ export default async function handler(
     const email = session.user?.email || null;
     const person: Person | null = req.body.person || null;
     const listId: string | null = req.body.listId || null;
-    console.log("person", person, listId, email);
     if (!person || !listId || !email) {
       console.log(
         "Missing person or id or email",

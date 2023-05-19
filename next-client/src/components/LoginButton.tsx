@@ -7,7 +7,6 @@ export default function LoginButton() {
   const router = useRouter();
 
   if (session) {
-    console.log(session);
     return (
       <>
         <Button
