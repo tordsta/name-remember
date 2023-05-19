@@ -5,11 +5,20 @@ import Button from "./style/Button";
 import { usePeopleLists } from "@/hooks/usePeopleLists";
 import DefaultModal from "./Modal";
 import { notifyPromiseFetch } from "./Notify";
-import { useQuery, useQueryClient } from "react-query";
+import { useQueryClient } from "react-query";
+import useDeleteList from "@/hooks/useDeletePeopleList";
+import useCreateList from "@/hooks/useCreateList";
 
-export default function Lists() {
-  const queryClient = useQueryClient();
+export default function Lists({
+  currentList,
+  setCurrentList,
+}: {
+  currentList: string | null;
+  setCurrentList: Function;
+}) {
   const { data, isLoading, error } = usePeopleLists();
+  const deleteList = useDeleteList();
+  const createList = useCreateList();
 
   const [openSignal, setOpenSignal] = useState(false);
 
@@ -18,23 +27,7 @@ export default function Lists() {
     setOpenSignal(false);
 
     const name = (event.target as any)["listName"].value;
-    await notifyPromiseFetch({
-      url: "/api/crud/createList?name=" + name,
-      pending: "... processing",
-      success: `List ${name} created!`,
-      error: "Error: Could not create list.",
-    });
-    queryClient.invalidateQueries({ queryKey: ["peopleLists"] });
-  };
-
-  const handleDeleteList = async (id: string) => {
-    await notifyPromiseFetch({
-      url: "/api/crud/deleteList?id=" + id,
-      pending: "... processing",
-      success: `List deleted!`,
-      error: "Error: Could not delete list.",
-    });
-    queryClient.invalidateQueries({ queryKey: ["peopleLists"] });
+    createList.mutate(name);
   };
 
   return (
@@ -46,17 +39,26 @@ export default function Lists() {
           <>
             {data.map((list) => {
               return (
-                <li key={list.id} className="flex">
+                <li
+                  key={list.id}
+                  className="flex"
+                  onClick={() => {
+                    setCurrentList(list.id);
+                  }}
+                >
                   <div className="flex flex-col">
                     <p className="font-bold">{list.name}</p>
                     <p>People: 6</p>
                   </div>
-                  <Button
-                    style="small"
-                    onClick={() => handleDeleteList(list.id)}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (list.id === currentList) setCurrentList(null);
+                      deleteList.mutate(list.id);
+                    }}
                   >
                     Delete
-                  </Button>
+                  </button>
                 </li>
               );
             })}

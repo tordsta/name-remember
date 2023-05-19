@@ -1,11 +1,13 @@
 import Button from "@/components/style/Button";
 import Lists from "@/components/Lists";
 import UserEmblem from "@/components/UserEmblem";
-import React from "react";
-import { notifyPromiseFetch } from "./Notify";
+import { useState } from "react";
+import { usePeopleList } from "@/hooks/usePeopleList";
 
 export default function Home() {
-  const [res, setRes] = React.useState();
+  const [currentList, setCurrentList] = useState<string | null>(null);
+  const { data, isLoading, error } = usePeopleList({ id: currentList });
+
   return (
     <>
       <div className="flex w-full justify-between border-b border-white">
@@ -20,16 +22,18 @@ export default function Home() {
             <p>Start Memorization</p>
           </Button>
           <div className="mt-8">
-            <p>Everyone</p> {/*current list name*/}
-            <ul>
-              <li>Per</li>
-              <li>Knut</li>
-              <li>Paal</li>
-            </ul>
+            <div>
+              {isLoading && <div>Loading... </div>}
+              {!isLoading && !error && data && (
+                <div>
+                  <p className="text-2xl font-bold">{data.name}</p>
+                </div>
+              )}
+            </div>
             <Button onClick={() => {}}>Add Person</Button>
           </div>
         </div>
-        <Lists />
+        <Lists currentList={currentList} setCurrentList={setCurrentList} />
       </div>
     </>
   );
