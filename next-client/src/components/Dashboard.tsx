@@ -4,11 +4,13 @@ import UserEmblem from "@/components/UserEmblem";
 import { useState } from "react";
 import { usePeopleList } from "@/hooks/usePeopleList";
 import useAddPeople from "@/hooks/useAddPeople";
+import useDeletePeople from "@/hooks/useDeletePeople";
 
 export default function Home() {
   const [currentList, setCurrentList] = useState<string | null>(null);
   const { data, isLoading, error } = usePeopleList({ id: currentList });
   const addPeople = useAddPeople();
+  const deletePerson = useDeletePeople();
 
   return (
     <>
@@ -33,10 +35,23 @@ export default function Home() {
                     data.people_in_list.length > 0 &&
                     data.people_in_list.map((person) => {
                       return (
-                        <div key={person.id}>
+                        <div
+                          key={person.id}
+                          className="flex justify-center items-center gap-2 m-2"
+                        >
                           <p>
                             {person.fname} {person.lname}
                           </p>
+                          <button
+                            onClick={() => {
+                              if (person.id) {
+                                console.log("delete person");
+                                deletePerson.mutate(person.id);
+                              }
+                            }}
+                          >
+                            Delete
+                          </button>
                         </div>
                       );
                     })}

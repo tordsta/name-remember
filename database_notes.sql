@@ -35,10 +35,13 @@ CREATE TABLE people_in_lists (
   created_at TIMESTAMP DEFAULT NOW(),
   CONSTRAINT fk_people
     FOREIGN KEY(people_id) 
-	REFERENCES people(id),
+	  REFERENCES people(id)
+    ON DELETE CASCADE
+  ,
   CONSTRAINT fk_people_list
     FOREIGN KEY(people_list_id) 
-	REFERENCES people_lists(id)
+	  REFERENCES people_lists(id)
+    ON DELETE CASCADE
 );
 
 CREATE TABLE accounts (
@@ -68,3 +71,30 @@ CREATE TABLE auth_sessions (
   session_token TEXT NOT NULL,
   user_id UUID NOT NULL REFERENCES users(id)
 );
+
+
+CREATE OR REPLACE FUNCTION delete_person(user_email TEXT, person_id UUID)
+RETURNS VOID AS $$
+DECLARE
+  user_id UUID;
+  count INTEGER;
+BEGIN
+  -- Get the user id
+  SELECT id INTO user_id FROM users WHERE email = user_email;
+
+  -- Check if the user owns a list that contains the person
+  SELECT COUNT(*) INTO count
+  FROM people_lists pl
+  JOIN people_in_lists pil ON pil.people_list_id = pl.id
+  WHERE pil.people_id = person_id AND pl.owner_id = user_id;
+
+  -- If the count is 0, the user does not have access to delete the person
+  IF count = 0 THEN
+    RAISE 'User does not have access to delete this person';
+  END IF;
+
+  -- Delete the person from people_in_lists and people tables
+  DELETE FROM people_in_lists WHERE people_id = person_id;
+  DELETE FROM people WHERE id = person_id;
+END;
+$$ LANGUAGE plpgsql;
