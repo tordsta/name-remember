@@ -1,6 +1,6 @@
 import { sql } from "@vercel/postgres";
 import { NextApiRequest, NextApiResponse } from "next";
-import postmark from "postmark";
+import { ServerClient } from "postmark";
 
 type List = {
   id: string;
@@ -12,7 +12,7 @@ type List = {
   trigger_frequency: string | null;
 };
 
-var client = new postmark.ServerClient(process.env.POSTMARK_API_KEY as string);
+var client = new ServerClient(process.env.POSTMARK_API_KEY as string);
 
 const sendEmail = (list: List) => {
   client.sendEmail({
@@ -44,7 +44,7 @@ export default async function handler(
       .json({ error: "Failed to fetch people_lists", details: error });
     return;
   }
-  console.log("res ", rows);
+  console.log("Sending to: ", rows);
 
   for (let i = 0; i < rows.length; i++) {
     const list = rows[i];
@@ -73,6 +73,6 @@ export default async function handler(
       continue;
     }
   }
-
+  console.log("Finished hourlyMailSender");
   res.status(200).end("Emails sent!");
 }
