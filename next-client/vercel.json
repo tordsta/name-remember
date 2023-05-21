@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/mail/hourlyMailSender",
-      "schedule": "* 7 1-31 * *"
+      "schedule": "0 7 1-31 * *"
     }
   ]
 }
