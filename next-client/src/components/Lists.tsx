@@ -1,13 +1,13 @@
 import { useState } from "react";
 import Modal from "react-modal";
 import { Lists } from "@/utils/types";
-import Button from "./style/Button";
+import Button, { FramedButton } from "./style/Button";
 import { usePeopleLists } from "@/hooks/usePeopleLists";
 import DefaultModal from "./Modal";
-import { notifyPromiseFetch } from "./Notify";
-import { useQueryClient } from "react-query";
 import useDeleteList from "@/hooks/useDeletePeopleList";
 import useCreateList from "@/hooks/useCreateList";
+import Image from "next/image";
+import { useRouter } from "next/router";
 
 export default function Lists({
   currentList,
@@ -17,10 +17,10 @@ export default function Lists({
   setCurrentList: Function;
 }) {
   const { data, isLoading, error } = usePeopleLists();
+  const [openSignal, setOpenSignal] = useState(false);
   const deleteList = useDeleteList();
   const createList = useCreateList();
-
-  const [openSignal, setOpenSignal] = useState(false);
+  const router = useRouter();
 
   const handleCreateList = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -31,9 +31,16 @@ export default function Lists({
   };
 
   return (
-    <div className="mt-8 mx-2">
-      <p className="text-lg font-bold">My lists</p>
-      <ul className="mb-2">
+    <div className="flex flex-col mt-6 md:mt-16 mb-4 px-10 w-full justify-center items-start max-w-2xl">
+      <div className="flex flex-col md:flex-row items-center justify-between mx-auto w-full md:mx-0">
+        <p className="text-3xl mx-auto md:mx-0">Groups to remember</p>
+        <div className="mx-auto mt-3 mb-1 md:m-0">
+          <Button style="small" onClick={() => setOpenSignal(true)}>
+            Create new group
+          </Button>
+        </div>
+      </div>
+      <ul className="mb-4 w-full">
         {isLoading && <li>Loading... </li>}
         {!isLoading && !error && data && Array.isArray(data) && (
           <>
@@ -41,47 +48,67 @@ export default function Lists({
               return (
                 <li
                   key={list.id}
-                  className="flex"
+                  className="flex flex-col w-full p-2 mt-4 h-28 md:h-32 bg-white border border-black"
                   onClick={() => {
                     setCurrentList(list.id);
                   }}
                 >
-                  <div className="flex flex-col">
-                    <p className="font-bold">{list.name}</p>
-                    <p>People: 6</p>
+                  <div className="flex justify-between items-start">
+                    <p className="text-3xl ml-2 pt-2 pl-2">{list.name}</p>
+                    <button
+                      className="w-7 h-7 md:w-10 md:h-10 relative"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/edit/${list.id}`);
+                      }}
+                    >
+                      <Image
+                        src="/icons/settingsFramed110x110.png"
+                        alt="edit icon"
+                        fill
+                      />
+                    </button>
                   </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (list.id === currentList) setCurrentList(null);
-                      deleteList.mutate(list.id);
-                    }}
-                  >
-                    Delete
-                  </button>
+                  <div className="flex h-full justify-end items-end text-xl pb-1">
+                    <button
+                      className="hidden"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (list.id === currentList) setCurrentList(null);
+                        deleteList.mutate(list.id);
+                      }}
+                    >
+                      Delete
+                    </button>
+                    <FramedButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/memorize/${list.id}`);
+                      }}
+                    >
+                      Memorize
+                    </FramedButton>
+                  </div>
                 </li>
               );
             })}
           </>
         )}
       </ul>
-      <Button style="small" onClick={() => setOpenSignal(true)}>
-        Create new list
-      </Button>
-      <DefaultModal openSignal={openSignal}>
+      <DefaultModal openSignal={openSignal} setOpenSignal={setOpenSignal}>
         <div className="flex flex-col items-center justify-center mx-4 my-2">
           <div className="flex w-full items-center justify-end mb-4"></div>
-          <p className="text-xl mb-4">Create new list</p>
+          <p className="text-xl mb-4">Create new group</p>
           <form
             onSubmit={handleCreateList}
             className="flex flex-col items-center justify-center gap-4"
           >
-            <label className="flex  flex-col items-center justify-center gap-1">
-              List name
+            <label className="flex flex-col items-center justify-center gap-1">
+              Name of group
               <input
                 name="listName"
                 type="text"
-                className="border border-black rounded mx-2"
+                className="border border-black rounded mx-2 px-1"
               />
             </label>
             <div className="flex gap-2">

@@ -3,8 +3,7 @@ import { SessionProvider } from "next-auth/react";
 import { Analytics } from "@vercel/analytics/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { NotifyContainer } from "@/components/Notify";
-
-const queryClient = new QueryClient();
+import { useRef } from "react";
 
 export default function App({
   Component,
@@ -13,8 +12,14 @@ export default function App({
   Component: any;
   pageProps: any;
 }) {
+  const queryClient = useRef<QueryClient>();
+
+  if (!queryClient.current) {
+    queryClient.current = new QueryClient();
+  }
+
   return (
-    <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient.current}>
       <SessionProvider session={session}>
         <Component {...pageProps} />
         <NotifyContainer />

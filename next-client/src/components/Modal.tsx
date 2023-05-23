@@ -4,9 +4,11 @@ import Modal from "react-modal";
 export default function DefaultModal({
   children,
   openSignal,
+  setOpenSignal,
 }: {
   children: React.ReactNode;
   openSignal: boolean;
+  setOpenSignal: Function;
 }) {
   const [modalIsOpen, setIsOpen] = useState(false);
 
@@ -16,6 +18,7 @@ export default function DefaultModal({
 
   function closeModal() {
     setIsOpen(false);
+    setOpenSignal(false);
   }
 
   return (

@@ -31,10 +31,10 @@ export default function Profile() {
         />
       )}
       <LoginButton />
-      <div className="fixed bottom-0 sm:bottom-auto sm:top-0 w-full align-middle border sm:border-0 border-black dark:border-white">
+      <div className="fixed bottom-0 sm:bottom-auto sm:top-0 w-full align-middle border sm:border-0 border-black ">
         <CustomLink href="/">
           <div className="flex items-center justify-center gap-1 w-full py-2 pr-3 pl-0 sm:pt-8">
-            <div className="invert-0 dark:invert">
+            <div className="invert-0">
               <Image
                 src="/backChevron.svg"
                 alt=""

@@ -8,21 +8,23 @@ export default function Home() {
   const [currentList, setCurrentList] = useState<string | null>(null);
 
   return (
-    <>
-      <div className="flex w-full justify-between border-b border-white">
-        <h1 className="text-2xl sm:text-4xl font-bold mx-8 my-6">
+    <div className="w-full h-full flex flex-col md:flex-row">
+      <div className="flex flex-row md:flex-col w-full md:w-52 justify-between border-b md:border-b-0 md:border-r border-black">
+        <h1 className="text-3xl sm:text-4xl font-bold mx-8 md:mx-4 my-6">
           Name Remember
         </h1>
         <UserEmblem />
       </div>
-      <div className="flex flex-col md:flex-row flex-grow justify-start md:justify-between items-center my-8 md:my-20 mx-2">
-        <Memorization currentList={currentList} />
-        <CurrentList
-          currentList={currentList}
-          setCurrentList={setCurrentList}
-        />
+      <div className="flex flex-col md:flex-col flex-grow w-full justify-start md:justify-between items-center">
+        <div className="hidden">
+          <Memorization currentList={currentList} />
+          <CurrentList
+            currentList={currentList}
+            setCurrentList={setCurrentList}
+          />
+        </div>
         <Lists currentList={currentList} setCurrentList={setCurrentList} />
       </div>
-    </>
+    </div>
   );
 }

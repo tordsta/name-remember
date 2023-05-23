@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function Button({
   style,
   onClick,
@@ -6,7 +8,7 @@ export default function Button({
   children,
 }: {
   style?: undefined | string | "small" | "green" | "cancel" | "submit";
-  onClick?: () => void;
+  onClick?: (e?: any) => void;
   onSubmit?: () => void;
   typeSubmit?: boolean;
   children?: React.ReactNode;
@@ -16,25 +18,23 @@ export default function Button({
 
   switch (style) {
     case undefined:
-      twString =
-        "border-2 border-black dark:border-white rounded-md px-4 py-2 h-min";
+      twString = "border border-black bg-white px-3 py-1 h-min max-w-max";
       break;
     case "small":
-      twString =
-        "border border-black dark:border-white rounded-md px-2 py-1 h-min";
+      twString = "border border-black px-2 py-1 h-min max-w-max";
       break;
     case "green":
       twString =
-        "bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded";
+        "bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 max-w-max";
       break;
     case "cancel":
       twString =
-        "border border-black dark:border-white bg-rose-400 rounded px-2 py-1 h-min";
+        "border border-black bg-rose-400 rounded px-2 py-1 h-min max-w-max";
       elements = <p className="text-lg">Cancel</p>;
       break;
     case "submit":
       twString =
-        "border border-black dark:border-white bg-emerald-400 rounded px-2 py-1 h-min";
+        "border border-black bg-emerald-400 rounded px-2 py-1 h-min max-w-max";
       elements = <p className="text-lg">Submit</p>;
       break;
     default:
@@ -50,6 +50,32 @@ export default function Button({
     >
       {children && children}
       {elements && elements}
+    </button>
+  );
+}
+
+export function FramedButton({
+  style,
+  onClick,
+  onSubmit,
+  typeSubmit,
+  children,
+}: {
+  style?: undefined | string | "small" | "green" | "cancel" | "submit";
+  onClick?: (e?: any) => void;
+  onSubmit?: () => void;
+  typeSubmit?: boolean;
+  children?: React.ReactNode;
+}) {
+  return (
+    <button
+      className="relative w-40 h-10"
+      onClick={onClick}
+      onSubmit={onSubmit}
+      type={typeSubmit ? "submit" : "button"}
+    >
+      <Image src="/buttonFrame460x60.png" alt="button" fill />
+      <div className="relative">{children && children}</div>
     </button>
   );
 }

@@ -14,10 +14,8 @@ export default function FrontPage() {
         <LoginButton />
       </div>
       <div className="mt-4 md:mb-8 text-center">
-        <h3 className="font-bold">How it works:</h3>
-        <p>1. Upload photos of the people to remember.</p>
-        <p>2. Set an memorizing interval.</p>
-        <p>3. Practice, practice, practice.</p>
+        <p>Learn names and faces quickly,</p>
+        <p>Stay connected with your contacts.</p>
       </div>
     </div>
   );
