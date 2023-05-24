@@ -2,24 +2,11 @@ import Button from "@/components/style/Button";
 import { usePeopleList } from "@/hooks/usePeopleList";
 import useAddPeople from "@/hooks/useAddPeople";
 import useDeletePeople from "@/hooks/useDeletePeople";
-import { use, useEffect } from "react";
 
-export default function CurrentList({
-  currentList,
-  setCurrentList,
-}: {
-  currentList: string | null;
-  setCurrentList: (listId: string | null) => void;
-}) {
+export default function List({ currentList }: { currentList: string | null }) {
   const { data, isLoading, error } = usePeopleList({
     id: currentList,
   });
-
-  useEffect(() => {
-    if (!currentList && data && data.id) {
-      setCurrentList(data.id);
-    }
-  }, [currentList, data, setCurrentList]);
 
   const addPeople = useAddPeople();
   const deletePerson = useDeletePeople();

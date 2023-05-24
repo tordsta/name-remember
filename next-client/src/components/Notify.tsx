@@ -32,7 +32,7 @@ export const notifyPromiseFetch = async ({
   success: string;
   error: string;
 }) => {
-  const res = await toast.promise(
+  const res: Response = await toast.promise(
     new Promise((resolve, reject) => {
       fetch(url, {
         method: "POST",

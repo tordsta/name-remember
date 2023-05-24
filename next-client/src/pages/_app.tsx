@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import { Analytics } from "@vercel/analytics/react";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider, Hydrate } from "react-query";
 import { NotifyContainer } from "@/components/Notify";
 import { useRef } from "react";
 
@@ -20,11 +20,13 @@ export default function App({
 
   return (
     <QueryClientProvider client={queryClient.current}>
-      <SessionProvider session={session}>
-        <Component {...pageProps} />
-        <NotifyContainer />
-        <Analytics />
-      </SessionProvider>
+      <Hydrate state={pageProps.dehydratedState}>
+        <SessionProvider session={session}>
+          <Component {...pageProps} />
+          <NotifyContainer />
+          <Analytics />
+        </SessionProvider>
+      </Hydrate>
     </QueryClientProvider>
   );
 }

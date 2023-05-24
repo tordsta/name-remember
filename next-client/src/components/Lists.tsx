@@ -4,21 +4,13 @@ import { Lists } from "@/utils/types";
 import Button, { FramedButton } from "./style/Button";
 import { usePeopleLists } from "@/hooks/usePeopleLists";
 import DefaultModal from "./Modal";
-import useDeleteList from "@/hooks/useDeletePeopleList";
 import useCreateList from "@/hooks/useCreateList";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-export default function Lists({
-  currentList,
-  setCurrentList,
-}: {
-  currentList: string | null;
-  setCurrentList: Function;
-}) {
+export default function Lists() {
   const { data, isLoading, error } = usePeopleLists();
   const [openSignal, setOpenSignal] = useState(false);
-  const deleteList = useDeleteList();
   const createList = useCreateList();
   const router = useRouter();
 
@@ -49,9 +41,6 @@ export default function Lists({
                 <li
                   key={list.id}
                   className="flex flex-col w-full p-2 mt-4 h-28 md:h-32 bg-white border border-black"
-                  onClick={() => {
-                    setCurrentList(list.id);
-                  }}
                 >
                   <div className="flex justify-between items-start">
                     <p className="text-3xl ml-2 pt-2 pl-2">{list.name}</p>
@@ -66,22 +55,13 @@ export default function Lists({
                         src="/icons/settingsFramed110x110.png"
                         alt="edit icon"
                         fill
+                        sizes="100%"
                       />
                     </button>
                   </div>
                   {/* number of people in list */}
                   {/* reminder setting of list */}
                   <div className="flex h-full justify-end items-end text-xl pb-1">
-                    <button
-                      className="hidden"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (list.id === currentList) setCurrentList(null);
-                        deleteList.mutate(list.id);
-                      }}
-                    >
-                      Delete
-                    </button>
                     <FramedButton
                       onClick={(e) => {
                         e.stopPropagation();
