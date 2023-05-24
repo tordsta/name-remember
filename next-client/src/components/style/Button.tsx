@@ -73,6 +73,7 @@ export function FramedButton({
       onClick={onClick}
       onSubmit={onSubmit}
       type={typeSubmit ? "submit" : "button"}
+      style={{ boxShadow: "0px 0px 20px 10px white" }}
     >
       <Image src="/buttonFrame460x60.png" alt="button" fill />
       <div className="relative">{children && children}</div>

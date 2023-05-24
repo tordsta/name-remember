@@ -1,6 +1,6 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
-import Button from "@/components/style/Button";
+import Button, { FramedButton } from "@/components/style/Button";
 
 export default function LoginButton() {
   const { data: session } = useSession();
@@ -8,22 +8,18 @@ export default function LoginButton() {
 
   if (session) {
     return (
-      <>
-        <Button
-          onClick={() => {
-            signOut();
-          }}
-        >
-          Sign out
-        </Button>
-      </>
+      <FramedButton
+        onClick={() => {
+          signOut();
+        }}
+      >
+        <p className="text-2xl">Sign out</p>
+      </FramedButton>
     );
   }
   return (
-    <>
-      <Button style="green" onClick={() => signIn()}>
-        Sign in
-      </Button>
-    </>
+    <FramedButton style="green" onClick={() => signIn()}>
+      <p className="text-2xl">Sign in</p>
+    </FramedButton>
   );
 }

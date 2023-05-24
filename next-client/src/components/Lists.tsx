@@ -69,6 +69,8 @@ export default function Lists({
                       />
                     </button>
                   </div>
+                  {/* number of people in list */}
+                  {/* reminder setting of list */}
                   <div className="flex h-full justify-end items-end text-xl pb-1">
                     <button
                       className="hidden"
