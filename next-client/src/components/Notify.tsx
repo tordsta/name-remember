@@ -9,7 +9,7 @@ const options: ToastOptions = {
   pauseOnHover: true,
   draggable: true,
   progress: undefined,
-  theme: "colored",
+  theme: "light",
 };
 
 export const notify = (message: string) => toast(message, options);
@@ -52,7 +52,8 @@ export const notifyPromiseFetch = async ({
       pending: pending,
       success: success,
       error: error,
-    }
+    },
+    options
   );
   return res;
 };

@@ -84,7 +84,7 @@ export default function List({ currentList }: { currentList: string | null }) {
       {isLoading && <div>Loading... </div>}
       {!isLoading && !error && data && (
         <div className="flex flex-col mt-4">
-          <p className="text-2xl font-bold">People</p>
+          <p className="text-2xl font-bold w-52">People</p>
           {data.people_in_list &&
             data.people_in_list.length > 0 &&
             data.people_in_list.map((person) => {

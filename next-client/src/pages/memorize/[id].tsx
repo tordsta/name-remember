@@ -50,9 +50,6 @@ export default function MemorizeListPage() {
 
   return (
     <div>
-      <h1>Remember Page</h1>
-      <p>ID: {id}</p>
-      <p>Data: {JSON.stringify(data)}</p>
       <Memorization currentList={typeof id == "string" ? id : null} />
     </div>
   );
