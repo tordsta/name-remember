@@ -26,8 +26,8 @@ export default async function handler(
     try {
       //add image later
       const people = await sql`
-        INSERT INTO people (fname)
-        VALUES (${person.fname})
+        INSERT INTO people (fname, mname, lname, image)
+        VALUES (${person.fname}, ${person.mname}, ${person.lname}, ${person.image})
         RETURNING id, fname;`;
 
       const results = await sql`

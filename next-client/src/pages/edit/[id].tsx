@@ -63,7 +63,7 @@ export default function EditListPage() {
           router.push("/");
         }}
       >
-        Delete
+        Delete group
       </button>
     </div>
   );
