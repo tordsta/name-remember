@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import List from "@/components/List";
 import useDeleteList from "@/hooks/useDeletePeopleList";
+import { FramedButton } from "@/components/style/Button";
 
 //TODO - make a new folder with database fetches getList, etc.
 //not in api folder
@@ -50,21 +51,22 @@ export default function EditListPage() {
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Error :</p>;
 
+  // TODO make layout for all pages and apply layout here. layout: sidebar, back for sm & md.
   return (
-    <div>
-      <h1>Remember Page</h1>
-      <p>ID: {id}</p>
-      <p>Data: {JSON.stringify(data)}</p>
-      <List currentList={typeof id == "string" ? id : null} />
-      <button
+    <div className="flex flex-col justify-start items-center gap-4 py-8 m-auto min-h-screen">
+      <p className="text-3xl">Edit List: {data?.name}</p>
+      {/* TODO make reminder edits for mail here */}
+      <FramedButton
         onClick={(e) => {
           e.stopPropagation();
           if (typeof id == "string") deleteList.mutate(id);
           router.push("/");
         }}
       >
-        Delete group
-      </button>
+        <p className=" text-red-500">Delete group</p>
+      </FramedButton>
+      {/* add modal with confirmation of deletion */}
+      <List currentList={typeof id == "string" ? id : null} />
     </div>
   );
 }

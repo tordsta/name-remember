@@ -80,41 +80,52 @@ export default function List({ currentList }: { currentList: string | null }) {
   };
 
   return (
-    <div className="flex flex-col text-center justify-center items-center">
-      <div>
-        {isLoading && <div>Loading... </div>}
-        {!isLoading && !error && data && (
-          <div>
-            <p className="text-2xl font-bold">{data.name}</p>
-            {data.people_in_list &&
-              data.people_in_list.length > 0 &&
-              data.people_in_list.map((person) => {
-                return (
-                  <div
-                    key={person.id}
-                    className="flex justify-center items-center gap-2 m-2"
-                  >
-                    <p>
-                      {person.fname} {person.lname}
-                    </p>
-                    <button
-                      onClick={() => {
-                        if (person.id) {
-                          deletePerson.mutate(person.id);
-                        }
-                      }}
-                    >
-                      Delete
-                    </button>
+    <>
+      {isLoading && <div>Loading... </div>}
+      {!isLoading && !error && data && (
+        <div className="flex flex-col mt-4">
+          <p className="text-2xl font-bold">People</p>
+          {data.people_in_list &&
+            data.people_in_list.length > 0 &&
+            data.people_in_list.map((person) => {
+              return (
+                <div
+                  key={person.id}
+                  className="flex h-12 justify-start items-center gap-4 mt-2 border-b border-black"
+                >
+                  <div className="relative w-10 h-10 rounded-full overflow-hidden">
+                    <NextImage
+                      src={person.image ?? "/icons/person110x110.png"}
+                      alt="Uploaded image"
+                      fill
+                      sizes="100%"
+                      style={{ objectFit: "cover" }}
+                    />
                   </div>
-                );
-              })}
-          </div>
-        )}
+                  <p>
+                    {person.fname} {person.mname} {person.lname}
+                  </p>
+                  <div className="grow" />
+                  {/** TODO make edit button */}
+                  <button
+                    onClick={() => {
+                      if (person.id) {
+                        deletePerson.mutate(person.id);
+                      }
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              );
+            })}
+        </div>
+      )}
+      <div className="mt-auto pt-2">
+        <FramedButton onClick={() => setOpenSignal(true)}>
+          Add Person
+        </FramedButton>
       </div>
-      <FramedButton onClick={() => setOpenSignal(true)}>
-        Add Person
-      </FramedButton>
       <DefaultModal openSignal={openSignal} setOpenSignal={setOpenSignal}>
         <div className="text-xl text-center mt-4">Add person</div>
         <form onSubmit={handleAddPerson} className="flex flex-col m-4">
@@ -171,7 +182,7 @@ export default function List({ currentList }: { currentList: string | null }) {
         </form>
       </DefaultModal>
       {/* form with fname mname lname and picture */}
-    </div>
+    </>
   );
 }
 

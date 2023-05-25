@@ -29,7 +29,7 @@ export default async function handler(
           pl.name,
           json_agg(
             row_to_json(
-              (SELECT tmp FROM (SELECT p.id, p.fname, p.lname) tmp)
+              (SELECT tmp FROM (SELECT p.id, p.fname, p.mname, p.lname, p.image) tmp)
             )
           ) AS "people_in_list"
         FROM 
@@ -54,7 +54,7 @@ export default async function handler(
             json_agg(
               CASE WHEN p.id IS NOT NULL THEN
                 row_to_json(
-                  (SELECT tmp FROM (SELECT p.id, p.fname, p.lname) tmp)
+                  (SELECT tmp FROM (SELECT p.id, p.fname, p.mname, p.lname, p.image) tmp)
                 )
               ELSE
                 NULL
