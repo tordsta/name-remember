@@ -34,6 +34,11 @@ export const authOptions = {
       clientSecret: process.env.SLACK_SECRET as string,
     }),
   ],
+  callbacks: {
+    async redirect() {
+      return "/dashboard";
+    },
+  },
 };
 
 export default NextAuth(authOptions);

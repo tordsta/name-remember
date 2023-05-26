@@ -5,6 +5,7 @@ import { usePeopleList } from "@/hooks/usePeopleList";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import Memorization from "@/components/Memorization";
+import Layout from "@/components/Layout";
 
 //TODO - make a new folder with database fetches getList, etc.
 //not in api folder
@@ -49,8 +50,8 @@ export default function MemorizeListPage() {
   if (isError) return <p>Error :</p>;
 
   return (
-    <div>
+    <Layout>
       <Memorization currentList={typeof id == "string" ? id : null} />
-    </div>
+    </Layout>
   );
 }

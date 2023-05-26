@@ -14,6 +14,7 @@ type List = {
 
 var client = new ServerClient(process.env.POSTMARK_API_KEY as string);
 
+//TODO verify email before sending out
 const sendEmail = (list: List) => {
   client.sendEmail({
     From: "reminders@nameremember.com",

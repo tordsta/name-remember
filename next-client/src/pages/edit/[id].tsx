@@ -4,9 +4,11 @@ import { GetServerSidePropsContext } from "next";
 import { usePeopleList } from "@/hooks/usePeopleList";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
-import List from "@/components/List";
+import ListOfPeople from "@/components/ListOfPeople";
 import useDeleteList from "@/hooks/useDeletePeopleList";
 import { FramedButton } from "@/components/style/Button";
+import Layout from "@/components/Layout";
+import AddPersonToListModal from "@/components/AddPersonToListModal";
 
 //TODO - make a new folder with database fetches getList, etc.
 //not in api folder
@@ -53,20 +55,36 @@ export default function EditListPage() {
 
   // TODO make layout for all pages and apply layout here. layout: sidebar, back for sm & md.
   return (
-    <div className="flex flex-col justify-start items-center gap-4 py-8 m-auto min-h-screen">
-      <p className="text-3xl">Edit List: {data?.name}</p>
-      {/* TODO make reminder edits for mail here */}
-      <FramedButton
-        onClick={(e) => {
-          e.stopPropagation();
-          if (typeof id == "string") deleteList.mutate(id);
-          router.push("/");
-        }}
-      >
-        <p className=" text-red-500">Delete group</p>
-      </FramedButton>
-      {/* add modal with confirmation of deletion */}
-      <List currentList={typeof id == "string" ? id : null} />
-    </div>
+    <Layout>
+      <div className="flex flex-col md:flex-row-reverse justify-start md:justify-evenly min-h-screen w-full items-center">
+        <div className="flex flex-col items-center justify-center gap-4 mt-8 md:mt-0">
+          <p className="text-3xl">Edit List: {data?.name}</p>
+          {/* TODO make reminder edits for mail here */}
+          <FramedButton
+            onClick={(e) => {
+              e.stopPropagation();
+              if (typeof id == "string") deleteList.mutate(id);
+              router.push("/");
+            }}
+          >
+            <p className=" text-red-500">Delete group</p>
+          </FramedButton>
+          {typeof id === "string" && (
+            <div className="hidden md:block">
+              <AddPersonToListModal listId={id} />
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col items-center justify-center gap-4">
+          {/* add modal with where user confirmation deletion */}
+          {typeof id === "string" && <ListOfPeople currentList={id} />}
+          {typeof id === "string" && (
+            <div className="md:hidden">
+              <AddPersonToListModal listId={id} />
+            </div>
+          )}
+        </div>
+      </div>
+    </Layout>
   );
 }

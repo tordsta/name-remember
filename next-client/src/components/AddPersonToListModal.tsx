@@ -1,22 +1,14 @@
-import Button, { FramedButton } from "@/components/style/Button";
-import { usePeopleList } from "@/hooks/usePeopleList";
-import useAddPeople from "@/hooks/useAddPeople";
-import useDeletePeople from "@/hooks/useDeletePeople";
 import { useState } from "react";
 import DefaultModal from "./Modal";
-import Modal from "react-modal";
+import Button, { FramedButton } from "./style/Button";
 import NextImage from "next/image";
 import resizeImage from "@/utils/resizeImage";
+import useAddPeople from "@/hooks/useAddPeople";
 
-export default function List({ currentList }: { currentList: string | null }) {
+export default function AddPersonToListModal({ listId }: { listId: string }) {
   const [openSignal, setOpenSignal] = useState(false);
   const [imageFile, setImageFile] = useState<string | null>(null);
-  const { data, isLoading, error } = usePeopleList({
-    id: currentList,
-  });
-
   const addPeople = useAddPeople();
-  const deletePerson = useDeletePeople();
 
   const handleAddPerson = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -26,9 +18,9 @@ export default function List({ currentList }: { currentList: string | null }) {
     const lname = (event.target as any)["lname"].value;
     console.log(fname, mname, lname, imageFile);
 
-    if (currentList && fname) {
+    if (listId && fname) {
       addPeople.mutate({
-        listId: currentList,
+        listId: listId,
         person: {
           fname: fname,
           mname: mname,
@@ -49,51 +41,9 @@ export default function List({ currentList }: { currentList: string | null }) {
 
   return (
     <>
-      {isLoading && <div>Loading... </div>}
-      {!isLoading && !error && data && (
-        <div className="flex flex-col mt-4">
-          <p className="text-2xl font-bold w-52">People</p>
-          {data.people_in_list &&
-            data.people_in_list.length > 0 &&
-            data.people_in_list.map((person) => {
-              return (
-                <div
-                  key={person.id}
-                  className="flex h-12 justify-start items-center gap-4 mt-2 border-b border-black"
-                >
-                  <div className="relative w-10 h-10 rounded-full overflow-hidden">
-                    <NextImage
-                      src={person.image ?? "/icons/person110x110.png"}
-                      alt="Uploaded image"
-                      fill
-                      sizes="100%"
-                      style={{ objectFit: "cover" }}
-                    />
-                  </div>
-                  <p>
-                    {person.fname} {person.mname} {person.lname}
-                  </p>
-                  <div className="grow" />
-                  {/** TODO make edit button */}
-                  <button
-                    onClick={() => {
-                      if (person.id) {
-                        deletePerson.mutate(person.id);
-                      }
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              );
-            })}
-        </div>
-      )}
-      <div className="mt-auto pt-2">
-        <FramedButton onClick={() => setOpenSignal(true)}>
-          Add Person
-        </FramedButton>
-      </div>
+      <FramedButton onClick={() => setOpenSignal(true)}>
+        Add Person
+      </FramedButton>
       <DefaultModal openSignal={openSignal} setOpenSignal={setOpenSignal}>
         <div className="text-xl text-center mt-4">Add person</div>
         <form onSubmit={handleAddPerson} className="flex flex-col m-4">
@@ -152,5 +102,3 @@ export default function List({ currentList }: { currentList: string | null }) {
     </>
   );
 }
-
-Modal.setAppElement("#__next");

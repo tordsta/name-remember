@@ -43,12 +43,12 @@ export default function Memorization({
   };
 
   return (
-    <div className="flex flex-col lg:flex-row lg:justify-center lg:items-center">
+    <div className="flex flex-col my-auto justify-center items-center md:flex-row md:justify-start md:items-stretch w-auto md:w-full min-h-0 md:min-h-screen">
       <div
-        className="hidden lg:block fixed left-0 h-full bg-gray-200 border border-black w-64 z-10 cursor-pointer"
+        className="hidden md:block flex-grow bg-gray-200 border border-black cursor-pointer"
         onClick={prev}
       >
-        <p className="text-2xl text-center h-full w-full flex items-center justify-center">
+        <p className="text-2xl text-center h-full w-full px-2 min-w-[120px] flex items-center justify-center">
           Previous
         </p>
       </div>
@@ -57,9 +57,14 @@ export default function Memorization({
         ref={scrollRef}
         style={{
           display: "flex",
+          flexDirection: "row",
           overflow: "auto",
           scrollSnapType: "x mandatory",
+          minWidth: "350px",
+          width: "100%",
+          margin: "0 auto",
         }}
+        className="max-w-full md:w-auto md:max-w-[40vw] p-0"
       >
         {data &&
           !isLoading &&
@@ -71,7 +76,6 @@ export default function Memorization({
               key={i}
               style={{
                 width: "100%",
-                height: "100vh",
                 flexShrink: 0,
                 flexGrow: 1,
                 color: "#000",
@@ -81,7 +85,7 @@ export default function Memorization({
                 alignItems: "center",
               }}
             >
-              <p className="text-3xl mb-4">
+              <p className="text-3xl my-4">
                 {activePageIndex + 1} / {pages.length}
               </p>
               <div className="relative w-52 h-52 bg-slate-200">
@@ -190,29 +194,27 @@ export default function Memorization({
             </li>
           ))}
       </ul>
+      <div className="md:hidden flex flex-row justify-evenly items-center gap-4 sm:gap-20 my-4">
+        <FramedButton onClick={prev}>Previous</FramedButton>
+        <FramedButton onClick={next}>Next</FramedButton>
+      </div>
       <div
-        className="hidden lg:block fixed right-0 h-full bg-gray-200 border border-black w-64 z-10 cursor-pointer"
+        className="hidden md:block flex-grow bg-gray-200 border border-black cursor-pointer"
         onClick={next}
       >
-        <p className="text-2xl text-center h-full w-full flex items-center justify-center">
+        <p className="text-2xl text-center px-2 h-full w-full min-w-[120px] flex items-center justify-center">
           Next
         </p>
       </div>
-      <div className="fixed lg:hidden bottom-0 w-full">
-        <div className="flex flex-row justify-evenly items-center my-4 md:my-28">
-          <FramedButton onClick={prev}>Previous</FramedButton>
-          <FramedButton onClick={next}>Next</FramedButton>
-        </div>
-        {/* TODO make a final results page */}
-        {/* TODO make a submit and storage of results */}
-        {/* {pages.length == activePageIndex + 1 && (
+      {/* TODO make a final results page */}
+      {/* TODO make a submit and storage of results */}
+      {/* {pages.length == activePageIndex + 1 && (
           <div className="flex justify-center items-center my-4">
             <FramedButton onClick={() => console.log("submit")}>
               Submit Score
             </FramedButton>
           </div>
         )} */}
-      </div>
     </div>
   );
 }
