@@ -25,7 +25,6 @@ export default function Layout({
   }
 
   //TODO make page manifest
-  //TODO add navigation: desktop & mobile (sidebar/topbar), back button.
   return (
     <>
       <Head>

@@ -53,7 +53,6 @@ export default function EditListPage() {
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Error :</p>;
 
-  // TODO make layout for all pages and apply layout here. layout: sidebar, back for sm & md.
   return (
     <Layout>
       <div className="flex flex-col md:flex-row-reverse justify-start md:justify-evenly min-h-screen w-full items-center">
