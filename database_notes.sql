@@ -11,7 +11,9 @@ CREATE TABLE users (
 
 CREATE TABLE people (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name VARCHAR(50) NOT NULL,
+  fname VARCHAR(50) NOT NULL,
+  mname VARCHAR(50) NOT NULL,
+  lname VARCHAR(50) NOT NULL,
   image TEXT,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()

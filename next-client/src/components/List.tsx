@@ -6,6 +6,7 @@ import { useState } from "react";
 import DefaultModal from "./Modal";
 import Modal from "react-modal";
 import NextImage from "next/image";
+import resizeImage from "@/utils/resizeImage";
 
 export default function List({ currentList }: { currentList: string | null }) {
   const [openSignal, setOpenSignal] = useState(false);
@@ -38,45 +39,12 @@ export default function List({ currentList }: { currentList: string | null }) {
     }
   };
 
-  const handleImageChange = (event: React.ChangeEvent) => {
+  const handleImageChange = async (event: React.ChangeEvent) => {
+    event.preventDefault();
     const file = (event.target as any).files[0];
 
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageFile(typeof reader.result === "string" ? reader.result : null);
-      };
-      reader.readAsDataURL(file);
-    }
-
-    //TODO fix image resizing
-    // if (file) {
-    //   const reader = new FileReader();
-    //   reader.onload = (event) => {
-    //       const img = new Image();
-    //       img.src = event.target.result;
-    //       img.onload = () => {
-    //           const elem = document.createElement('canvas');
-    //           const scaleFactor = 0.8; // Adjust scaleFactor to get the size you want
-    //           elem.width = img.width * scaleFactor;
-    //           elem.height = img.height * scaleFactor;
-    //           const ctx = elem.getContext('2d');
-    //           // img, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight
-    //           ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, elem.width, elem.height);
-    //           ctx.canvas.toBlob((blob) => {
-    //               const newFile = new File([blob], file.name, {
-    //                   type: 'image/jpeg',
-    //                   lastModified: Date.now()
-    //               });
-    //               reader.onloadend = () => {
-    //                   setImageFile(reader.result);
-    //               };
-    //               reader.readAsDataURL(newFile);
-    //           }, 'image/jpeg', 1);
-    //       },
-    //   };
-    //   reader.readAsDataURL(file);
-    // }
+    const targetSizeKb = 200;
+    await resizeImage({ file, targetSizeKb, setImageFile });
   };
 
   return (
@@ -181,7 +149,6 @@ export default function List({ currentList }: { currentList: string | null }) {
           </div>
         </form>
       </DefaultModal>
-      {/* form with fname mname lname and picture */}
     </>
   );
 }
