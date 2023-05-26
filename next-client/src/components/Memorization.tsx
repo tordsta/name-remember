@@ -43,12 +43,14 @@ export default function Memorization({
   };
 
   return (
-    <div className="flex flex-col lg:flex-row">
+    <div className="flex flex-col lg:flex-row lg:justify-center lg:items-center">
       <div
-        className="hidden lg:flex bg-gray-200 border border-black w-[50vw] items-center justify-center cursor-pointer"
+        className="hidden lg:block fixed left-0 h-full bg-gray-200 border border-black w-64 z-10 cursor-pointer"
         onClick={prev}
       >
-        <p className="text-2xl">Previous</p>
+        <p className="text-2xl text-center h-full w-full flex items-center justify-center">
+          Previous
+        </p>
       </div>
 
       <ul
@@ -189,10 +191,12 @@ export default function Memorization({
           ))}
       </ul>
       <div
-        className="hidden lg:flex bg-gray-200 border border-black w-[50vw] items-center justify-center cursor-pointer"
+        className="hidden lg:block fixed right-0 h-full bg-gray-200 border border-black w-64 z-10 cursor-pointer"
         onClick={next}
       >
-        <p className="text-2xl">Next</p>
+        <p className="text-2xl text-center h-full w-full flex items-center justify-center">
+          Next
+        </p>
       </div>
       <div className="fixed lg:hidden bottom-0 w-full">
         <div className="flex flex-row justify-evenly items-center my-4 md:my-28">
