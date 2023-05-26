@@ -149,14 +149,28 @@ export default function vercelPostgresAdapter(): Adapter {
       return sessionAndUser;
     };
 
-    // TODO implement updateSession
+    //TODO verify solution for updating session
     const updateSession = async (
-      session: Partial<AdapterSession> & Pick<AdapterSession, "sessionToken">
+      session: Partial<AdapterSession> & Pick<AdapterSession, "sessionToken">,
+      token?: string
     ): Promise<AdapterSession | null | undefined> => {
-      console.log(
-        "Unimplemented function! updateSession in vercelPostgresAdapter. Session:",
-        JSON.stringify(session)
-      );
+      console.log("updateSession: session", session);
+      console.log("updateSession: token", token);
+      if (
+        !session.expires ||
+        typeof session.expires == "undefined" ||
+        !session.sessionToken
+      ) {
+        throw new Error(
+          "updateSession: The session object must have an expires property and sessionToken to be updated."
+        );
+      }
+      const expiresString = session.expires.toDateString();
+      await sql`
+          UPDATE auth_sessions
+          SET expires = ${expiresString}
+          WHERE session_token = ${session.sessionToken}
+      `;
       return;
     };
 
