@@ -4,7 +4,7 @@ import LoginButton from "@/components/LoginButton";
 
 export default function Home() {
   return (
-    <Layout>
+    <Layout nav={false} auth={false}>
       <div className="flex flex-row h-[100vh]">
         <div className="flex flex-col justify-evenly md:justify-center items-center py-4 md:py-0 border-0 md:border border-black w-full md:w-[50vw] h-full">
           <h1 className="block md:hidden text-3xl">Name Remember</h1>
