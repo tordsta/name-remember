@@ -16,7 +16,6 @@ export default function AddPersonToListModal({ listId }: { listId: string }) {
     const fname = (event.target as any)["fname"].value;
     const mname = (event.target as any)["mname"].value;
     const lname = (event.target as any)["lname"].value;
-    console.log(fname, mname, lname, imageFile);
 
     if (listId && fname) {
       addPeople.mutate({

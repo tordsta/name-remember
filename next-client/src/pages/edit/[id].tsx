@@ -9,6 +9,7 @@ import useDeleteList from "@/hooks/useDeletePeopleList";
 import { FramedButton } from "@/components/style/Button";
 import Layout from "@/components/Layout";
 import AddPersonToListModal from "@/components/AddPersonToListModal";
+import ReminderInput from "@/components/ReminderInput";
 
 //TODO - make a new folder with database fetches getList, etc.
 //not in api folder
@@ -57,31 +58,40 @@ export default function EditListPage() {
     <Layout>
       <div className="flex flex-col md:flex-row-reverse justify-start md:justify-evenly min-h-screen w-full items-center">
         <div className="flex flex-col items-center justify-center gap-4 mt-8 md:mt-0">
-          <p className="text-3xl">Edit List: {data?.name}</p>
+          <p className="text-3xl">{data?.name}</p>
           {/* TODO make reminder edits for mail here */}
-          <FramedButton
-            onClick={(e) => {
-              e.stopPropagation();
-              if (typeof id == "string") deleteList.mutate(id);
-              router.push("/");
-            }}
-          >
-            <p className=" text-red-500">Delete group</p>
-          </FramedButton>
+          <ReminderInput />
           {typeof id === "string" && (
-            <div className="hidden md:block">
+            <div className="block">
               <AddPersonToListModal listId={id} />
             </div>
           )}
+          <div className="hidden md:block">
+            <FramedButton
+              onClick={(e) => {
+                e.stopPropagation();
+                if (typeof id == "string") deleteList.mutate(id);
+                router.push("/");
+              }}
+            >
+              <p className=" text-red-500">Delete group</p>
+            </FramedButton>
+          </div>
         </div>
-        <div className="flex flex-col items-center justify-center gap-4">
+        <div className="flex flex-col items-center justify-center mb-16 mt-8 md:mb-16">
           {/* add modal with where user confirmation deletion */}
           {typeof id === "string" && <ListOfPeople currentList={id} />}
-          {typeof id === "string" && (
-            <div className="md:hidden">
-              <AddPersonToListModal listId={id} />
-            </div>
-          )}
+          <div className="block md:hidden mt-8">
+            <FramedButton
+              onClick={(e) => {
+                e.stopPropagation();
+                if (typeof id == "string") deleteList.mutate(id);
+                router.push("/");
+              }}
+            >
+              <p className=" text-red-500">Delete group</p>
+            </FramedButton>
+          </div>
         </div>
       </div>
     </Layout>
