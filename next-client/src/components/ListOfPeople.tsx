@@ -2,7 +2,6 @@ import { usePeopleList } from "@/hooks/usePeopleList";
 import useDeletePeople from "@/hooks/useDeletePeople";
 import Modal from "react-modal";
 import NextImage from "next/image";
-import AddPersonToListModal from "./AddPersonToListModal";
 
 export default function ListOfPeople({
   currentList,

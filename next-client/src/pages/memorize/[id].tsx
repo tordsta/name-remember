@@ -6,33 +6,21 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import Memorization from "@/components/Memorization";
 import Layout from "@/components/Layout";
-
-//TODO - make a new folder with database fetches getList, etc.
-//not in api folder
-//getList needs id, and session to check and execute!
-async function fetchList(id: string) {
-  const response = await fetch("/api/crud/getList?id=" + id);
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
-  }
-  return response.json();
-}
+import getList from "@/database/getList";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req, res } = context;
   const session = await getServerSession(req, res, authOptions);
-  console.log("session", session);
 
   const queryClient = new QueryClient();
   const { id } = context.params?.id ? context.params : { id: "" };
 
-  //TODO
-  //where to prefetch?
-  //add export usePrefetchPeopleList to usePeopleList hook?
-  //await usePrefetchPeopleList({ id: id as string, session: session });
-  await queryClient.prefetchQuery(["peopleList", id], () =>
-    fetchList(id as string)
-  );
+  await queryClient.prefetchQuery(["peopleList", id], () => {
+    if (typeof id === "string" && session) {
+      console.log("prefetching with id: " + id + " and session: " + session);
+      return getList({ listId: id, session });
+    }
+  });
 
   return {
     props: {
@@ -51,7 +39,12 @@ export default function MemorizeListPage() {
 
   return (
     <Layout>
-      <Memorization currentList={typeof id == "string" ? id : null} />
+      <Memorization
+        currentList={typeof id == "string" ? id : null}
+        data={data}
+        isError={isError}
+        isLoading={isLoading}
+      />
     </Layout>
   );
 }

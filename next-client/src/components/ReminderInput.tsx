@@ -202,7 +202,7 @@ export default function ReminderInput() {
               ))}
             </div>
           </div>
-          <div className="flex justify-center items-center gap-2 mt-4 md:mt-8">
+          <div className="flex justify-center items-center gap-2 mb-4 md:mt-4">
             <Button
               style={"cancel"}
               onClick={() => {

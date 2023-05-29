@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { dehydrate, QueryClient } from "react-query";
+import { dehydrate, QueryClient, useQuery } from "react-query";
 import { GetServerSidePropsContext } from "next";
 import { usePeopleList } from "@/hooks/usePeopleList";
 import { getServerSession } from "next-auth/next";
@@ -10,33 +10,21 @@ import { FramedButton } from "@/components/style/Button";
 import Layout from "@/components/Layout";
 import AddPersonToListModal from "@/components/AddPersonToListModal";
 import ReminderInput from "@/components/ReminderInput";
-
-//TODO - make a new folder with database fetches getList, etc.
-//not in api folder
-//getList needs id, and session to check and execute!
-async function fetchList(id: string) {
-  const response = await fetch("/api/crud/getList?id=" + id);
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
-  }
-  return response.json();
-}
+import getList from "@/database/getList";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req, res } = context;
   const session = await getServerSession(req, res, authOptions);
-  console.log("session", session);
 
   const queryClient = new QueryClient();
   const { id } = context.params?.id ? context.params : { id: "" };
 
-  //TODO
-  //where to prefetch?
-  //add export usePrefetchPeopleList to usePeopleList hook?
-  //await usePrefetchPeopleList({ id: id as string, session: session });
-  await queryClient.prefetchQuery(["peopleList", id], () =>
-    fetchList(id as string)
-  );
+  await queryClient.prefetchQuery(["peopleList", id], () => {
+    if (typeof id === "string" && session) {
+      console.log("prefetching with id: " + id + " and session: " + session);
+      return getList({ listId: id, session });
+    }
+  });
 
   return {
     props: {
@@ -71,7 +59,7 @@ export default function EditListPage() {
               onClick={(e) => {
                 e.stopPropagation();
                 if (typeof id == "string") deleteList.mutate(id);
-                router.push("/");
+                router.push("/dashboard");
               }}
             >
               <p className=" text-red-500">Delete group</p>
@@ -79,7 +67,7 @@ export default function EditListPage() {
           </div>
         </div>
         <div className="flex flex-col items-center justify-center mb-16 mt-8 md:mb-16">
-          {/* add modal with where user confirmation deletion */}
+          {/* TODO add modal with where user confirmation deletion */}
           {typeof id === "string" && <ListOfPeople currentList={id} />}
           <div className="block md:hidden mt-8">
             <FramedButton

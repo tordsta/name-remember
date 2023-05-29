@@ -2,14 +2,20 @@ import { useState } from "react";
 import Modal from "react-modal";
 import { Lists } from "@/utils/types";
 import Button, { FramedButton } from "./style/Button";
-import { usePeopleLists } from "@/hooks/usePeopleLists";
 import DefaultModal from "./Modal";
 import useCreateList from "@/hooks/useCreateList";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-export default function Lists() {
-  const { data, isLoading, error } = usePeopleLists();
+export default function Lists({
+  data,
+  isLoading,
+  isError,
+}: {
+  data: any;
+  isLoading: boolean;
+  isError: boolean;
+}) {
   const [openSignal, setOpenSignal] = useState(false);
   const createList = useCreateList();
   const router = useRouter();
@@ -34,7 +40,7 @@ export default function Lists() {
       </div>
       <ul className="mb-4 w-full">
         {isLoading && <li>Loading... </li>}
-        {!isLoading && !error && data && Array.isArray(data) && (
+        {!isLoading && !isError && data && Array.isArray(data) && (
           <>
             {data.map((list) => {
               return (
@@ -59,8 +65,8 @@ export default function Lists() {
                       />
                     </button>
                   </div>
-                  {/* number of people in list */}
-                  {/* reminder setting of list */}
+                  {/* TODO number of people in list */}
+                  {/* TODO reminder setting of list */}
                   <div className="flex h-full justify-end items-end text-xl pb-1">
                     <FramedButton
                       onClick={(e) => {

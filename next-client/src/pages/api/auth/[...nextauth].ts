@@ -3,7 +3,7 @@ import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import SlackProvider from "next-auth/providers/slack";
-import vercelPostgresAdapter from "@/lib/vercelPostgresAdapter";
+import vercelPostgresAdapter from "@/utils/vercelPostgresAdapter";
 
 export const authOptions = {
   debug: true,

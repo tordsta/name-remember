@@ -1,4 +1,3 @@
-import { usePeopleList } from "@/hooks/usePeopleList";
 import React, { useEffect, useState } from "react";
 import { useSnapCarousel } from "react-snap-carousel";
 import { Person } from "@/utils/types";
@@ -7,13 +6,18 @@ import { FramedButton } from "./style/Button";
 
 export default function Memorization({
   currentList,
+  data,
+  isError,
+  isLoading,
 }: {
   currentList: string | null;
+  data: any;
+  isError: boolean;
+  isLoading: boolean;
 }) {
   //TODO make it snap to the elements
   const { scrollRef, pages, activePageIndex, next, prev, goTo, refresh } =
     useSnapCarousel();
-  const { data, isLoading, error } = usePeopleList({ id: currentList });
   const [answers, setAnswers] = useState<
     Array<{
       fnameRes: boolean;
@@ -23,6 +27,10 @@ export default function Memorization({
       person: Person;
     }>
   >([]);
+
+  useEffect(() => {
+    refresh();
+  }, [data, refresh]);
 
   const handleAnswerCheck = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -68,10 +76,11 @@ export default function Memorization({
       >
         {data &&
           !isLoading &&
-          !error &&
+          !isError &&
+          data.people_in_list &&
           data.people_in_list.length > 0 &&
           currentList &&
-          data.people_in_list.map((person, i) => (
+          data.people_in_list.map((person: Person, i: number) => (
             <li
               key={i}
               style={{

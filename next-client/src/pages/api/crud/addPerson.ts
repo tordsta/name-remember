@@ -24,7 +24,6 @@ export default async function handler(
       return;
     }
     try {
-      //add image later
       const people = await sql`
         INSERT INTO people (fname, mname, lname, image)
         VALUES (${person.fname}, ${person.mname}, ${person.lname}, ${person.image})

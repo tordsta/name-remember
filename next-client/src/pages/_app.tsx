@@ -15,7 +15,17 @@ export default function App({
   const queryClient = useRef<QueryClient>();
 
   if (!queryClient.current) {
-    queryClient.current = new QueryClient();
+    queryClient.current = new QueryClient({
+      defaultOptions: {
+        queries: {
+          staleTime: 1000 * 60 * 15,
+          refetchOnMount: false,
+          refetchOnWindowFocus: false,
+          refetchOnReconnect: false,
+          cacheTime: 1000 * 60 * 60 * 24,
+        },
+      },
+    });
   }
 
   return (

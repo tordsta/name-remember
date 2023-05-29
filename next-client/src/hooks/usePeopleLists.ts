@@ -12,7 +12,7 @@ export const usePeopleLists = (): UseQueryResult<FetchPeopleListsData> => {
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
-    const data = await JSON.parse(await response.json());
+    const data = await response.json();
     return data;
   });
 };
