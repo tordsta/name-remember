@@ -27,6 +27,7 @@ export default async function getList({
         SELECT 
           pl.id,
           pl.name,
+          pl.rrule,
           json_agg(
             row_to_json(
               (SELECT tmp FROM (SELECT p.id, p.fname, p.mname, p.lname, p.image) tmp)
@@ -49,6 +50,7 @@ export default async function getList({
         SELECT 
           pl.id,
           pl.name,
+          pl.rrule,
           COALESCE(
             json_agg(
               CASE WHEN p.id IS NOT NULL THEN

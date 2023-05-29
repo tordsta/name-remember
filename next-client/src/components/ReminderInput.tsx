@@ -1,22 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import Button, { FramedButton } from "./style/Button";
-import { Frequency, RRule, datetime } from "rrule";
-import { notifyError, notifyWarning } from "./Notify";
+import { Frequency, RRule } from "rrule";
+import { notifyError } from "./Notify";
 import Modal from "./Modal";
+import useAddReminder from "@/hooks/useAddReminder";
 
-export default function ReminderInput() {
+export default function ReminderInput({
+  id,
+  rrule,
+}: {
+  id: string;
+  rrule: string | null | undefined;
+}) {
   const [openSignal, setOpenSignal] = useState(false);
   const [frequency, setFrequency] = useState<Frequency>(RRule.WEEKLY);
   const [interval, setInterval] = useState<number>(1);
-  const [dtstart, setDtstart] = useState<Date>(
-    datetime(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      new Date().getDay()
-    )
-  );
   const [days, setDays] = useState<Array<number>>([]);
   const [hours, setHours] = useState<Array<number>>([]);
+
+  const [rruleText, setRruleText] = useState<string | null>();
+
+  useLayoutEffect(() => {
+    let rule: RRule | null = null;
+    if (rrule) {
+      let ruleOption = RRule.parseString(rrule);
+      rule = new RRule(ruleOption);
+      setRruleText(rule.toText());
+    }
+  }, [rrule]);
+
   const dayNames = [
     "Monday",
     "Tuesday",
@@ -27,7 +39,8 @@ export default function ReminderInput() {
     "Sunday",
   ];
   const hourNames = ["Morning", "Midday", "Afternoon", "Evening"];
-  const [rruleText, setRruleText] = useState<string | null>(null);
+
+  const addReminder = useAddReminder({ idList: id });
 
   const handleFrequencyChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -83,7 +96,10 @@ export default function ReminderInput() {
     if (hours.includes(2)) byHours.push(15);
     if (hours.includes(3)) byHours.push(19);
 
-    const rrule = new RRule({
+    const dtstart = new Date();
+    //TODO handle timezones - console.log("dtstart", dtstart);
+
+    const newRrule = new RRule({
       freq: frequency,
       interval: interval,
       dtstart: dtstart,
@@ -91,21 +107,25 @@ export default function ReminderInput() {
       byhour: byHours.length > 0 ? byHours : null,
     });
 
-    console.log("rrule", rrule.toString());
-    setRruleText(rrule.toText());
+    setRruleText(newRrule.toText());
+    addReminder.mutate({
+      listId: id,
+      rrule: newRrule.toString(),
+      rruleStart: newRrule.options.dtstart.getTime() / 1000,
+    });
 
     //TODO handle timezones
-    let date = new Date();
-    for (let i = 0; i <= 10; i++) {
-      console.log(date, i);
-      let dateOrNull = rrule.after(date);
-      if (dateOrNull) {
-        date = dateOrNull;
-      } else {
-        console.log("no date");
-        break;
-      }
-    }
+    // let date = new Date();
+    // for (let i = 0; i <= 10; i++) {
+    //   console.log(date, i);
+    //   let dateOrNull = rrule.after(date);
+    //   if (dateOrNull) {
+    //     date = dateOrNull;
+    //   } else {
+    //     console.log("no date");
+    //     break;
+    //   }
+    // }
   };
 
   //TODO implement select date on year. And select 1-31 date on month. Premium feature?

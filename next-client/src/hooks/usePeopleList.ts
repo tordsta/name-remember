@@ -4,6 +4,7 @@ import { UseQueryResult, useQuery } from "react-query";
 type FetchPeopleListData = {
   id: string;
   name: string;
+  rrule: string;
   people_in_list: Array<Person>;
 };
 

@@ -56,7 +56,9 @@ export default function EditListPage() {
         <div className="flex flex-col items-center justify-center gap-4 mt-8 md:mt-0">
           <p className="text-3xl">{data?.name}</p>
           {/* TODO make reminder edits for mail here */}
-          <ReminderInput />
+          {typeof id === "string" && (
+            <ReminderInput id={id} rrule={data?.rrule} />
+          )}
           {typeof id === "string" && (
             <div className="block">
               <AddPersonToListModal listId={id} />

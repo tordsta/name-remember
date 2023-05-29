@@ -1,6 +1,7 @@
 import { sql } from "@vercel/postgres";
 import { NextApiRequest, NextApiResponse } from "next";
 import { ServerClient } from "postmark";
+import { RRule } from "rrule";
 
 type List = {
   id: string;
@@ -10,6 +11,9 @@ type List = {
   name: string;
   reminder_trigger_time: string | null;
   trigger_frequency: string | null;
+  rrule: string | null;
+  rrule_start: string | null;
+  email: string;
 };
 
 var client = new ServerClient(process.env.POSTMARK_API_KEY as string);
@@ -20,7 +24,7 @@ const sendEmail = (list: List) => {
     From: "reminders@nameremember.com",
     To: "test@nameremember.com",
     Subject: "Test",
-    TextBody: `Hello from Postmark! List id: ${list.id}`,
+    TextBody: `Hello from Postmark! List id: ${list.id}, list name: ${list.name}, email: ${list.email}`,
   });
 };
 
@@ -32,10 +36,14 @@ export default async function handler(
 
   let rows;
   try {
-    //join user on people_lists.owner_id = user.id, to get email
+    //TODO join user on people_lists.owner_id = user.id, to get email
     const res = await sql`
-        SELECT * FROM people_lists
-        WHERE reminder_trigger_time <= NOW()
+    SELECT people_lists.*, users.email 
+    FROM people_lists
+    INNER JOIN users 
+    ON people_lists.owner_id = users.id
+    WHERE people_lists.reminder_trigger_time <= NOW()
+    AND people_lists.rrule IS NOT NULL
     `;
     rows = res.rows;
   } catch (error) {
@@ -60,10 +68,17 @@ export default async function handler(
   for (let i = 0; i < rows.length; i++) {
     console.log("updating reminder_trigger_time", rows[i]);
     const list = rows[i];
+    let nextTriggerTime = null;
+    if (list.rrule) {
+      let ruleOption = RRule.parseString(list.rrule);
+      const rule = new RRule(ruleOption);
+      const next = rule.after(new Date(), false);
+      nextTriggerTime = next ? next.getTime() / 1000 : null;
+    }
     try {
       const res = await sql`
         UPDATE people_lists
-        SET reminder_trigger_time = NOW() + INTERVAL '${list.trigger_frequency}'
+        SET reminder_trigger_time = to_timestamp(${nextTriggerTime})
         WHERE id = ${list.id}
         `;
     } catch (error) {
