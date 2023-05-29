@@ -40,7 +40,7 @@ export default function ReminderInput({
   ];
   const hourNames = ["Morning", "Midday", "Afternoon", "Evening"];
 
-  const addReminder = useAddReminder({ idList: id });
+  const addReminder = useAddReminder();
 
   const handleFrequencyChange = (
     event: React.ChangeEvent<HTMLSelectElement>
