@@ -21,6 +21,7 @@ export default function LoginButton() {
       <FramedButton
         onClick={() => {
           signOut();
+          router.push("/");
         }}
       >
         <p className="text-2xl">Sign out</p>

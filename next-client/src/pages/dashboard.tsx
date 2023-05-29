@@ -11,12 +11,20 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req, res } = context;
   const session = await getServerSession(req, res, authOptions);
 
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery(["peopleLists"], () => {
     if (session) {
       const data = getLists({ session });
-      console.log("prefetch data lists", data);
       return data;
     }
   });
@@ -30,7 +38,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 export default function Dashboard() {
   const { data, isLoading, isError } = usePeopleLists();
-  console.log("people lists data in dashboard component", data);
 
   return (
     <Layout>

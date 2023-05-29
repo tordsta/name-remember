@@ -12,12 +12,20 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req, res } = context;
   const session = await getServerSession(req, res, authOptions);
 
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
   const queryClient = new QueryClient();
   const { id } = context.params?.id ? context.params : { id: "" };
 
   await queryClient.prefetchQuery(["peopleList", id], () => {
     if (typeof id === "string" && session) {
-      console.log("prefetching with id: " + id + " and session: " + session);
       return getList({ listId: id, session });
     }
   });
