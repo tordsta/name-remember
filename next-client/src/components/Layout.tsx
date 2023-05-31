@@ -34,7 +34,7 @@ export default function Layout({
         />
         <meta
           property="og:title"
-          content="Name Remember - Master Name Recall with Images"
+          content="Name Remember - Master Name Recalling With Your Own Images"
         />
         <meta
           property="og:description"
@@ -44,7 +44,7 @@ export default function Layout({
         <meta property="og:type" content="website" />
         <meta
           property="og:image"
-          content="https://www.nameremember.com/_next/image?url=%2FfrontImage1.png"
+          content="https://www.nameremember.com/_next/image?url=%2FfrontImage1.png&w=828&q=75"
         />
         <meta property="og:site_name" content="Name Remember" />
 
@@ -76,7 +76,6 @@ export default function Layout({
             sizes="100%"
             quality={100}
           />
-          hi
         </div>
         {nav && (
           <div className="flex flex-row md:flex-col justify-stretch w-full md:max-w-min mx-auto md:mx-0 border-b md:border-b-0 md:border-r border-black">
