@@ -84,7 +84,7 @@ export default function EditListPage() {
               onClick={(e) => {
                 e.stopPropagation();
                 if (typeof id == "string") deleteList.mutate(id);
-                router.push("/");
+                router.push("/dashboard");
               }}
             >
               <p className=" text-red-500">Delete group</p>
