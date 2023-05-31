@@ -1,6 +1,8 @@
 import Layout from "@/components/Layout";
 import Image from "next/image";
 import LoginButton from "@/components/LoginButton";
+import Link from "next/link";
+import LegalInfo from "@/components/LegalInfo";
 
 export default function Home() {
   return (
@@ -20,8 +22,9 @@ export default function Home() {
           <h2 className="text-xl md:text-3xl text-center mt-8">
             Get started with Name Remember.
           </h2>
-          <div className="block md:hidden">
+          <div className="flex flex-col justify-center items-center md:hidden">
             <LoginButton />
+            <LegalInfo />
           </div>
           <div className="mt-0 md:mt-8 md:mb-8 text-lg text-center">
             <p>Learn names and faces quickly,</p>
@@ -32,6 +35,7 @@ export default function Home() {
           <h1 className="text-4xl ml-auto p-16">Name Remember</h1>
           <div className="flex flex-col flex-grow justify-center items-center">
             <LoginButton />
+            <LegalInfo />
           </div>
           <div className="p-20" />
         </div>

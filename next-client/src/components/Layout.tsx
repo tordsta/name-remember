@@ -24,7 +24,6 @@ export default function Layout({
     router.push("/");
   }
 
-  //TODO make page manifest
   return (
     <>
       <Helmet>
