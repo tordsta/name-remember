@@ -6,6 +6,7 @@ import Layout from "@/components/Layout";
 export default function Profile() {
   const { data: session, status } = useSession();
 
+  //TODO add feedback button and form to submit feedback, bugs, requests, etc.
   return (
     <Layout>
       <div className="flex flex-col gap-4 justify-center items-center min-h-screen mx-auto">

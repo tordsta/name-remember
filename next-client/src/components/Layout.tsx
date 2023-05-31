@@ -1,7 +1,7 @@
 // components/Layout.js
 
 import { useSession } from "next-auth/react";
-import Head from "next/head";
+import { Helmet } from "react-helmet";
 import { useRouter } from "next/router";
 import UserEmblem from "./UserEmblem";
 import Image from "next/image";
@@ -27,11 +27,28 @@ export default function Layout({
   //TODO make page manifest
   return (
     <>
-      <Head>
+      <Helmet>
         <title>{title}</title>
         <meta name="description" content="Name Remember" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
+      </Helmet>
       <main className="flex flex-col md:flex-row items-stretch justify-start min-h-screen min-w-full ">
         {nav && (
           <div className="flex flex-row md:flex-col justify-stretch w-full md:max-w-min mx-auto md:mx-0 border-b md:border-b-0 md:border-r border-black">
