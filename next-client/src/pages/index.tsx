@@ -9,14 +9,17 @@ export default function Home() {
       <div className="flex flex-row h-[100vh]">
         <div className="flex flex-col justify-evenly md:justify-center items-center py-4 md:py-0 border-0 md:border border-black w-full md:w-[50vw] h-full">
           <h1 className="block md:hidden text-3xl">Name Remember</h1>
-          <div className="mt-4 mx-4">
+          <div className="relative w-full h-full mt-4 mx-4 max-w-[250px] md:max-w-[384px] max-h-[250px] md:max-h-[384px]">
             <Image
               src="/frontImage1.png"
               alt="Name Remember"
-              width={384}
-              height={384}
+              fill
               priority
-              style={{ boxShadow: "0px 0px 20px 10px white" }}
+              sizes="100%"
+              style={{
+                objectFit: "cover",
+                boxShadow: "0px 0px 20px 10px white",
+              }}
             />
           </div>
           <h2 className="text-xl md:text-3xl text-center mt-8">

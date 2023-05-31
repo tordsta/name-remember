@@ -1,6 +1,6 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
-import Button, { FramedButton } from "@/components/style/Button";
+import { FramedButton } from "@/components/style/Button";
 
 export default function LoginButton() {
   const { data: session } = useSession();
