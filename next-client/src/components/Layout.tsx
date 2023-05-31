@@ -1,12 +1,12 @@
 import { useSession } from "next-auth/react";
-import { Helmet } from "react-helmet";
 import { useRouter } from "next/router";
 import UserEmblem from "./UserEmblem";
 import Image from "next/image";
+import Head from "next/head";
 
 export default function Layout({
   children,
-  title = "Name Remember",
+  title = "Name Remember - Boost Your Memory: Learn to Remember Names with Images",
   auth = true,
   nav = true,
 }: {
@@ -24,9 +24,30 @@ export default function Layout({
 
   return (
     <>
-      <Helmet>
+      <Head>
         <title>{title}</title>
-        <meta name="description" content="Name Remember" />
+        <meta
+          name="description"
+          content={`Forget no more names with Name Remember. 
+          Learn names easily with our app using a personalized image database. 
+          Ideal for networking, classrooms, and more.`}
+        />
+        <meta
+          property="og:title"
+          content="Name Remember - Master Name Recall with Images"
+        />
+        <meta
+          property="og:description"
+          content="With Name Remember, learning names becomes easy. Create your personal image database and excel at name recall for networking, classrooms, and beyond."
+        />
+        <meta property="og:url" content="https://nameremember.com" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:image"
+          content="https://www.nameremember.com/_next/image?url=%2FfrontImage1.png"
+        />
+        <meta property="og:site_name" content="Name Remember" />
+
         <link rel="icon" href="/favicon.ico" />
         <link
           rel="apple-touch-icon"
@@ -45,7 +66,7 @@ export default function Layout({
           sizes="16x16"
           href="/favicon-16x16.png"
         />
-      </Helmet>
+      </Head>
       <main className="flex flex-col md:flex-row items-stretch justify-start min-h-screen min-w-full">
         <div className="fixed w-screen h-screen -z-10">
           <Image

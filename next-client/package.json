@@ -29,7 +29,6 @@
     "postmark": "^3.0.18",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-helmet": "^6.1.0",
     "react-modal": "^3.16.1",
     "react-query": "^3.39.3",
     "react-snap-carousel": "^0.3.2",
