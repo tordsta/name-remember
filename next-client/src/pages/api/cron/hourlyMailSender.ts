@@ -1,3 +1,4 @@
+import sendMemorizerReminder from "@/components/mail/sendMemorizerReminder";
 import { sql } from "@vercel/postgres";
 import { NextApiRequest, NextApiResponse } from "next";
 import { ServerClient } from "postmark";
@@ -14,17 +15,15 @@ type List = {
   rrule: string | null;
   rrule_start: string | null;
   email: string;
+  user_name: string;
 };
 
-var client = new ServerClient(process.env.POSTMARK_API_KEY as string);
-
-//TODO verify email before sending out
 const sendEmail = (list: List) => {
-  client.sendEmail({
-    From: "reminders@nameremember.com",
-    To: "test@nameremember.com",
-    Subject: "Test",
-    TextBody: `Hello from Postmark! List id: ${list.id}, list name: ${list.name}, email: ${list.email}`,
+  sendMemorizerReminder({
+    recipientEmail: list.email,
+    recipientName: list.user_name,
+    listName: list.name,
+    memorizerUrl: "https://nameremember.com/memorize/" + list.id,
   });
 };
 
@@ -38,7 +37,7 @@ export default async function handler(
   try {
     //TODO join user on people_lists.owner_id = user.id, to get email
     const res = await sql`
-    SELECT people_lists.*, users.email 
+    SELECT people_lists.*, users.email, users.name as user_name 
     FROM people_lists
     INNER JOIN users 
     ON people_lists.owner_id = users.id

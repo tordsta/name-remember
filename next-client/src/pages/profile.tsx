@@ -6,14 +6,15 @@ import FeedbackForm from "@/components/FeedbackForm";
 
 export default function Profile() {
   const { data: session, status } = useSession();
+  //getUser
 
-  //TODO add feedback button and form to submit feedback, bugs, requests, etc.
   return (
     <Layout>
       <div className="flex flex-col justify-between md:justify-center items-center min-h-screen w-full">
         <div className="flex flex-col gap-4 justify-center items-center m-auto">
           <p>{session?.user?.name}</p>
           <p>{session?.user?.email}</p>
+          {/** TODO add send verification email again button here if email not verified */}
           {session?.user?.image && (
             <Image
               src={session?.user?.image}

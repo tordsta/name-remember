@@ -1,9 +1,10 @@
-import NextAuth from "next-auth";
+import NextAuth, { User } from "next-auth";
 import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import SlackProvider from "next-auth/providers/slack";
 import vercelPostgresAdapter from "@/utils/vercelPostgresAdapter";
+import sendVerificationMail from "@/components/mail/sendVerificationMail";
 
 export const authOptions = {
   debug: true,
@@ -39,6 +40,18 @@ export const authOptions = {
       return "/dashboard";
     },
   },
+  //TODO - add email verification
+  // events : {
+  //   async createUser(message: { user: User}) {
+  //     console.log("createUser", message);
+  //     //create token
+  //     sendVerificationMail({
+  //       recipientEmail: message.user.email as string,
+  //       recipientName: message.user.name as string,
+  //       tokenUrl: "",
+  //     });
+  //   }
+  // }
 };
 
 export default NextAuth(authOptions);

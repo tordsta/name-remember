@@ -207,7 +207,8 @@ export default function ReminderInput({
                 </div>
               </>
             )}
-            <p className="mt-6">Include these times:</p>
+            {/* TODO upgrade vercel deployment for cron jobs multiple times a day */}
+            {/* <p className="mt-6">Include these times:</p>
             <div className="flex flex-wrap max-w-sm gap-2 justify-center items-center py-2">
               {hourNames.map((time, index) => (
                 <div key={index} className="ml-1">
@@ -220,7 +221,7 @@ export default function ReminderInput({
                   <label htmlFor={time}>{time}</label>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
           <div className="flex justify-center items-center gap-2 mb-4 md:mt-4">
             <Button
