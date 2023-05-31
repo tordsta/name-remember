@@ -1,7 +1,6 @@
 import Layout from "@/components/Layout";
 import Image from "next/image";
 import LoginButton from "@/components/LoginButton";
-import Link from "next/link";
 import LegalInfo from "@/components/LegalInfo";
 
 export default function Home() {
@@ -16,6 +15,7 @@ export default function Home() {
               alt="Name Remember"
               width={384}
               height={384}
+              priority
               style={{ boxShadow: "0px 0px 20px 10px white" }}
             />
           </div>
@@ -27,8 +27,8 @@ export default function Home() {
             <LegalInfo />
           </div>
           <div className="mt-0 md:mt-8 md:mb-8 text-lg text-center">
-            <p>Learn names and faces quickly,</p>
-            <p>Stay connected with your contacts.</p>
+            <h2>Learn names and faces quickly,</h2>
+            <h3>Stay connected with your contacts.</h3>
           </div>
         </div>
         <div className="hidden md:flex flex-col items-center bg-white w-[50vw] h-full">

@@ -1,5 +1,3 @@
-// components/Layout.js
-
 import { useSession } from "next-auth/react";
 import { Helmet } from "react-helmet";
 import { useRouter } from "next/router";
@@ -48,7 +46,17 @@ export default function Layout({
           href="/favicon-16x16.png"
         />
       </Helmet>
-      <main className="flex flex-col md:flex-row items-stretch justify-start min-h-screen min-w-full ">
+      <main className="flex flex-col md:flex-row items-stretch justify-start min-h-screen min-w-full">
+        <div className="fixed w-screen h-screen -z-10">
+          <Image
+            src="/pencileLineBackground1440x900.png"
+            alt="Name Remember background image"
+            fill
+            sizes="100%"
+            quality={100}
+          />
+          hi
+        </div>
         {nav && (
           <div className="flex flex-row md:flex-col justify-stretch w-full md:max-w-min mx-auto md:mx-0 border-b md:border-b-0 md:border-r border-black">
             <div className="md:mx-4 my-6 ml-6 mr-auto flex flex-row">
