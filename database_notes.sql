@@ -77,6 +77,13 @@ CREATE TABLE auth_sessions (
   user_id UUID NOT NULL REFERENCES users(id)
 );
 
+CREATE TABLE user_feedback (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255),
+    type VARCHAR(100) NOT NULL,
+    message TEXT NOT NULL,
+    file TEXT
+);
 
 CREATE OR REPLACE FUNCTION delete_person(user_email TEXT, person_id UUID)
 RETURNS VOID AS $$
