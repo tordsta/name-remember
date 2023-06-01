@@ -16,6 +16,7 @@ export default async function handler(
   const email = session.user?.email || null;
   const rrule: string | null = req.body.rrule || null;
   const rruleStart: number | null = req.body.rruleStart || null;
+  const nextReminder: number | null = req.body.nextReminder || null;
   const listId: string | null = req.body.listId || null;
 
   if (!rrule || !rruleStart || !listId || !email) {
@@ -26,7 +27,9 @@ export default async function handler(
   try {
     const { rows } = await sql`
         UPDATE people_lists 
-        SET rrule = ${rrule}, rrule_start = to_timestamp(${rruleStart})
+        SET rrule = ${rrule}, 
+            rrule_start = to_timestamp(${rruleStart}), 
+            reminder_trigger_time = to_timestamp(${nextReminder})
         WHERE ID = ${listId} 
             AND owner_id = (SELECT id FROM users WHERE email = ${email})
     `;

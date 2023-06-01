@@ -95,6 +95,7 @@ export default function ReminderInput({
     if (hours.includes(1)) byHours.push(11);
     if (hours.includes(2)) byHours.push(15);
     if (hours.includes(3)) byHours.push(19);
+    byHours.push(1);
 
     const dtstart = new Date();
     //TODO handle timezones - console.log("dtstart", dtstart);
@@ -107,11 +108,14 @@ export default function ReminderInput({
       byhour: byHours.length > 0 ? byHours : null,
     });
 
+    const nextReminder = newRrule.after(new Date());
+
     setRruleText(newRrule.toText());
     addReminder.mutate({
       listId: id,
       rrule: newRrule.toString(),
       rruleStart: newRrule.options.dtstart.getTime() / 1000,
+      nextReminder: nextReminder ? nextReminder.getTime() / 1000 : null,
     });
 
     //TODO handle timezones
