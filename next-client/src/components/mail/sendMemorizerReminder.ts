@@ -14,9 +14,10 @@ export default async function sendMemorizerReminder({
   if (typeof window !== "undefined") {
     throw new Error("Mail functions should not be executed on the client");
   }
-  const client = new postmark.ServerClient(
-    process.env.POSTMARK_API_KEY as string
-  );
+  const apiKey = process.env.POSTMARK_API_KEY;
+  if (typeof apiKey === "undefined") throw new Error("No API key");
+
+  const client = new postmark.ServerClient(apiKey);
 
   client.sendEmailWithTemplate({
     From: "noreply@namereminder.com",
