@@ -1,4 +1,4 @@
-import postmark, { ServerClient } from "postmark";
+import * as postmark from "postmark";
 
 export default async function sendMemorizerReminder({
   recipientEmail,
@@ -17,16 +17,21 @@ export default async function sendMemorizerReminder({
   const apiKey = process.env.POSTMARK_API_KEY;
   if (typeof apiKey === "undefined") throw new Error("No API key");
 
-  const client = new postmark.ServerClient(apiKey);
+  const { ServerClient } = postmark;
+  const client = new ServerClient(apiKey);
 
-  client.sendEmailWithTemplate({
-    From: "noreply@namereminder.com",
-    To: recipientEmail,
-    TemplateAlias: "memorizer-reminder",
-    TemplateModel: {
-      name: recipientName,
-      list_name: listName,
-      action_url: memorizerUrl,
-    },
-  });
+  try {
+    client.sendEmailWithTemplate({
+      From: "noreply@namereminder.com",
+      To: recipientEmail,
+      TemplateAlias: "memorizer-reminder",
+      TemplateModel: {
+        name: recipientName,
+        list_name: listName,
+        action_url: memorizerUrl,
+      },
+    });
+  } catch (error) {
+    console.error("Error while sending email", error);
+  }
 }
