@@ -22,7 +22,7 @@ export default async function sendMemorizerReminder({
 
   try {
     client.sendEmailWithTemplate({
-      From: "noreply@namereminder.com",
+      From: "noreply@nameremember.com",
       To: recipientEmail,
       TemplateAlias: "memorizer-reminder",
       TemplateModel: {
