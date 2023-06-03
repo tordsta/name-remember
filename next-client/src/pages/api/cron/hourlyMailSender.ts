@@ -1,7 +1,6 @@
 import sendMemorizerReminder from "@/components/mail/sendMemorizerReminder";
 import { sql } from "@vercel/postgres";
 import { NextApiRequest, NextApiResponse } from "next";
-import { ServerClient } from "postmark";
 import { RRule } from "rrule";
 
 type List = {
@@ -27,16 +26,23 @@ const sendEmail = (list: List) => {
   });
 };
 
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   console.log("Starting hourlyMailSender");
 
-  let rows;
-  try {
-    //TODO join user on people_lists.owner_id = user.id, to get email
-    const res = await sql`
+  let rows: List[] = [];
+  const maxRetries = 10;
+  const delayMs = 10000;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const res = await sql`
     SELECT people_lists.*, users.email, users.name as user_name 
     FROM people_lists
     INNER JOIN users 
@@ -44,15 +50,22 @@ export default async function handler(
     WHERE people_lists.reminder_trigger_time <= NOW()
     AND people_lists.rrule IS NOT NULL
     `;
-    rows = res.rows;
-  } catch (error) {
-    console.error("Failed to fetch people_lists", error);
-    res
-      .status(500)
-      .json({ error: "Failed to fetch people_lists", details: error });
-    return;
+      rows = res.rows as List[];
+      break;
+    } catch (error) {
+      if (attempt < maxRetries) {
+        console.log(`Fetch attempt ${attempt} failed, retrying...`);
+        await delay(delayMs);
+      } else {
+        console.error("Failed to fetch people_lists", error);
+        res
+          .status(500)
+          .json({ error: "Failed to fetch people_lists", details: error });
+        return;
+      }
+    }
+    console.log("Sending to: ", rows);
   }
-  console.log("Sending to: ", rows);
 
   for (let i = 0; i < rows.length; i++) {
     const list = rows[i];

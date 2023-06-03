@@ -1,6 +1,6 @@
 import * as postmark from "postmark";
 
-export default async function sendMemorizerReminder({
+export default function sendMemorizerReminder({
   recipientEmail,
   recipientName,
   listName,
