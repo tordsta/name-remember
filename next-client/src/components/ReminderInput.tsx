@@ -95,10 +95,9 @@ export default function ReminderInput({
     if (hours.includes(1)) byHours.push(11);
     if (hours.includes(2)) byHours.push(15);
     if (hours.includes(3)) byHours.push(19);
-    byHours.push(1);
+    if (hours.length == 0) byHours.push(7);
 
     const dtstart = new Date();
-    //TODO handle timezones - console.log("dtstart", dtstart);
 
     const newRrule = new RRule({
       freq: frequency,
@@ -106,6 +105,8 @@ export default function ReminderInput({
       dtstart: dtstart,
       byweekday: days.length > 0 ? days : null,
       byhour: byHours.length > 0 ? byHours : null,
+      byminute: [0],
+      bysecond: [0],
     });
 
     const nextReminder = newRrule.after(new Date());
@@ -117,19 +118,6 @@ export default function ReminderInput({
       rruleStart: newRrule.options.dtstart.getTime() / 1000,
       nextReminder: nextReminder ? nextReminder.getTime() / 1000 : null,
     });
-
-    //TODO handle timezones
-    // let date = new Date();
-    // for (let i = 0; i <= 10; i++) {
-    //   console.log(date, i);
-    //   let dateOrNull = rrule.after(date);
-    //   if (dateOrNull) {
-    //     date = dateOrNull;
-    //   } else {
-    //     console.log("no date");
-    //     break;
-    //   }
-    // }
   };
 
   //TODO implement select date on year. And select 1-31 date on month. Premium feature?
@@ -211,8 +199,7 @@ export default function ReminderInput({
                 </div>
               </>
             )}
-            {/* TODO upgrade vercel deployment for cron jobs multiple times a day */}
-            {/* <p className="mt-6">Include these times:</p>
+            <p className="mt-6">Include these times:</p>
             <div className="flex flex-wrap max-w-sm gap-2 justify-center items-center py-2">
               {hourNames.map((time, index) => (
                 <div key={index} className="ml-1">
@@ -225,7 +212,7 @@ export default function ReminderInput({
                   <label htmlFor={time}>{time}</label>
                 </div>
               ))}
-            </div> */}
+            </div>
           </div>
           <div className="flex justify-center items-center gap-2 mb-4 md:mt-4">
             <Button

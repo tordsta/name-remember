@@ -28,6 +28,7 @@ export default async function handler(
     await sql`
         INSERT INTO user_feedback (email, type, message, file)
         VALUES (${email}, ${type}, ${message}, ${file})`;
+    //TODO send email to admin
     res.status(200).json("Success");
     return;
   } catch (error) {
