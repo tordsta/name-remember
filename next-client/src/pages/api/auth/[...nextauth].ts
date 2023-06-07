@@ -1,13 +1,11 @@
-import NextAuth, { User } from "next-auth";
+import NextAuth from "next-auth";
 import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import SlackProvider from "next-auth/providers/slack";
 import vercelPostgresAdapter from "@/utils/vercelPostgresAdapter";
-import sendVerificationMail from "@/components/mail/sendVerificationMail";
 
 export const authOptions = {
-  debug: true,
   secret: process.env.NEXT_AUTH as string,
   adapter: vercelPostgresAdapter(),
   providers: [

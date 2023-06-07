@@ -149,7 +149,6 @@ export default function vercelPostgresAdapter(): Adapter {
       return sessionAndUser;
     };
 
-    //TODO verify solution for updating session
     const updateSession = async (
       session: Partial<AdapterSession> & Pick<AdapterSession, "sessionToken">,
       token?: string
