@@ -17,6 +17,7 @@ export default function App({
   pageProps: any;
 }) {
   const router = useRouter();
+
   useEffect(() => {
     router.events.on("routeChangeComplete", pageview);
     return () => {
