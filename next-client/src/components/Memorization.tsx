@@ -110,7 +110,10 @@ export default function Memorization({
                 onSubmit={handleAnswerCheck}
                 className="flex flex-col items-end justify-center gap-4 my-6"
               >
-                <label htmlFor="fname">
+                <label
+                  htmlFor="fname"
+                  className={person.fname ? "block" : "hidden"}
+                >
                   First name{"  "}
                   <input
                     id="fname"
@@ -119,7 +122,10 @@ export default function Memorization({
                     className="border border-black px-1"
                   />
                 </label>
-                <label htmlFor="mname">
+                <label
+                  htmlFor="mname"
+                  className={person.mname ? "block" : "hidden"}
+                >
                   Middle name{"  "}
                   <input
                     id="mname"
@@ -128,7 +134,10 @@ export default function Memorization({
                     className="border border-black px-1"
                   />
                 </label>
-                <label htmlFor="lname">
+                <label
+                  htmlFor="lname"
+                  className={person.lname ? "block" : "hidden"}
+                >
                   Last name{"  "}
                   <input
                     id="lname"
@@ -153,7 +162,11 @@ export default function Memorization({
               )}
               {answers.filter((answer) => answer.index == i).length > 0 && (
                 <div className="flex flex-row items-center justify-evenly w-full h-14 mb-8 max-w-[500px]">
-                  <div className="flex flex-col items-center justify-center">
+                  <div
+                    className={`${
+                      person.fname ? "flex" : "hidden"
+                    } flex-col items-center justify-center`}
+                  >
                     <Image
                       src={
                         answers
@@ -168,7 +181,11 @@ export default function Memorization({
                     />
                     <p>First Name</p>
                   </div>
-                  <div className="flex flex-col items-center justify-center">
+                  <div
+                    className={`${
+                      person.mname ? "flex" : "hidden"
+                    } flex-col items-center justify-center`}
+                  >
                     <Image
                       src={
                         answers
@@ -183,7 +200,11 @@ export default function Memorization({
                     />
                     <p>Middle Name</p>
                   </div>
-                  <div className="flex flex-col items-center justify-center">
+                  <div
+                    className={`${
+                      person.lname ? "flex" : "hidden"
+                    } flex-col items-center justify-center`}
+                  >
                     <Image
                       src={
                         answers
