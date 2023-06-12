@@ -6,6 +6,9 @@ import { authOptions } from "./api/auth/[...nextauth]";
 import { GetServerSidePropsContext } from "next";
 import getLists from "@/database/getLists";
 import { usePeopleLists } from "@/hooks/usePeopleLists";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+import { setAmplitudeUserId, trackAmplitudeData } from "@/utils/amplitude";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req, res } = context;
@@ -38,6 +41,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 export default function Dashboard() {
   const { data, isLoading, isError } = usePeopleLists();
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if (session && session.user && session.user.email) {
+      setAmplitudeUserId(session.user.email);
+    }
+  }, [session]);
+
+  useEffect(() => {
+    trackAmplitudeData("Loaded Page Dashboard");
+  }, []);
 
   return (
     <Layout>

@@ -2,8 +2,14 @@ import Layout from "@/components/Layout";
 import Image from "next/image";
 import LoginButton from "@/components/LoginButton";
 import LegalInfo from "@/components/LegalInfo";
+import { useEffect } from "react";
+import { trackAmplitudeData } from "@/utils/amplitude";
 
 export default function Home() {
+  useEffect(() => {
+    trackAmplitudeData("Loaded Page Landing Page");
+  }, []);
+
   return (
     <Layout nav={false} auth={false}>
       <div className="flex flex-row h-[100vh]">

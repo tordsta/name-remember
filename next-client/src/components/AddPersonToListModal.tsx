@@ -4,6 +4,7 @@ import Button, { FramedButton } from "./style/Button";
 import NextImage from "next/image";
 import resizeImage from "@/utils/resizeImage";
 import useAddPeople from "@/hooks/useAddPeople";
+import { trackAmplitudeData } from "@/utils/amplitude";
 
 export default function AddPersonToListModal({ listId }: { listId: string }) {
   const [openSignal, setOpenSignal] = useState(false);
@@ -28,6 +29,7 @@ export default function AddPersonToListModal({ listId }: { listId: string }) {
         },
       });
     }
+    trackAmplitudeData("Add person", { fname, mname, lname, listId });
   };
 
   const handleImageChange = async (event: React.ChangeEvent) => {

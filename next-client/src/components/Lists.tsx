@@ -6,6 +6,7 @@ import DefaultModal from "./Modal";
 import useCreateList from "@/hooks/useCreateList";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { trackAmplitudeData } from "@/utils/amplitude";
 
 export default function Lists({
   data,
@@ -26,6 +27,7 @@ export default function Lists({
 
     const name = (event.target as any)["listName"].value;
     createList.mutate(name);
+    trackAmplitudeData("Created List", { name });
   };
 
   return (

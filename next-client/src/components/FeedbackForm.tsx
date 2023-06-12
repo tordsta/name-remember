@@ -3,6 +3,7 @@ import DefaultModal from "./Modal";
 import Button, { FramedButton } from "./style/Button";
 import resizeImage from "@/utils/resizeImage";
 import { notifyError, notifyPromiseFetch } from "./Notify";
+import { track } from "@amplitude/analytics-browser";
 
 export default function FeedbackForm() {
   const [openSignal, setOpenSignal] = useState(false);
@@ -26,6 +27,7 @@ export default function FeedbackForm() {
       error: "Error: Feedback not submitted.",
     });
     setFile(null);
+    track("Feedback submitted", { type, description });
   };
 
   const handleFileChange = async (event: React.ChangeEvent) => {

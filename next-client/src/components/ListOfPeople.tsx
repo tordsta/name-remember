@@ -2,6 +2,7 @@ import { usePeopleList } from "@/hooks/usePeopleList";
 import useDeletePeople from "@/hooks/useDeletePeople";
 import Modal from "react-modal";
 import NextImage from "next/image";
+import { trackAmplitudeData } from "@/utils/amplitude";
 
 export default function ListOfPeople({
   currentList,
@@ -46,6 +47,10 @@ export default function ListOfPeople({
                     onClick={() => {
                       if (person.id) {
                         deletePerson.mutate(person.id);
+                        trackAmplitudeData("Deleted Person", {
+                          personId: person.id,
+                          personName: `${person.fname} ${person.mname} ${person.lname}`,
+                        });
                       }
                     }}
                   >

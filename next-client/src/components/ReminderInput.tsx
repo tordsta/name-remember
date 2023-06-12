@@ -4,6 +4,7 @@ import { Frequency, RRule } from "rrule";
 import { notifyError } from "./Notify";
 import Modal from "./Modal";
 import useAddReminder from "@/hooks/useAddReminder";
+import { trackAmplitudeData } from "@/utils/amplitude";
 
 export default function ReminderInput({
   id,
@@ -117,6 +118,10 @@ export default function ReminderInput({
       rrule: newRrule.toString(),
       rruleStart: newRrule.options.dtstart.getTime() / 1000,
       nextReminder: nextReminder ? nextReminder.getTime() / 1000 : null,
+    });
+    trackAmplitudeData("Reminder set", {
+      listId: id,
+      rrule: newRrule.toString(),
     });
   };
 

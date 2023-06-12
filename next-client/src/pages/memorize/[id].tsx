@@ -1,3 +1,5 @@
+import { trackAmplitudeData } from "@/utils/amplitude";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { dehydrate, QueryClient } from "react-query";
 import { GetServerSidePropsContext } from "next";
@@ -41,6 +43,10 @@ export default function MemorizeListPage() {
   const router = useRouter();
   const { id } = router.query;
   const { data, isError, isLoading } = usePeopleList({ id: id as string });
+
+  useEffect(() => {
+    trackAmplitudeData("Loaded Page Memorize List", { id: id });
+  }, [id]);
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Error :</p>;

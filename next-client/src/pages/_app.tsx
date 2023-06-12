@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import Script from "next/script";
 import { useRouter } from "next/router";
 import { GTM_ID, pageview } from "../utils/gtm";
+import { initAmplitude, setAmplitudeUserId } from "../utils/amplitude";
 
 export default function App({
   Component,
@@ -17,6 +18,12 @@ export default function App({
   pageProps: any;
 }) {
   const router = useRouter();
+
+  useEffect(() => {
+    if (router.isReady) {
+      initAmplitude();
+    }
+  }, [router.isReady]);
 
   useEffect(() => {
     router.events.on("routeChangeComplete", pageview);

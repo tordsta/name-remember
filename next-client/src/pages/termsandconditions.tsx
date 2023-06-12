@@ -1,6 +1,12 @@
 import Layout from "@/components/Layout";
+import { trackAmplitudeData } from "@/utils/amplitude";
+import { useEffect } from "react";
 
 export default function TermsAndConditions() {
+  useEffect(() => {
+    trackAmplitudeData("Loaded Page Terms and Conditions");
+  }, []);
+
   return (
     <Layout title="Privacy Policy" auth={false} nav={false}>
       <div className="flex flex-col justify-center items-start m-8 md:mx-20 md:my-10 gap-4 font-sans">

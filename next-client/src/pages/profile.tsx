@@ -3,10 +3,15 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Layout from "@/components/Layout";
 import FeedbackForm from "@/components/FeedbackForm";
+import { trackAmplitudeData } from "@/utils/amplitude";
+import { useEffect } from "react";
 
 export default function Profile() {
   const { data: session, status } = useSession();
-  //getUser
+
+  useEffect(() => {
+    trackAmplitudeData("Loaded Page Profile");
+  }, []);
 
   return (
     <Layout>

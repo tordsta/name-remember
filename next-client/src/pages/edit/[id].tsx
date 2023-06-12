@@ -1,3 +1,5 @@
+import { trackAmplitudeData } from "@/utils/amplitude";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { dehydrate, QueryClient, useQuery } from "react-query";
 import { GetServerSidePropsContext } from "next";
@@ -47,6 +49,10 @@ export default function EditListPage() {
   const { data, isError, isLoading } = usePeopleList({ id: id as string });
   const deleteList = useDeleteList();
 
+  useEffect(() => {
+    trackAmplitudeData("Loaded Page Edit List", { id: id });
+  }, [id]);
+
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Error :</p>;
 
@@ -67,6 +73,7 @@ export default function EditListPage() {
             <FramedButton
               onClick={(e) => {
                 e.stopPropagation();
+                trackAmplitudeData("Clicked Delete List", { id: id });
                 if (typeof id == "string") deleteList.mutate(id);
                 router.push("/dashboard");
               }}
@@ -82,6 +89,7 @@ export default function EditListPage() {
             <FramedButton
               onClick={(e) => {
                 e.stopPropagation();
+                trackAmplitudeData("Clicked Delete List", { id: id });
                 if (typeof id == "string") deleteList.mutate(id);
                 router.push("/dashboard");
               }}

@@ -1,6 +1,7 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import { FramedButton } from "@/components/style/Button";
+import { trackAmplitudeData } from "@/utils/amplitude";
 
 export default function LoginButton() {
   const { data: session } = useSession();
@@ -20,6 +21,7 @@ export default function LoginButton() {
     return (
       <FramedButton
         onClick={() => {
+          trackAmplitudeData("Sign Out");
           signOut();
           router.push("/");
         }}
@@ -29,7 +31,12 @@ export default function LoginButton() {
     );
   }
   return (
-    <FramedButton onClick={() => signIn()}>
+    <FramedButton
+      onClick={() => {
+        trackAmplitudeData("Sign In");
+        signIn();
+      }}
+    >
       <p className="text-2xl">Sign in</p>
     </FramedButton>
   );

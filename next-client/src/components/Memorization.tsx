@@ -3,6 +3,8 @@ import { useSnapCarousel } from "react-snap-carousel";
 import { Person } from "@/utils/types";
 import Image from "next/image";
 import { FramedButton } from "./style/Button";
+import { track } from "@amplitude/analytics-browser";
+import { trackAmplitudeData } from "@/utils/amplitude";
 
 export default function Memorization({
   currentList,
@@ -47,14 +49,27 @@ export default function Memorization({
     const lnameRes = target.lname.value.trim() == person.lname;
     const index = target.index.value;
     setAnswers([...answers, { fnameRes, mnameRes, lnameRes, index, person }]);
-    console.log("check answer", person, fnameRes, mnameRes, lnameRes, index);
+
+    trackAmplitudeData("Memorization Check Answer", {
+      fnameRes,
+      mnameRes,
+      lnameRes,
+      index,
+      person,
+    });
   };
 
   return (
     <div className="flex flex-col my-auto justify-center items-center md:flex-row md:justify-start md:items-stretch w-auto md:w-full min-h-0 md:min-h-screen">
       <div
         className="hidden md:block flex-grow bg-gray-200 border border-black cursor-pointer"
-        onClick={prev}
+        onClick={() => {
+          track("Memorization Previous Clicked", {
+            currentList,
+            activePageIndex,
+          });
+          prev();
+        }}
       >
         <p className="text-2xl text-center h-full w-full px-2 min-w-[120px] flex items-center justify-center">
           Previous
@@ -225,12 +240,38 @@ export default function Memorization({
           ))}
       </ul>
       <div className="md:hidden flex flex-row justify-evenly items-center gap-4 sm:gap-20 my-4">
-        <FramedButton onClick={prev}>Previous</FramedButton>
-        <FramedButton onClick={next}>Next</FramedButton>
+        <FramedButton
+          onClick={() => {
+            track("Memorization Previous Clicked", {
+              currentList,
+              activePageIndex,
+            });
+            prev();
+          }}
+        >
+          Previous
+        </FramedButton>
+        <FramedButton
+          onClick={() => {
+            track("Memorization Next Clicked", {
+              currentList,
+              activePageIndex,
+            });
+            next();
+          }}
+        >
+          Next
+        </FramedButton>
       </div>
       <div
         className="hidden md:block flex-grow bg-gray-200 border border-black cursor-pointer"
-        onClick={next}
+        onClick={() => {
+          track("Memorization Next Clicked", {
+            currentList,
+            activePageIndex,
+          });
+          next();
+        }}
       >
         <p className="text-2xl text-center px-2 h-full w-full min-w-[120px] flex items-center justify-center">
           Next
