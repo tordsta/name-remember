@@ -1,6 +1,6 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
-import { FramedButton } from "@/components/style/Button";
+import { FramedButton } from "@/components/Button";
 import { trackAmplitudeData } from "@/utils/amplitude";
 
 export default function LoginButton() {

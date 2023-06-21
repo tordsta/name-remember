@@ -8,7 +8,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import ListOfPeople from "@/components/ListOfPeople";
 import useDeleteList from "@/hooks/useDeletePeopleList";
-import { FramedButton } from "@/components/style/Button";
+import { FramedButton } from "@/components/Button";
 import Layout from "@/components/Layout";
 import AddPersonToListModal from "@/components/AddPersonToListModal";
 import ReminderInput from "@/components/ReminderInput";

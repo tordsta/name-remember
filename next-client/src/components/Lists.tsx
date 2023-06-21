@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Modal from "react-modal";
 import { Lists } from "@/utils/types";
-import Button, { FramedButton } from "./style/Button";
+import Button, { FramedButton } from "./Button";
 import DefaultModal from "./Modal";
 import useCreateList from "@/hooks/useCreateList";
 import Image from "next/image";

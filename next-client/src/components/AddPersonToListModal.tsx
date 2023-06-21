@@ -1,6 +1,6 @@
 import { useState } from "react";
 import DefaultModal from "./Modal";
-import Button, { FramedButton } from "./style/Button";
+import Button, { FramedButton } from "./Button";
 import NextImage from "next/image";
 import resizeImage from "@/utils/resizeImage";
 import useAddPeople from "@/hooks/useAddPeople";

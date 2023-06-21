@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import Button, { FramedButton } from "./style/Button";
+import Button, { FramedButton } from "./Button";
 import { Frequency, RRule } from "rrule";
 import { notifyError } from "./Notify";
 import Modal from "./Modal";

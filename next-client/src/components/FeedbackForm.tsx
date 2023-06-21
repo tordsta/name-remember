@@ -1,6 +1,6 @@
 import { useState } from "react";
 import DefaultModal from "./Modal";
-import Button, { FramedButton } from "./style/Button";
+import Button, { FramedButton } from "./Button";
 import resizeImage from "@/utils/resizeImage";
 import { notifyError, notifyPromiseFetch } from "./Notify";
 import { track } from "@amplitude/analytics-browser";

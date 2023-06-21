@@ -4,7 +4,6 @@ import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import SlackProvider from "next-auth/providers/slack";
 import vercelPostgresAdapter from "@/utils/vercelPostgresAdapter";
-import * as amplitude from "@amplitude/analytics-browser";
 
 export const authOptions = {
   secret: process.env.NEXT_AUTH as string,

@@ -1,4 +1,4 @@
-import sendMemorizerReminder from "@/components/mail/sendMemorizerReminder";
+import sendMemorizerReminder from "@/utils/sendMemorizerReminder";
 import { sql } from "@vercel/postgres";
 import { NextApiRequest, NextApiResponse } from "next";
 import { RRule } from "rrule";

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSnapCarousel } from "react-snap-carousel";
 import { Person } from "@/utils/types";
 import Image from "next/image";
-import { FramedButton } from "./style/Button";
+import { FramedButton } from "./Button";
 import { track } from "@amplitude/analytics-browser";
 import { trackAmplitudeData } from "@/utils/amplitude";
 
