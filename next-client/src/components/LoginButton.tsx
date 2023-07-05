@@ -31,13 +31,30 @@ export default function LoginButton() {
     );
   }
   return (
-    <FramedButton
-      onClick={() => {
-        trackAmplitudeData("Sign In");
-        signIn();
-      }}
-    >
-      <p className="text-2xl">Sign in</p>
-    </FramedButton>
+    <div className="flex flex-col justify-center items-center">
+      <p className="text-xl md:text-3xl mx-auto mb-4 text-center">
+        Get started with Name Remember today,
+        <br /> it&apos;s free.
+      </p>
+
+      <FramedButton
+        style="relative w-60 h-10"
+        onClick={() => {
+          trackAmplitudeData("Create new account");
+          signIn();
+        }}
+      >
+        <p className="text-2xl">Create new account</p>
+      </FramedButton>
+      <p className="text-xl mx-auto my-2 text-center">or</p>
+      <FramedButton
+        onClick={() => {
+          trackAmplitudeData("Log In");
+          signIn();
+        }}
+      >
+        <p className="text-2xl">Log in</p>
+      </FramedButton>
+    </div>
   );
 }

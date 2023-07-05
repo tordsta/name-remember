@@ -69,7 +69,7 @@ export function FramedButton({
 }) {
   return (
     <button
-      className="relative w-40 h-10"
+      className={style ? style : "relative w-40 h-10"}
       onClick={onClick}
       onSubmit={onSubmit}
       type={typeSubmit ? "submit" : "button"}
