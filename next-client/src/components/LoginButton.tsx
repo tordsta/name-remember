@@ -32,8 +32,8 @@ export default function LoginButton() {
   }
   return (
     <div className="flex flex-col justify-center items-center">
-      <p className="text-xl md:text-3xl mx-auto mb-4 text-center">
-        Get started with Name Remember today,
+      <p className="text-2xl md:text-3xl mx-auto mb-4 text-center">
+        Get started today,
         <br /> it&apos;s free.
       </p>
 
