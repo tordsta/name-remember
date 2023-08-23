@@ -1,3 +1,4 @@
+import { randomInt } from "crypto";
 import React, { useRef, useEffect } from "react";
 
 const CanvasBackground: React.FC = () => {
@@ -21,11 +22,19 @@ const CanvasBackground: React.FC = () => {
       width: number,
       height: number
     ) => {
-      ctx.beginPath();
-      ctx.strokeStyle = "gray";
-      ctx.moveTo(width, 0);
-      ctx.lineTo(0, height);
-      ctx.stroke();
+      const lineSpacing = 10;
+      const lineAngle = 3; //Higher number equals more vertical lines
+      const maxRand = Math.floor(lineSpacing * 1);
+      for (let i = 0; i < 200; i++) {
+        let randEnd = Math.floor(Math.random() * maxRand);
+        let randStart = Math.floor(Math.random() * maxRand);
+        console.log(randEnd);
+        ctx.beginPath();
+        ctx.strokeStyle = "#e5e5e5";
+        ctx.moveTo(i * lineSpacing + randStart, 0);
+        ctx.lineTo(-width / lineAngle + i * lineSpacing + randEnd, height);
+        ctx.stroke();
+      }
     };
 
     window.addEventListener("resize", resizeCanvas);
