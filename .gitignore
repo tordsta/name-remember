@@ -1,0 +1,3 @@
+cloud-sql-proxy
+.env
+sql_database_password.json
