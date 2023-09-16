@@ -8,6 +8,7 @@ resource "google_sql_database_instance" "default" {
   name             = "name-remember-db"
   database_version = "POSTGRES_13"
   region           = "us-central1"
+  deletion_protection = false #change to true when in production
 
   settings {
     tier = "db-f1-micro"
@@ -15,6 +16,14 @@ resource "google_sql_database_instance" "default" {
     ip_configuration {
       ipv4_enabled    = true
       require_ssl     = true
+    }
+
+    backup_configuration {
+      enabled = true
+      point_in_time_recovery_enabled = true
+      backup_retention_settings {
+        retained_backups = 50
+      }
     }
 
     database_flags {
