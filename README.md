@@ -4,10 +4,6 @@ Web App for remembering names from face images.
 
 ## Dev setup
 
-TODO
-Make test environment in GCP & Terraform.
-CI/CD pipeline to Google container registry from github actions.
-
 ### DB connection
 
 Run the cloud sql proxy locally to connect to the DB in GCP.
