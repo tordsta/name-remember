@@ -30,6 +30,9 @@ resource "google_sql_database_instance" "default" {
       name  = "cloudsql.enable_pgaudit"
       value = "off"
     }
+    insights_config {
+      query_insights_enabled = true
+    }
   }
 }
 
@@ -55,6 +58,50 @@ resource "google_sql_user" "default" {
   instance = google_sql_database_instance.default.name
   password = random_password.pwd.result
 }
+
+# Container registry for web app
+resource "google_container_registry" "registry" {
+  project  = "name-remember-23"
+  location = "EU"
+}
+
+resource "google_storage_bucket_iam_member" "viewer" {
+  bucket = google_container_registry.registry.id
+  role = "roles/storage.objectViewer"
+  member = "allUsers"
+  # change to binding
+  # members = [
+  #   "user:tord.standnes@gmail.com",
+  #   "serviceAccount:project_number-compute@developer.gserviceaccount.com",
+  # ]
+}
+
+# Domains setup
+resource "google_cloud_run_domain_mapping" "apex_domain" {
+  location    = "us-central1"
+  name        = "nameremember.com" 
+
+  metadata {
+    namespace = "name-remember-23"
+  }
+
+  spec {
+    route_name = google_cloud_run_service.default.name
+  }
+}
+resource "google_cloud_run_domain_mapping" "www_domain" {
+  location    = "us-central1"
+  name        = "www.nameremember.com" 
+
+  metadata {
+    namespace = "name-remember-23"
+  }
+
+  spec {
+    route_name = google_cloud_run_service.default.name
+  }
+}
+
 
 # Cloud Run Service for web app
 resource "google_cloud_run_service" "default" {
@@ -87,7 +134,6 @@ resource "google_cloud_run_service_iam_member" "public" {
   role     = "roles/run.invoker"
   member   = "allUsers"
 }
-
 
 # Set up Cloud SQL Proxy
 resource "google_service_account" "sql_proxy" {

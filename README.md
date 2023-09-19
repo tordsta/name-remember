@@ -7,7 +7,6 @@ Web App for remembering names from face images.
 TODO
 Make test environment in GCP & Terraform.
 CI/CD pipeline to Google container registry from github actions.
-Add GCP GCR to terraform.
 
 ### DB connection
 

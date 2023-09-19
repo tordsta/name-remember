@@ -28,7 +28,6 @@ const CanvasBackground: React.FC = () => {
       for (let i = 0; i < 200; i++) {
         let randEnd = Math.floor(Math.random() * maxRand);
         let randStart = Math.floor(Math.random() * maxRand);
-        console.log(randEnd);
         ctx.beginPath();
         ctx.strokeStyle = "#e5e5e5";
         ctx.moveTo(i * lineSpacing + randStart, 0);
