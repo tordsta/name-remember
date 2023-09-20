@@ -1,4 +1,4 @@
-import { trackAmplitudeData } from "@/utils/amplitude";
+import { trackAmplitudeData } from "@/lib/amplitude";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { dehydrate, QueryClient } from "react-query";

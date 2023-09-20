@@ -1,5 +1,5 @@
 import sendMemorizerReminder from "@/utils/sendMemorizerReminder";
-import { sql } from "@vercel/postgres";
+import sql from "@/database/pgConnect";
 import { NextApiRequest, NextApiResponse } from "next";
 import { RRule } from "rrule";
 
@@ -42,14 +42,16 @@ export default async function handler(
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      const res = await sql`
+      const res = await sql({
+        query: `
     SELECT people_lists.*, users.email, users.name as user_name 
     FROM people_lists
     INNER JOIN users 
     ON people_lists.owner_id = users.id
     WHERE people_lists.reminder_trigger_time <= NOW()
     AND people_lists.rrule IS NOT NULL
-    `;
+    `,
+      });
       rows = res.rows as List[];
       break;
     } catch (error) {
@@ -88,11 +90,13 @@ export default async function handler(
       nextTriggerTime = next ? next.getTime() / 1000 : null;
     }
     try {
-      const res = await sql`
+      const res = await sql({
+        query: `
         UPDATE people_lists
         SET reminder_trigger_time = to_timestamp(${nextTriggerTime})
         WHERE id = ${list.id}
-        `;
+        `,
+      });
     } catch (error) {
       console.error(
         `Failed to update reminder_trigger_time for list id: ${list.id}`,

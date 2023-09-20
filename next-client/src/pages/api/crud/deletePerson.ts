@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { sql } from "@vercel/postgres";
+import sql from "@/database/pgConnect";
 
 export default async function handler(
   req: NextApiRequest,
@@ -21,9 +21,11 @@ export default async function handler(
     }
     try {
       console.log("delete person", id, email);
-      const results = await sql`
+      const results = await sql({
+        query: `
           SELECT delete_person(${email}, ${id});
-        `;
+        `,
+      });
 
       console.log("results delete person", results);
       res.status(200).json(results);

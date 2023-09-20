@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/next-script-for-ga */
 import { Html, Head, Main, NextScript } from "next/document";
-import { GTM_ID } from "@/utils/gtm";
+import { GTM_ID } from "@/lib/gtm";
 
 export default function Document() {
   return (

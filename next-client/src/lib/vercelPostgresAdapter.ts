@@ -1,4 +1,4 @@
-import { sql } from "@vercel/postgres";
+import sql from "@/database/pgConnect";
 import { Account } from "next-auth";
 import {
   Adapter,
@@ -13,10 +13,12 @@ export default function vercelPostgresAdapter(): Adapter {
     const createUser = async (
       user: Omit<AdapterUser, "id">
     ): Promise<AdapterUser> => {
-      const { rows } = await sql`
+      const { rows } = await sql({
+        query: `
         INSERT INTO users (name, email, image) 
         VALUES (${user.name}, ${user.email}, ${user.image}) 
-        RETURNING id, name, email, email_verified, image`;
+        RETURNING id, name, email, email_verified, image`,
+      });
       const newUser: AdapterUser = {
         ...rows[0],
         id: rows[0].id.toString(),
@@ -27,11 +29,13 @@ export default function vercelPostgresAdapter(): Adapter {
     };
 
     const getUser = async (id: string) => {
-      const { rows } = await sql`
+      const { rows } = await sql({
+        query: `
           SELECT *
           FROM users
           WHERE id = ${id};
-        `;
+        `,
+      });
       return {
         ...rows[0],
         id: rows[0].id.toString(),
@@ -41,7 +45,9 @@ export default function vercelPostgresAdapter(): Adapter {
     };
 
     const getUserByEmail = async (email: string) => {
-      const { rows } = await sql`SELECT * FROM users WHERE email = ${email}`;
+      const { rows } = await sql({
+        query: `SELECT * FROM users WHERE email = ${email}`,
+      });
       return rows[0]
         ? {
             ...rows[0],
@@ -59,11 +65,13 @@ export default function vercelPostgresAdapter(): Adapter {
       provider: string;
       providerAccountId: string;
     }): Promise<AdapterUser | null> => {
-      const { rows } = await sql`
+      const { rows } = await sql({
+        query: `
       SELECT u.* 
       FROM users u join accounts a on u.id = a.user_id 
       WHERE a.provider_id = ${provider} 
-      AND a.provider_account_id = ${providerAccountId}`;
+      AND a.provider_account_id = ${providerAccountId}`,
+      });
       const user = rows[0]
         ? {
             email: rows[0].email,
@@ -77,12 +85,14 @@ export default function vercelPostgresAdapter(): Adapter {
     const updateUser = async (
       user: Partial<AdapterUser> & Pick<AdapterUser, "id">
     ): Promise<AdapterUser> => {
-      const { rows } = await sql`
+      const { rows } = await sql({
+        query: `
             UPDATE users
             SET name = ${user.name}, email = ${user.email}, image = ${user.image}
             WHERE id = ${user.id}
             RETURNING id, name, email, image;
-            `;
+            `,
+      });
       const updatedUser: AdapterUser = {
         ...rows[0],
         id: rows[0].id.toString(),
@@ -93,7 +103,7 @@ export default function vercelPostgresAdapter(): Adapter {
     };
 
     const deleteUser = async (userId: string) => {
-      await sql`DELETE FROM users WHERE id = ${userId}`;
+      await sql({ query: `DELETE FROM users WHERE id = ${userId}` });
       return;
     };
 
@@ -107,10 +117,12 @@ export default function vercelPostgresAdapter(): Adapter {
       expires: Date;
     }): Promise<AdapterSession> => {
       const expiresString = expires.toDateString();
-      await sql`
+      await sql({
+        query: `
         INSERT INTO auth_sessions (user_id, expires, session_token) 
         VALUES (${userId}, ${expiresString}, ${sessionToken})
-      `;
+      `,
+      });
       const createdSession: AdapterSession = {
         sessionToken,
         userId,
@@ -122,14 +134,18 @@ export default function vercelPostgresAdapter(): Adapter {
     const getSessionAndUser = async (
       sessionToken: string
     ): Promise<{ session: AdapterSession; user: AdapterUser } | null> => {
-      const session = await sql`
+      const session = await sql({
+        query: `
         SELECT * 
         FROM auth_sessions 
-        WHERE session_token = ${sessionToken}`;
-      const { rows } = await sql`
+        WHERE session_token = ${sessionToken}`,
+      });
+      const { rows } = await sql({
+        query: `
         SELECT * 
         FROM users 
-        WHERE id = ${session.rows[0].user_id}`;
+        WHERE id = ${session.rows[0].user_id}`,
+      });
       const expiresDate = new Date(session.rows[0].expires);
       const sessionAndUser: { session: AdapterSession; user: AdapterUser } = {
         session: {
@@ -165,26 +181,31 @@ export default function vercelPostgresAdapter(): Adapter {
         );
       }
       const expiresString = session.expires.toDateString();
-      await sql`
+      await sql({
+        query: `
           UPDATE auth_sessions
           SET expires = ${expiresString}
           WHERE session_token = ${session.sessionToken}
-      `;
+      `,
+      });
       return;
     };
 
     const deleteSession = async (sessionToken: string) => {
-      await sql`
+      await sql({
+        query: `
           DELETE FROM auth_sessions
           WHERE session_token = ${sessionToken};
-        `;
+        `,
+      });
       return;
     };
 
     const linkAccount = async (
       account: AdapterAccount
     ): Promise<AdapterAccount | null | undefined> => {
-      await sql`
+      await sql({
+        query: `
         INSERT INTO accounts (
             user_id, 
             provider_id, 
@@ -208,7 +229,8 @@ export default function vercelPostgresAdapter(): Adapter {
             ${account.token_type},
             ${account.scope},
             ${account.id_token}
-        )`;
+        )`,
+      });
       return account;
     };
 
@@ -219,9 +241,11 @@ export default function vercelPostgresAdapter(): Adapter {
       providerAccountId: Account["providerAccountId"];
       provider: Account["provider"];
     }) => {
-      await sql`
+      await sql({
+        query: `
             DELETE FROM accounts 
-            WHERE provider_account_id = ${providerAccountId} AND provider_id = ${provider}}`;
+            WHERE provider_account_id = ${providerAccountId} AND provider_id = ${provider}}`,
+      });
       return;
     };
 
@@ -230,9 +254,11 @@ export default function vercelPostgresAdapter(): Adapter {
       expires,
       token,
     }: VerificationToken): Promise<VerificationToken | null | undefined> => {
-      const { rows } = await sql`
+      const { rows } = await sql({
+        query: `
         INSERT INTO verification_tokens (identifier, token, expires) 
-        VALUES (${identifier}, ${token}, ${expires.toString()})`;
+        VALUES (${identifier}, ${token}, ${expires.toString()})`,
+      });
       const createdToken: VerificationToken = {
         identifier: rows[0].identifier,
         token: rows[0].token,
@@ -249,14 +275,18 @@ export default function vercelPostgresAdapter(): Adapter {
       identifier: string;
       token: string;
     }) => {
-      const { rows } = await sql`
+      const { rows } = await sql({
+        query: `
         SELECT * FROM verification_tokens 
         WHERE identifier = ${identifier} 
-        AND token = ${token} AND expires > NOW()`;
-      await sql`
+        AND token = ${token} AND expires > NOW()`,
+      });
+      await sql({
+        query: `
         DELETE FROM verification_tokens
         WHERE identifier = ${identifier}
-        AND token = ${token}`;
+        AND token = ${token}`,
+      });
       return {
         expires: rows[0].expires,
         identifier: rows[0].identifier,

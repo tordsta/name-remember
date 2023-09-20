@@ -3,7 +3,7 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Layout from "@/components/Layout";
 import FeedbackForm from "@/components/FeedbackForm";
-import { trackAmplitudeData } from "@/utils/amplitude";
+import { trackAmplitudeData } from "@/lib/amplitude";
 import { useEffect } from "react";
 
 export default function Profile() {

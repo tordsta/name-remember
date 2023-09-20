@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { sql } from "@vercel/postgres";
+import sql from "@/database/pgConnect";
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,13 +25,15 @@ export default async function handler(
       return;
     }
     try {
-      const results = await sql`
+      const results = await sql({
+        query: `
       WITH user_id AS (
         SELECT id FROM users WHERE email = ${email}
       )
       INSERT INTO people_lists (name, owner_id)
       VALUES (${name}, (SELECT id FROM user_id))
-      RETURNING id, name, owner_id;`;
+      RETURNING id, name, owner_id;`,
+      });
       res.status(200).json(JSON.stringify(results));
       return;
     } catch (error) {

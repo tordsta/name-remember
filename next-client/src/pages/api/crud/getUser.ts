@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
-import { sql } from "@vercel/postgres";
+import sql from "@/database/pgConnect";
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,7 +14,7 @@ export default async function handler(
   //     res.status(401).json(JSON.stringify("No email found"));
   //     res.end();
   //   }
-  //   const { rows, fields } = await sql`SELECT * FROM users`; // WHERE email = ${email}`;
+  //   const { rows, fields } = await sql({query: `SELECT * FROM users`}); // WHERE email = ${email}`;
   //   res.status(200).json(JSON.stringify({ rows, fields }));
   // } else {
   //   res.status(401);
