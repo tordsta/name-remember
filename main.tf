@@ -157,7 +157,7 @@ module "workload-identity-federation-multi-provider" {
     select_provider = "oidc"
     provider_config = {
       issuer_uri = "https://token.actions.githubusercontent.com"
-      allowed_audiences = "https://github.com/tordsta" 
+      allowed_audiences = "https://iam.googleapis.com/projects/471648801973/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions" 
     }
     disabled = false
     attribute_condition = "\"e968c2ef-047c-498d-8d79-16ca1b61e77e\" in assertion.groups"
