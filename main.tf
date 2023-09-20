@@ -147,20 +147,52 @@ resource "google_storage_bucket_iam_member" "viewer" {
 }
 
 # Set up Service account for Github Actions to access Container Registry
-resource "google_service_account" "ga_push_to_registry" {
-  account_id   = "ga-push-to-registry"
-  display_name = "Service Account for Github Actions to push to Container Registry"
+module "workload-identity-federation-multi-provider" {
+  source  = "SudharsaneSivamany/workload-identity-federation-multi-provider/google"
+  version = "1.1.0"
+  project_id = "name-remember-23"
+  pool_id = "github-actions-pool"
+  wif_providers = [{ 
+    provider_id = "github-actions"
+    select_provider = "oidc"
+    provider_config = {
+      issuer_uri = "https://token.actions.githubusercontent.com"
+      allowed_audiences = "https://github.com/tordsta" 
+    }
+    disabled = false
+    attribute_condition = "\"e968c2ef-047c-498d-8d79-16ca1b61e77e\" in assertion.groups"
+    attribute_mapping    = {
+      "attribute.actor"      = "assertion.actor"
+      "attribute.repository" = "assertion.repository"
+      "google.subject"       = "assertion.sub"
+    } 
+  }]
+  service_accounts = [
+    {
+      name           = "ga-push-to-registry"
+      attribute      = "attribute.repository/tordsta/name-remember"
+      all_identities = true
+      roles          = ["roles/storage.admin"]
+    }
+  ]
 }
 
-resource "google_project_iam_member" "ga_push_to_registry_iam" {
-  role    = "roles/storage.admin"
-  member  = "serviceAccount:${google_service_account.ga_push_to_registry.email}"
-  project = "name-remember-23"
-}
+#---------------
 
-resource "google_service_account_key" "ga_push_to_registry_key" {
-  service_account_id = google_service_account.ga_push_to_registry.name
-}
+# resource "google_service_account" "ga_push_to_registry" {
+#   account_id   = "ga-push-to-registry"
+#   display_name = "Service Account for Github Actions to push to Container Registry"
+# }
+
+# resource "google_project_iam_member" "ga_push_to_registry_iam" {
+#   role    = "roles/storage.admin"
+#   member  = "serviceAccount:${google_service_account.ga_push_to_registry.email}"
+#   project = "name-remember-23"
+# }
+
+# resource "google_service_account_key" "ga_push_to_registry_key" {
+#   service_account_id = google_service_account.ga_push_to_registry.name
+# }
 
 
 

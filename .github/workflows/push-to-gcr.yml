@@ -13,9 +13,16 @@ jobs:
       id-token: "write"
     steps:
       - uses: actions/checkout@v3
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          workload_identity_provider:
+            projects/471648801973/locations/global/workloadIdentityPools/github-actions-pool/subject/push-to-gcr-github-action
+            #projects/123123123/locations/global/workloadIdentityPools/the-workload-pool/providers/the-provider
+          service_account: ga-push-to-registry@name-remember-23.iam.gserviceaccount.com
       - uses: RafikFarhad/push-to-gcr-github-action@v5-beta
         with:
-          gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
           registry: gcr.io
           project_id: name-remember-23
           image_name: name-remember
