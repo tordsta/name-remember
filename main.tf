@@ -160,7 +160,7 @@ module "workload-identity-federation-multi-provider" {
       allowed_audiences = "https://iam.googleapis.com/projects/471648801973/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions" 
     }
     disabled = false
-    attribute_condition = "\"e968c2ef-047c-498d-8d79-16ca1b61e77e\" in assertion.groups"
+    attribute_condition = "'gcp-users' in assertion.groups"
     attribute_mapping    = {
       "attribute.actor"      = "assertion.actor"
       "attribute.repository" = "assertion.repository"
