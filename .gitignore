@@ -5,3 +5,4 @@ terraform.tfstate
 terraform.tfstate.backup
 backups/*
 todo
+secret.auto.tfvars

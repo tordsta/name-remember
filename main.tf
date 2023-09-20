@@ -3,6 +3,168 @@ provider "google" {
   region      = "us-central1"
 }
 
+# Cloud Run Service for web app
+resource "google_cloud_run_service" "default" {
+  name     = "name-remember-service"
+  location = "us-central1"
+  
+  template {
+    spec {
+      containers {
+        image = "gcr.io/name-remember-23/name-remember:latest"
+        env {
+          name="DB_USER"
+          value="postgres"
+        }
+        env {
+          name="DB_PASSWORD"
+          value=random_password.pwd.result
+        }
+        env {
+          name="DB_HOST"
+          value=google_sql_database_instance.default.public_ip_address
+        }
+        env {
+          name="DB_PORT"
+          value="5432"
+        }
+        env {
+          name="DB_DATABASE"
+          value=google_sql_database.default.name
+        }
+        env {
+          name = "NEXTAUTH_URL"
+          value = var.NEXTAUTH_URL
+        }
+        env {
+          name = "NEXT_AUTH"
+          value = var.NEXT_AUTH
+        }
+
+        env {
+          name = "GITHUB_ID"
+          value = var.GITHUB_ID
+        }
+        env {
+          name = "GITHUB_SECRET"
+          value = var.GITHUB_SECRET
+        }
+        env {
+          name = "GOOGLE_ID"
+          value = var.GOOGLE_ID
+        }
+        env {
+          name = "GOOGLE_SECRET"
+          value = var.GOOGLE_SECRET
+        }
+        env {
+          name = "FACEBOOK_ID"
+          value = var.FACEBOOK_ID
+        }
+        env {
+          name = "FACEBOOK_SECRET"
+          value = var.FACEBOOK_SECRET
+        }
+        env {
+          name = "SLACK_ID"
+          value = var.SLACK_ID
+        }
+        env {
+          name = "SLACK_SECRET"
+          value = var.SLACK_SECRET
+        }
+        env {
+          name = "POSTMARK_API_KEY"
+          value = var.POSTMARK_API_KEY
+        }
+        env {
+          name = "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID"
+          value = var.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
+        }
+        env {
+          name = "NEXT_PUBLIC_AMPLITUDE_API_KEY"
+          value = var.NEXT_PUBLIC_AMPLITUDE_API_KEY
+        }
+      }
+    }
+  }
+
+  traffic {
+    percent         = 100
+    latest_revision = true
+  }
+}
+
+# Make Cloud Run Service (web app) public
+resource "google_cloud_run_service_iam_member" "public" {
+  service  = google_cloud_run_service.default.name
+  location = google_cloud_run_service.default.location
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+}
+
+# Domains setup
+resource "google_cloud_run_domain_mapping" "apex_domain" {
+  location    = "us-central1"
+  name        = "nameremember.com" 
+
+  metadata {
+    namespace = "name-remember-23"
+  }
+
+  spec {
+    route_name = google_cloud_run_service.default.name
+  }
+}
+resource "google_cloud_run_domain_mapping" "www_domain" {
+  location    = "us-central1"
+  name        = "www.nameremember.com" 
+
+  metadata {
+    namespace = "name-remember-23"
+  }
+
+  spec {
+    route_name = google_cloud_run_service.default.name
+  }
+}
+
+# Container registry for web app
+resource "google_container_registry" "registry" {
+  project  = "name-remember-23"
+  location = "EU"
+}
+
+resource "google_storage_bucket_iam_member" "viewer" {
+  bucket = google_container_registry.registry.id
+  role = "roles/storage.objectViewer"
+  member = "allUsers"
+  # change to binding
+  # members = [
+  #   "user:tord.standnes@gmail.com",
+  #   "serviceAccount:project_number-compute@developer.gserviceaccount.com",
+  # ]
+}
+
+# Set up Service account for Github Actions to access Container Registry
+resource "google_service_account" "ga_push_to_registry" {
+  account_id   = "ga-push-to-registry"
+  display_name = "Service Account for Github Actions to push to Container Registry"
+}
+
+resource "google_project_iam_member" "ga_push_to_registry_iam" {
+  role    = "roles/storage.objectAdmin"
+  member  = "serviceAccount:${google_service_account.ga_push_to_registry.email}"
+  project = "name-remember-23"
+}
+
+resource "google_service_account_key" "ga_push_to_registry_key" {
+  service_account_id = google_service_account.ga_push_to_registry.name
+}
+
+
+
+
 # Cloud SQL Database Service
 resource "google_sql_database_instance" "default" {
   name             = "name-remember-db"
@@ -59,82 +221,6 @@ resource "google_sql_user" "default" {
   password = random_password.pwd.result
 }
 
-# Container registry for web app
-resource "google_container_registry" "registry" {
-  project  = "name-remember-23"
-  location = "EU"
-}
-
-resource "google_storage_bucket_iam_member" "viewer" {
-  bucket = google_container_registry.registry.id
-  role = "roles/storage.objectViewer"
-  member = "allUsers"
-  # change to binding
-  # members = [
-  #   "user:tord.standnes@gmail.com",
-  #   "serviceAccount:project_number-compute@developer.gserviceaccount.com",
-  # ]
-}
-
-# Domains setup
-resource "google_cloud_run_domain_mapping" "apex_domain" {
-  location    = "us-central1"
-  name        = "nameremember.com" 
-
-  metadata {
-    namespace = "name-remember-23"
-  }
-
-  spec {
-    route_name = google_cloud_run_service.default.name
-  }
-}
-resource "google_cloud_run_domain_mapping" "www_domain" {
-  location    = "us-central1"
-  name        = "www.nameremember.com" 
-
-  metadata {
-    namespace = "name-remember-23"
-  }
-
-  spec {
-    route_name = google_cloud_run_service.default.name
-  }
-}
-
-
-# Cloud Run Service for web app
-resource "google_cloud_run_service" "default" {
-  name     = "name-remember-service"
-  location = "us-central1"
-
-  template {
-    spec {
-      containers {
-        image = "gcr.io/name-remember-23/name-remember:latest"
-
-        env {
-          name  = "DATABASE_URL"
-          value = "postgresql://USERNAME:PASSWORD@${google_sql_database_instance.default.public_ip_address}/name-remember-db"
-        }
-      }
-    }
-  }
-
-  traffic {
-    percent         = 100
-    latest_revision = true
-  }
-}
-
-# Make Cloud Run Service (web app) public
-resource "google_cloud_run_service_iam_member" "public" {
-  service  = google_cloud_run_service.default.name
-  location = google_cloud_run_service.default.location
-  role     = "roles/run.invoker"
-  member   = "allUsers"
-}
-
 # Set up Cloud SQL Proxy
 resource "google_service_account" "sql_proxy" {
   account_id   = "sql-proxy"
@@ -150,4 +236,3 @@ resource "google_project_iam_member" "sql_proxy_iam" {
 resource "google_service_account_key" "sql_proxy_key" {
   service_account_id = google_service_account.sql_proxy.name
 }
-
