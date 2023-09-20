@@ -1,5 +1,9 @@
 name: Push to GCR GitHub Action
-on: [push]
+on:
+  push:
+    branches:
+      - main
+      - terraform-gcp
 jobs:
   build-and-push-to-gcr:
     runs-on: ubuntu-latest
