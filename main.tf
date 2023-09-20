@@ -103,7 +103,7 @@ resource "google_cloud_run_service_iam_member" "public" {
   member   = "allUsers"
 }
 
-# Domains setup
+# Domains setup 
 resource "google_cloud_run_domain_mapping" "apex_domain" {
   location    = "us-central1"
   name        = "nameremember.com" 
