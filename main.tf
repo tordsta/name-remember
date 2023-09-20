@@ -153,7 +153,7 @@ resource "google_service_account" "ga_push_to_registry" {
 }
 
 resource "google_project_iam_member" "ga_push_to_registry_iam" {
-  role    = "roles/storage.objectAdmin"
+  role    = "roles/storage.admin"
   member  = "serviceAccount:${google_service_account.ga_push_to_registry.email}"
   project = "name-remember-23"
 }
