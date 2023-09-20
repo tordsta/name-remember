@@ -28,4 +28,3 @@ jobs:
           image_name: name-remember
           image_tag: latest
           dockerfile: ./next-client/Dockerfile
-          context: ./docker
