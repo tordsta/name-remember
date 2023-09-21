@@ -146,6 +146,12 @@ resource "google_storage_bucket_iam_member" "viewer" {
   # ]
 }
 
+resource "google_artifact_registry_repository" "repository" {
+  repository_id = "name-remember-23"
+  format        = "DOCKER"
+}
+
+
 # Set up Service account for Github Actions to access Container Registry
 module "workload-identity-federation-multi-provider" {
   source  = "SudharsaneSivamany/workload-identity-federation-multi-provider/google"
@@ -171,27 +177,10 @@ module "workload-identity-federation-multi-provider" {
       name           = "ga-push-to-registry"
       attribute      = "attribute.repository/tordsta/name-remember"
       all_identities = true
-      roles          = ["roles/storage.admin"]
+      roles          = ["roles/storage.admin", "roles/artifactregistry.admin"]
     }
   ]
 }
-
-#---------------
-
-# resource "google_service_account" "ga_push_to_registry" {
-#   account_id   = "ga-push-to-registry"
-#   display_name = "Service Account for Github Actions to push to Container Registry"
-# }
-
-# resource "google_project_iam_member" "ga_push_to_registry_iam" {
-#   role    = "roles/storage.admin"
-#   member  = "serviceAccount:${google_service_account.ga_push_to_registry.email}"
-#   project = "name-remember-23"
-# }
-
-# resource "google_service_account_key" "ga_push_to_registry_key" {
-#   service_account_id = google_service_account.ga_push_to_registry.name
-# }
 
 
 
