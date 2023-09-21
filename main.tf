@@ -130,24 +130,8 @@ resource "google_cloud_run_domain_mapping" "www_domain" {
 }
 
 # Container registry for web app
-resource "google_container_registry" "registry" {
-  project  = "name-remember-23"
-  location = "EU"
-}
-
-resource "google_storage_bucket_iam_member" "viewer" {
-  bucket = google_container_registry.registry.id
-  role = "roles/storage.objectViewer"
-  member = "allUsers"
-  # change to binding
-  # members = [
-  #   "user:tord.standnes@gmail.com",
-  #   "serviceAccount:project_number-compute@developer.gserviceaccount.com",
-  # ]
-}
-
 resource "google_artifact_registry_repository" "repository" {
-  repository_id = "name-remember"
+  repository_id = "webapp-name-remember"
   format        = "DOCKER"
 }
 
