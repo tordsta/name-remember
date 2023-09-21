@@ -22,7 +22,7 @@ jobs:
       - uses: RafikFarhad/push-to-gcr-github-action@v5-beta
         with:
           registry: us-central1-docker.pkg.dev
-          project_id: name-remember-23
+          project_id: name-remember-23/name-remember
           image_name: name-remember
           image_tag: latest
           dockerfile: ./next-client/Dockerfile
