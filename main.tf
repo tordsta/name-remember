@@ -162,7 +162,7 @@ module "workload-identity-federation-multi-provider" {
       name           = "ga-push-to-registry"
       attribute      = "attribute.repository/tordsta/name-remember"
       all_identities = true
-      roles          = ["roles/storage.admin", "roles/artifactregistry.admin"]
+      roles          = ["roles/storage.admin", "roles/artifactregistry.admin", "roles/run.admin"]
     }
   ]
 }
