@@ -147,7 +147,7 @@ resource "google_storage_bucket_iam_member" "viewer" {
 }
 
 resource "google_artifact_registry_repository" "repository" {
-  repository_id = "name-remember-23"
+  repository_id = "name-remember"
   format        = "DOCKER"
 }
 
