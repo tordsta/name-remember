@@ -12,7 +12,6 @@ resource "google_cloud_run_service" "default" {
     spec {
       containers {
         image = "${google_artifact_registry_repository.repository.location}-docker.pkg.dev/name-remember-23/${google_artifact_registry_repository.repository.name}/name-remember:latest"
-        #"us-central1-docker.pkg.dev/name-remember-23/webapp-name-remember/webapp-name-remember:latest"
         env {
           name="DB_USER"
           value="postgres"
