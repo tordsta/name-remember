@@ -21,7 +21,7 @@ jobs:
           service_account: ga-push-to-registry@name-remember-23.iam.gserviceaccount.com
       - uses: RafikFarhad/push-to-gcr-github-action@v5-beta
         with:
-          registry: docker.pkg.dev
+          registry: us-central1-docker.pkg.dev
           project_id: name-remember-23
           image_name: name-remember
           image_tag: latest
