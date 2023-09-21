@@ -11,7 +11,8 @@ resource "google_cloud_run_service" "default" {
   template {
     spec {
       containers {
-        image = "gcr.io/name-remember-23/name-remember:latest"
+        image = "${google_artifact_registry_repository.repository.location}-docker.pkg.dev/name-remember-23/${google_artifact_registry_repository.repository.name}/name-remember:latest"
+        #"us-central1-docker.pkg.dev/name-remember-23/webapp-name-remember/webapp-name-remember:latest"
         env {
           name="DB_USER"
           value="postgres"
@@ -133,6 +134,7 @@ resource "google_cloud_run_domain_mapping" "www_domain" {
 resource "google_artifact_registry_repository" "repository" {
   repository_id = "webapp-name-remember"
   format        = "DOCKER"
+  location      = "us-central1"
 }
 
 
