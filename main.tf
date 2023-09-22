@@ -162,12 +162,17 @@ module "workload-identity-federation-multi-provider" {
       name           = "ga-push-to-registry"
       attribute      = "attribute.repository/tordsta/name-remember"
       all_identities = true
-      roles          = ["roles/storage.admin", "roles/artifactregistry.admin", "roles/run.admin"]
-    }
+      roles          = ["roles/storage.admin", "roles/artifactregistry.admin"]
+    },
+    {
+      name           = "ga-deploy-to-cloud-run"
+      attribute      = "attribute.repository/tordsta/name-remember"
+      all_identities = true
+      roles          = ["roles/run.admin", "roles/iam.serviceAccountUser"]
+    } 
+ 
   ]
 }
-
-
 
 
 # Cloud SQL Database Service
