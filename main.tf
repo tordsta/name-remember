@@ -5,7 +5,6 @@ provider "google" {
 
 # Cloud Run Service for web app
 resource "google_cloud_run_service" "default" {
-  depends_on = [ module.workload-identity-federation-multi-provider ]
   name     = "name-remember-service"
   location = "us-central1"
   

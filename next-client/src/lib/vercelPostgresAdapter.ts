@@ -68,8 +68,6 @@ export default function vercelPostgresAdapter(): Adapter {
       provider: string;
       providerAccountId: string;
     }): Promise<AdapterUser | null> => {
-      console.log("getUserByAccount: provider", provider);
-      console.log("getUserByAccount: providerAccountId", providerAccountId);
       const { rows } = await sql({
         query: `
       SELECT u.* 
@@ -149,6 +147,9 @@ export default function vercelPostgresAdapter(): Adapter {
         WHERE session_token = $1`,
         values: [sessionToken],
       });
+      if (!session.rows[0]) {
+        return null;
+      }
       const { rows } = await sql({
         query: `
         SELECT * 
@@ -179,8 +180,6 @@ export default function vercelPostgresAdapter(): Adapter {
       session: Partial<AdapterSession> & Pick<AdapterSession, "sessionToken">,
       token?: string
     ): Promise<AdapterSession | null | undefined> => {
-      console.log("updateSession: session", session);
-      console.log("updateSession: token", token);
       if (
         !session.expires ||
         typeof session.expires == "undefined" ||
