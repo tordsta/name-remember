@@ -4,7 +4,7 @@ import { Person } from "@/utils/types";
 import Image from "next/image";
 import { FramedButton } from "./Button";
 import { track } from "@amplitude/analytics-browser";
-import { trackAmplitudeData } from "@/utils/amplitude";
+import { trackAmplitudeData } from "@/lib/amplitude";
 
 export default function Memorization({
   currentList,

@@ -3,7 +3,7 @@ import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import SlackProvider from "next-auth/providers/slack";
-import vercelPostgresAdapter from "@/utils/vercelPostgresAdapter";
+import vercelPostgresAdapter from "@/lib/vercelPostgresAdapter";
 
 export const authOptions = {
   secret: process.env.NEXT_AUTH as string,
@@ -33,6 +33,7 @@ export const authOptions = {
       clientSecret: process.env.SLACK_SECRET as string,
     }),
   ],
+  debugger: true,
   callbacks: {
     async redirect() {
       return "/dashboard";

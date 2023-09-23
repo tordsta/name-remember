@@ -6,7 +6,7 @@ import DefaultModal from "./Modal";
 import useCreateList from "@/hooks/useCreateList";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { trackAmplitudeData } from "@/utils/amplitude";
+import { trackAmplitudeData } from "@/lib/amplitude";
 
 export default function Lists({
   data,

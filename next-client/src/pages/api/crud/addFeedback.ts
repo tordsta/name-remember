@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { sql } from "@vercel/postgres";
+import sql from "@/database/pgConnect";
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,9 +25,12 @@ export default async function handler(
   }
 
   try {
-    await sql`
+    await sql({
+      query: `
         INSERT INTO user_feedback (email, type, message, file)
-        VALUES (${email}, ${type}, ${message}, ${file})`;
+        VALUES ($1, $2, $3, $4)`,
+      values: [email, type, message, file],
+    });
     //TODO send email to admin
     res.status(200).json("Success");
     return;

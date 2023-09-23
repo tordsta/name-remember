@@ -2,7 +2,7 @@ import { usePeopleList } from "@/hooks/usePeopleList";
 import useDeletePeople from "@/hooks/useDeletePeople";
 import Modal from "react-modal";
 import NextImage from "next/image";
-import { trackAmplitudeData } from "@/utils/amplitude";
+import { trackAmplitudeData } from "@/lib/amplitude";
 
 export default function ListOfPeople({
   currentList,

@@ -4,7 +4,7 @@ import Button, { FramedButton } from "./Button";
 import NextImage from "next/image";
 import resizeImage from "@/utils/resizeImage";
 import useAddPeople from "@/hooks/useAddPeople";
-import { trackAmplitudeData } from "@/utils/amplitude";
+import { trackAmplitudeData } from "@/lib/amplitude";
 
 export default function AddPersonToListModal({ listId }: { listId: string }) {
   const [openSignal, setOpenSignal] = useState(false);

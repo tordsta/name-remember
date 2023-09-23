@@ -1,14 +1,13 @@
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
-import { Analytics } from "@vercel/analytics/react";
 import { QueryClient, QueryClientProvider, Hydrate } from "react-query";
 import { NotifyContainer } from "@/components/Notify";
 import { useRef } from "react";
 import { useEffect } from "react";
 import Script from "next/script";
 import { useRouter } from "next/router";
-import { GTM_ID, pageview } from "../utils/gtm";
-import { initAmplitude, setAmplitudeUserId } from "../utils/amplitude";
+import { GTM_ID, pageview } from "../lib/gtm";
+import { initAmplitude } from "../lib/amplitude";
 
 export default function App({
   Component,
@@ -69,7 +68,6 @@ export default function App({
           <SessionProvider session={session}>
             <Component {...pageProps} />
             <NotifyContainer />
-            <Analytics />
           </SessionProvider>
         </Hydrate>
       </QueryClientProvider>

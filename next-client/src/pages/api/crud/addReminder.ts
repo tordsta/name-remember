@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { sql } from "@vercel/postgres";
+import sql from "@/database/pgConnect";
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,14 +25,17 @@ export default async function handler(
     return;
   }
   try {
-    const { rows } = await sql`
+    const { rows } = await sql({
+      query: `
         UPDATE people_lists 
-        SET rrule = ${rrule}, 
-            rrule_start = to_timestamp(${rruleStart}), 
-            reminder_trigger_time = to_timestamp(${nextReminder})
-        WHERE ID = ${listId} 
-            AND owner_id = (SELECT id FROM users WHERE email = ${email})
-    `;
+        SET rrule = $1, 
+            rrule_start = to_timestamp($2), 
+            reminder_trigger_time = to_timestamp($3)
+        WHERE ID = $4 
+            AND owner_id = (SELECT id FROM users WHERE email = $5)
+    `,
+      values: [rrule, rruleStart, nextReminder, listId, email],
+    });
 
     console.log("rows update rrule", rows);
     res.status(200).json(rows[0] as any);

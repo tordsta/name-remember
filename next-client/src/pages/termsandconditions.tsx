@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout";
-import { trackAmplitudeData } from "@/utils/amplitude";
+import { trackAmplitudeData } from "@/lib/amplitude";
 import { useEffect } from "react";
 
 export default function TermsAndConditions() {

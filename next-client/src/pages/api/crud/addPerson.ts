@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { sql } from "@vercel/postgres";
+import sql from "@/database/pgConnect";
 import { Person } from "@/utils/types";
 
 export default async function handler(
@@ -24,25 +24,31 @@ export default async function handler(
       return;
     }
     try {
-      const people = await sql`
+      const people = await sql({
+        query: `
         INSERT INTO people (fname, mname, lname, image)
-        VALUES (${person.fname}, ${person.mname}, ${person.lname}, ${person.image})
-        RETURNING id, fname;`;
+        VALUES ($1, $2, $3, $4)
+        RETURNING id, fname;`,
+        values: [person.fname, person.mname, person.lname, person.image],
+      });
 
-      const results = await sql`
+      const results = await sql({
+        query: `
       WITH user_id AS (
         SELECT id 
         FROM users 
-        WHERE email = ${email}
+        WHERE email = $1
       ), 
       list_id AS (
         SELECT id 
         FROM people_lists 
-        WHERE id = ${listId} 
+        WHERE id = $2
         AND owner_id = (SELECT id FROM user_id)
       )
       INSERT INTO people_in_lists (people_id, people_list_id)
-      VALUES (${people.rows[0].id}, (SELECT id FROM list_id))`;
+      VALUES ($3, (SELECT id FROM list_id))`,
+        values: [email, listId, people.rows[0].id],
+      });
       res.status(200).json(JSON.stringify(results.rowCount));
       return;
     } catch (error) {

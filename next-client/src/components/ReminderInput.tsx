@@ -4,7 +4,7 @@ import { Frequency, RRule } from "rrule";
 import { notifyError } from "./Notify";
 import Modal from "./Modal";
 import useAddReminder from "@/hooks/useAddReminder";
-import { trackAmplitudeData } from "@/utils/amplitude";
+import { trackAmplitudeData } from "@/lib/amplitude";
 
 export default function ReminderInput({
   id,

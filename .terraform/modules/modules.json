@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"workload-identity-federation-multi-provider","Source":"registry.terraform.io/SudharsaneSivamany/workload-identity-federation-multi-provider/google","Version":"1.1.0","Dir":".terraform/modules/workload-identity-federation-multi-provider"}]}

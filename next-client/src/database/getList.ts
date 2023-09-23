@@ -1,4 +1,4 @@
-import { sql } from "@vercel/postgres";
+import sql from "@/database/pgConnect";
 import { Session } from "next-auth";
 
 export default async function getList({
@@ -23,7 +23,8 @@ export default async function getList({
       listId === "undefined" ||
       listId === ""
     ) {
-      const { rows } = await sql`
+      const { rows } = await sql({
+        query: `
         SELECT 
           pl.id,
           pl.name,
@@ -40,13 +41,16 @@ export default async function getList({
         JOIN 
           people p ON p.id = pil.people_id
         WHERE
-          pl.owner_id = (SELECT id FROM users WHERE email = ${email})
+          pl.owner_id = (SELECT id FROM users WHERE email = $1)
         GROUP BY 
           pl.id, pl.name
-        `;
+        `,
+        values: [email],
+      });
       return rows[0];
     } else {
-      const { rows } = await sql`
+      const { rows } = await sql({
+        query: `
         SELECT 
           pl.id,
           pl.name,
@@ -70,11 +74,13 @@ export default async function getList({
         LEFT JOIN 
           people p ON p.id = pil.people_id
         WHERE
-          pl.owner_id = (SELECT id FROM users WHERE email = ${email})
-          AND pl.id = ${listId}
+          pl.owner_id = (SELECT id FROM users WHERE email = $1)
+          AND pl.id = $2
         GROUP BY 
           pl.id, pl.name
-        `;
+        `,
+        values: [email, listId],
+      });
       return rows[0];
     }
   } catch (error) {

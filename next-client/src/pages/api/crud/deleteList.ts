@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { sql } from "@vercel/postgres";
+import sql from "@/database/pgConnect";
 
 export default async function handler(
   req: NextApiRequest,
@@ -20,13 +20,16 @@ export default async function handler(
       return;
     }
     try {
-      const results = await sql`
+      const results = await sql({
+        query: `
       WITH user_id AS (
-        SELECT id FROM users WHERE email = ${email}
+        SELECT id FROM users WHERE email = $1
       )
       DELETE FROM people_lists
-      WHERE id = ${id} AND owner_id = (SELECT id FROM user_id)
-      RETURNING id, name, owner_id;`;
+      WHERE id = $2 AND owner_id = (SELECT id FROM user_id)
+      RETURNING id, name, owner_id;`,
+        values: [email, id],
+      });
       res.status(200).json(JSON.stringify(results));
       return;
     } catch (error) {

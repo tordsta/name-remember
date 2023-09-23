@@ -1,0 +1,8 @@
+cloud-sql-proxy
+.env
+sql_database_password.json
+terraform.tfstate
+terraform.tfstate.backup
+backups/*
+todo
+secret.auto.tfvars
