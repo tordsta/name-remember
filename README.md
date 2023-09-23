@@ -16,5 +16,6 @@ Run the cloud sql proxy locally to connect to the DB in GCP.
 
 ## Terraform setup
 
-1. terraform apply
-2.
+1. run terraform apply
+2. trigger the github actions to build image and deploy to cloud run
+3.
