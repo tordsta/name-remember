@@ -1,4 +1,4 @@
-name: Push to GCR GitHub Action
+name: Push to GCR and Deploy to Cloud Run GitHub Action
 on:
   workflow_dispatch:
   push:
@@ -17,7 +17,7 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v0
         with:
-          workload_identity_provider: projects/471648801973/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions
+          workload_identity_provider: projects/471648801973/locations/global/workloadIdentityPools/github-actions-pool-493039/providers/github-actions
           service_account: ga-push-to-registry@name-remember-23.iam.gserviceaccount.com
       - uses: RafikFarhad/push-to-gcr-github-action@v5-beta
         with:
