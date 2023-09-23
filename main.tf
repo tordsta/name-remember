@@ -137,13 +137,17 @@ resource "google_artifact_registry_repository" "repository" {
   location      = "us-central1"
 }
 
+resource "random_integer" "id" {
+  min = 100000
+  max = 999999
+}
 
 # Set up Service account for Github Actions to access Container Registry
 module "workload-identity-federation-multi-provider" {
   source  = "SudharsaneSivamany/workload-identity-federation-multi-provider/google"
   version = "1.1.0"
   project_id = "name-remember-23"
-  pool_id = "github-actions-pool"
+  pool_id = "github-actions-pool-${random_integer.id.result}"
   wif_providers = [{ 
     provider_id = "github-actions"
     select_provider = "oidc"

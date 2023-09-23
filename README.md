@@ -14,8 +14,14 @@ Run the cloud sql proxy locally to connect to the DB in GCP.
 4. Connect with to Database on localhost:5432 using the name in the main.tf and the password in file.
 5. Apply migrations if needed. For example: "psql "postgres://postgres:${password}@localhost:5432/userdata" -f migrations/001_init.sql"
 
-## Terraform setup
+## Terraform
 
-1. run terraform apply (some errors will occur)
+### Terraform setup
+
+1. run terraform apply (errors on cloud run is expected due to image not being built yet)
 2. trigger the github actions to build image and deploy to cloud run
 3. run terraform apply to create final resources
+
+### Terraform destroy
+
+1. run terraform destroy
