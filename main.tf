@@ -14,7 +14,7 @@ resource "google_cloud_run_service" "default" {
         image = "${google_artifact_registry_repository.repository.location}-docker.pkg.dev/name-remember-23/${google_artifact_registry_repository.repository.name}/name-remember:latest"
         env {
           name="DB_USER"
-          value="postgres"
+          value=google_sql_user.default.name
         }
         env {
           name="DB_PASSWORD"
