@@ -14,9 +14,10 @@ export default async function getList({ session }: { session: Session }) {
     const { rows } = await sql({
       query: `
     WITH user_id AS (
-      SELECT id FROM users WHERE email = ${email}
+      SELECT id FROM users WHERE email = $1
     )
     SELECT id, name, owner_id FROM people_lists WHERE owner_id = (SELECT id FROM user_id);`,
+      values: [email],
     });
     return rows;
   } catch (error) {

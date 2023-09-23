@@ -91,11 +91,10 @@ export default async function handler(
     }
     try {
       const res = await sql({
-        query: `
-        UPDATE people_lists
-        SET reminder_trigger_time = to_timestamp(${nextTriggerTime})
-        WHERE id = ${list.id}
-        `,
+        query: `UPDATE people_lists
+        SET reminder_trigger_time = to_timestamp($1)
+        WHERE id = $2`,
+        values: [nextTriggerTime, list.id],
       });
     } catch (error) {
       console.error(

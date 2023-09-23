@@ -33,6 +33,7 @@ export const authOptions = {
       clientSecret: process.env.SLACK_SECRET as string,
     }),
   ],
+  debugger: true,
   callbacks: {
     async redirect() {
       return "/dashboard";

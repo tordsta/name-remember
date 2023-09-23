@@ -18,9 +18,18 @@ pool.on("error", (err, client) => {
   process.exit(-1);
 });
 
-export default async function sql({ query }: { query: string }) {
+export default async function sql({
+  query,
+  values,
+}: {
+  query: string;
+  values?: any[];
+}) {
   const client = await pool.connect();
-  const res = await client.query(query);
+  const res = await client.query({
+    text: query,
+    values: values,
+  });
   client.release();
   return res;
 }

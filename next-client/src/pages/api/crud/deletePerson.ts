@@ -23,8 +23,9 @@ export default async function handler(
       console.log("delete person", id, email);
       const results = await sql({
         query: `
-          SELECT delete_person(${email}, ${id});
+          SELECT delete_person($1, $2);
         `,
+        values: [email, id],
       });
 
       console.log("results delete person", results);
