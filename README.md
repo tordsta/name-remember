@@ -18,10 +18,13 @@ Run the cloud sql proxy locally to connect to the DB in GCP.
 
 ### Terraform setup
 
-1. run terraform apply (errors on cloud run is expected due to image not being built yet)
-2. trigger the github actions to build image and deploy to cloud run
-3. run terraform apply to create final resources
+1. Run terraform apply (errors on cloud run is expected due to image not being built yet)
+2. Update the github workload_identity_provider with the correct pool_id
+3. Trigger the github actions to build image and deploy to cloud run
+4.
+5. run terraform apply to create final resources
 
 ### Terraform destroy
 
-1. run terraform destroy
+1. Set deletion_protection to false on resource "google_sql_database_instance" "default"
+2. Run terraform destroy

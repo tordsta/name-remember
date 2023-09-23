@@ -153,7 +153,7 @@ module "workload-identity-federation-multi-provider" {
     select_provider = "oidc"
     provider_config = {
       issuer_uri = "https://token.actions.githubusercontent.com"
-      allowed_audiences = "https://iam.googleapis.com/projects/471648801973/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions" 
+      allowed_audiences = "https://iam.googleapis.com/projects/471648801973/locations/global/workloadIdentityPools/github-actions-pool-${random_integer.id.result}/providers/github-actions" 
     }
     disabled = false
     attribute_mapping    = {
@@ -185,7 +185,7 @@ resource "google_sql_database_instance" "default" {
   name             = "name-remember-db"
   database_version = "POSTGRES_13"
   region           = "us-central1"
-  deletion_protection = false #change to true when in production
+  deletion_protection = true
 
   settings {
     tier = "db-f1-micro"
