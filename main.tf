@@ -4,101 +4,103 @@ provider "google" {
 }
 
 # Cloud Run Service for web app
-resource "google_cloud_run_service" "default" {
+resource "google_cloud_run_v2_service" "default" {
   name     = "name-remember-service"
   location = "us-central1"
-  
+  traffic {
+    type = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
+    percent = 100
+  }
   template {
-    spec {
-      containers {
-        image = "${google_artifact_registry_repository.repository.location}-docker.pkg.dev/name-remember-23/${google_artifact_registry_repository.repository.name}/name-remember:latest"
-        env {
-          name="DB_USER"
-          value=google_sql_user.default.name
-        }
-        env {
-          name="DB_PASSWORD"
-          value=random_password.pwd.result
-        }
-        env {
-          name="DB_HOST"
-          value=google_sql_database_instance.default.public_ip_address
-        }
-        env {
-          name="DB_PORT"
-          value="5432"
-        }
-        env {
-          name="DB_DATABASE"
-          value=google_sql_database.default.name
-        }
-        env {
-          name = "NEXTAUTH_URL"
-          value = var.NEXTAUTH_URL
-        }
-        env {
-          name = "NEXT_AUTH"
-          value = var.NEXT_AUTH
-        }
-
-        env {
-          name = "GITHUB_ID"
-          value = var.GITHUB_ID
-        }
-        env {
-          name = "GITHUB_SECRET"
-          value = var.GITHUB_SECRET
-        }
-        env {
-          name = "GOOGLE_ID"
-          value = var.GOOGLE_ID
-        }
-        env {
-          name = "GOOGLE_SECRET"
-          value = var.GOOGLE_SECRET
-        }
-        env {
-          name = "FACEBOOK_ID"
-          value = var.FACEBOOK_ID
-        }
-        env {
-          name = "FACEBOOK_SECRET"
-          value = var.FACEBOOK_SECRET
-        }
-        env {
-          name = "SLACK_ID"
-          value = var.SLACK_ID
-        }
-        env {
-          name = "SLACK_SECRET"
-          value = var.SLACK_SECRET
-        }
-        env {
-          name = "POSTMARK_API_KEY"
-          value = var.POSTMARK_API_KEY
-        }
-        env {
-          name = "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID"
-          value = var.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
-        }
-        env {
-          name = "NEXT_PUBLIC_AMPLITUDE_API_KEY"
-          value = var.NEXT_PUBLIC_AMPLITUDE_API_KEY
-        }
+    scaling {
+      max_instance_count = 2
+    }
+    vpc_access {
+      connector = google_vpc_access_connector.webapp.id
+      egress = "ALL_TRAFFIC"
+    }
+    containers {
+      image = "${google_artifact_registry_repository.repository.location}-docker.pkg.dev/name-remember-23/${google_artifact_registry_repository.repository.name}/name-remember:latest"
+      env {
+        name="DB_USER"
+        value=google_sql_user.default.name
+      }
+      env {
+        name="DB_PASSWORD"
+        value=random_password.pwd.result
+      }
+      env {
+        name="DB_HOST"
+        value=google_sql_database_instance.default.private_ip_address
+      }
+      env {
+        name="DB_PORT"
+        value="5432"
+      }
+      env {
+        name="DB_DATABASE"
+        value=google_sql_database.default.name
+      }
+      env {
+        name = "NEXTAUTH_URL"
+        value = var.NEXTAUTH_URL
+      }
+      env {
+        name = "NEXT_AUTH"
+        value = var.NEXT_AUTH
+      }
+      env {
+        name = "GITHUB_ID"
+        value = var.GITHUB_ID
+      }
+      env {
+        name = "GITHUB_SECRET"
+        value = var.GITHUB_SECRET
+      }
+      env {
+        name = "GOOGLE_ID"
+        value = var.GOOGLE_ID
+      }
+      env {
+        name = "GOOGLE_SECRET"
+        value = var.GOOGLE_SECRET
+      }
+      env {
+        name = "FACEBOOK_ID"
+        value = var.FACEBOOK_ID
+      }
+      env {
+        name = "FACEBOOK_SECRET"
+        value = var.FACEBOOK_SECRET
+      }
+      env {
+        name = "SLACK_ID"
+        value = var.SLACK_ID
+      }
+      env {
+        name = "SLACK_SECRET"
+        value = var.SLACK_SECRET
+      }
+      env {
+        name = "POSTMARK_API_KEY"
+        value = var.POSTMARK_API_KEY
+      }
+      env {
+        name = "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID"
+        value = var.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
+      }
+      env {
+        name = "NEXT_PUBLIC_AMPLITUDE_API_KEY"
+        value = var.NEXT_PUBLIC_AMPLITUDE_API_KEY
       }
     }
-  }
-
-  traffic {
-    percent         = 100
-    latest_revision = true
   }
 }
 
 # Make Cloud Run Service (web app) public
 resource "google_cloud_run_service_iam_member" "public" {
-  service  = google_cloud_run_service.default.name
-  location = google_cloud_run_service.default.location
+  service  = google_cloud_run_v2_service.default.name
+  location = google_cloud_run_v2_service.default.location
   role     = "roles/run.invoker"
   member   = "allUsers"
 }
@@ -113,7 +115,7 @@ resource "google_cloud_run_domain_mapping" "apex_domain" {
   }
 
   spec {
-    route_name = google_cloud_run_service.default.name
+    route_name = google_cloud_run_v2_service.default.name
   }
 }
 resource "google_cloud_run_domain_mapping" "www_domain" {
@@ -125,7 +127,7 @@ resource "google_cloud_run_domain_mapping" "www_domain" {
   }
 
   spec {
-    route_name = google_cloud_run_service.default.name
+    route_name = google_cloud_run_v2_service.default.name
   }
 }
 
@@ -135,7 +137,6 @@ resource "google_artifact_registry_repository" "repository" {
   format        = "DOCKER"
   location      = "us-central1"
 }
-
 resource "random_integer" "id" {
   min = 100000
   max = 999999
@@ -178,6 +179,28 @@ module "workload-identity-federation-multi-provider" {
   ]
 }
 
+resource "google_cloud_scheduler_job" "send_out_reminders" {
+  name             = "send-out-reminders"
+  description      = "Send out reminder emails to users via Postmark"
+  schedule         = "0 * * * *"
+  time_zone        = "Europe/Oslo"
+  attempt_deadline = "320s"
+
+  retry_config {
+    retry_count = 1
+  }
+
+  http_target {
+    http_method = "POST"
+    uri         = "https://nameremember.com/api/cron/hourlyMailSender"
+    body        = base64encode("")
+    headers = {
+      "Content-Type" = "application/json"
+    }
+  }
+}
+
+
 
 # Cloud SQL Database Service
 resource "google_sql_database_instance" "default" {
@@ -185,13 +208,16 @@ resource "google_sql_database_instance" "default" {
   database_version = "POSTGRES_13"
   region           = "us-central1"
   deletion_protection = true
+  depends_on = [google_service_networking_connection.default]
+
 
   settings {
     tier = "db-f1-micro"
 
     ip_configuration {
       ipv4_enabled    = true
-      require_ssl     = true
+      require_ssl     = false
+      private_network = google_compute_network.peering_network.id
     }
 
     backup_configuration {
@@ -223,12 +249,10 @@ resource "random_password" "pwd" {
   length  = 16
   special = false
 }
-
 resource "local_file" "sql_database_password" {
   content  = random_password.pwd.result
   filename = "${path.module}/sql_database_password.json"
 }
-
 resource "google_sql_user" "default" {
   name     = "postgres"
   instance = google_sql_database_instance.default.name
@@ -240,13 +264,42 @@ resource "google_service_account" "sql_proxy" {
   account_id   = "sql-proxy"
   display_name = "Service Account for Cloud SQL Proxy"
 }
-
 resource "google_project_iam_member" "sql_proxy_iam" {
   role    = "roles/cloudsql.client"
   member  = "serviceAccount:${google_service_account.sql_proxy.email}"
   project = "name-remember-23"
 }
-
 resource "google_service_account_key" "sql_proxy_key" {
   service_account_id = google_service_account.sql_proxy.name
 }
+
+
+# VPC Network
+resource "google_compute_network" "peering_network" {
+  name                    = "private-network"
+  auto_create_subnetworks = "false"
+}
+resource "google_compute_global_address" "private_ip_address" {
+  name          = "private-ip-address"
+  purpose       = "VPC_PEERING"
+  address_type  = "INTERNAL"
+  prefix_length = 16
+  network       = google_compute_network.peering_network.id
+}
+resource "google_service_networking_connection" "default" {
+  network                 = google_compute_network.peering_network.id
+  service                 = "servicenetworking.googleapis.com"
+  reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
+}
+resource "google_compute_network_peering_routes_config" "peering_routes" {
+  peering              = google_service_networking_connection.default.peering
+  network              = google_compute_network.peering_network.name
+  import_custom_routes = true
+  export_custom_routes = true
+}
+resource "google_vpc_access_connector" "webapp" {
+  name               = "serverless-connector"
+  network            = google_compute_network.peering_network.id
+  ip_cidr_range      = "10.8.0.0/28"
+  region             = "us-central1"
+}  
