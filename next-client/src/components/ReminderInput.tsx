@@ -1,10 +1,11 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import Button, { FramedButton } from "./Button";
 import { Frequency, RRule } from "rrule";
-import { notifyError } from "./Notify";
+import { notifyError, notifyWarning } from "./Notify";
 import Modal from "./Modal";
 import useAddReminder from "@/hooks/useAddReminder";
 import { trackAmplitudeData } from "@/lib/amplitude";
+import useDeleteReminder from "@/hooks/useDeleteReminder";
 
 export default function ReminderInput({
   id,
@@ -42,6 +43,7 @@ export default function ReminderInput({
   const hourNames = ["Morning", "Midday", "Afternoon", "Evening"];
 
   const addReminder = useAddReminder();
+  const deleteReminder = useDeleteReminder();
 
   const handleFrequencyChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -58,6 +60,8 @@ export default function ReminderInput({
     const val = parseFloat(event.target.value);
     if (!isNaN(val) && val > 0) {
       setInterval(val);
+    } else {
+      notifyWarning("Please enter a positive number over 0");
     }
   };
 
@@ -81,15 +85,6 @@ export default function ReminderInput({
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-
-    //TODO - check if valid input
-    if (interval == null || interval == 0) {
-      console.log("invalid input", frequency, interval);
-      return;
-    }
-    // else {
-    //     notifyWarning("Please enter a positive number over 0");
-    //   }
 
     let byHours: Array<number> = [];
     if (hours.includes(0)) byHours.push(7);
@@ -125,7 +120,16 @@ export default function ReminderInput({
     });
   };
 
-  //TODO implement select date on year. And select 1-31 date on month. Premium feature?
+  const handleDelete = () => {
+    deleteReminder.mutate({
+      listId: id,
+    });
+    setRruleText(null);
+    trackAmplitudeData("Reminder deleted", {
+      listId: id,
+    });
+  };
+
   return (
     <>
       <div className="flex flex-col gap-4 justify-center items-center min-w-[250px]">
@@ -144,6 +148,13 @@ export default function ReminderInput({
           }}
         >
           Edit Reminder
+        </FramedButton>
+        <FramedButton
+          onClick={() => {
+            handleDelete();
+          }}
+        >
+          Delete Reminder
         </FramedButton>
       </div>
       <Modal openSignal={openSignal} setOpenSignal={setOpenSignal}>
