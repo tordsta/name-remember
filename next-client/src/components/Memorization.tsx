@@ -17,7 +17,6 @@ export default function Memorization({
   isError: boolean;
   isLoading: boolean;
 }) {
-  //TODO make it snap to the elements
   const { scrollRef, pages, activePageIndex, next, prev, goTo, refresh } =
     useSnapCarousel();
   const [answers, setAnswers] = useState<
@@ -277,8 +276,7 @@ export default function Memorization({
           Next
         </p>
       </div>
-      {/* TODO make a final results page */}
-      {/* TODO make a submit and storage of results */}
+      {/* make a submit and storage of results */}
       {/* {pages.length == activePageIndex + 1 && (
           <div className="flex justify-center items-center my-4">
             <FramedButton onClick={() => console.log("submit")}>

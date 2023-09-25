@@ -39,18 +39,6 @@ export const authOptions = {
       return "/dashboard";
     },
   },
-  //TODO - add email verification
-  // events: {
-  //   async createUser(message: { user: User}) {
-  //     console.log("createUser", message);
-  //     //create token
-  //     sendVerificationMail({
-  //       recipientEmail: message.user.email as string,
-  //       recipientName: message.user.name as string,
-  //       tokenUrl: "",
-  //     });
-  //   }
-  // }
 };
 
 export default NextAuth(authOptions);

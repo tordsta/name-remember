@@ -36,8 +36,6 @@ export default async function handler(
     `,
       values: [rrule, rruleStart, nextReminder, listId, email],
     });
-
-    console.log("rows update rrule", rows);
     res.status(200).json(rows[0] as any);
     return;
   } catch (error) {

@@ -31,7 +31,6 @@ export default async function handler(
         VALUES ($1, $2, $3, $4)`,
       values: [email, type, message, file],
     });
-    //TODO send email to admin
     res.status(200).json("Success");
     return;
   } catch (error) {
