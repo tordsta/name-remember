@@ -30,7 +30,7 @@ export default function Profile() {
           )}
           <LoginButton />
         </div>
-        <div className="bg-green-200 m-auto">
+        <div className="m-auto">
           {/** TODO fix bug on mobile min-h-width overflows screen */}
           <FeedbackForm />
         </div>

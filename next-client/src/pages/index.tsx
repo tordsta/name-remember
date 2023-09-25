@@ -17,7 +17,7 @@ export default function Home() {
           <h1 className="block md:hidden text-3xl">Name Remember</h1>
           <div className="relative w-full h-full mt-4 mx-4 max-w-[250px] md:max-w-[384px] min-h-[250px] max-h-[250px] md:max-h-[384px]">
             <Image
-              src="/frontImage1.png"
+              src="/frontImage1.jpg"
               alt="Name Remember"
               fill
               priority

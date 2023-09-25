@@ -1,4 +1,4 @@
-import Image from "next/image";
+import CanvasBackground from "./CanvasBackground";
 
 export default function Button({
   style,
@@ -73,9 +73,17 @@ export function FramedButton({
       onClick={onClick}
       onSubmit={onSubmit}
       type={typeSubmit ? "submit" : "button"}
-      style={{ boxShadow: "0px 0px 20px 10px white" }}
+      style={{
+        boxShadow: "0px 0px 20px 10px white",
+        borderWidth: "1px",
+        borderColor: "black",
+      }}
     >
-      <Image src="/buttonFrame460x60.png" alt="button" fill sizes="100%" />
+      <CanvasBackground
+        width={158}
+        height={38}
+        style={{ position: "absolute", top: -0, left: -0, zIndex: "auto" }}
+      />
       <div className="relative">{children && children}</div>
     </button>
   );

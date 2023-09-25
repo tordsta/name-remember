@@ -1,7 +1,14 @@
-import { randomInt } from "crypto";
 import React, { useRef, useEffect } from "react";
 
-const CanvasBackground: React.FC = () => {
+const CanvasBackground: React.FC = ({
+  width,
+  height,
+  style = { position: "absolute", top: 0, left: 0, zIndex: -1 },
+}: {
+  width?: number;
+  height?: number;
+  style?: React.CSSProperties;
+}) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -12,8 +19,13 @@ const CanvasBackground: React.FC = () => {
     if (!ctx) return;
 
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      if (width && height) {
+        canvas.width = width;
+        canvas.height = height;
+      } else {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
       drawBackground(ctx, canvas.width, canvas.height);
     };
 
@@ -40,14 +52,9 @@ const CanvasBackground: React.FC = () => {
     resizeCanvas();
 
     return () => window.removeEventListener("resize", resizeCanvas);
-  }, []);
+  }, [height, width]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      style={{ position: "absolute", top: 0, left: 0, zIndex: -1 }}
-    />
-  );
+  return <canvas ref={canvasRef} style={style} />;
 };
 
 export default CanvasBackground;
