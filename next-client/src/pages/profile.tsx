@@ -19,7 +19,6 @@ export default function Profile() {
         <div className="flex flex-col gap-4 justify-center items-center m-auto">
           <p>{session?.user?.name}</p>
           <p>{session?.user?.email}</p>
-          {/** TODO add send verification email again button here if email not verified */}
           {session?.user?.image && (
             <Image
               src={session?.user?.image}
@@ -30,8 +29,7 @@ export default function Profile() {
           )}
           <LoginButton />
         </div>
-        <div className="bg-green-200 m-auto">
-          {/** TODO fix bug on mobile min-h-width overflows screen */}
+        <div className="m-auto">
           <FeedbackForm />
         </div>
       </div>

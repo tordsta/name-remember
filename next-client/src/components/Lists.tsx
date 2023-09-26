@@ -67,8 +67,6 @@ export default function Lists({
                       />
                     </button>
                   </div>
-                  {/* TODO number of people in list */}
-                  {/* TODO reminder setting of list */}
                   <div className="flex h-full justify-end items-end text-xl pb-1">
                     <FramedButton
                       onClick={(e) => {

@@ -83,7 +83,6 @@ export default function EditListPage() {
           </div>
         </div>
         <div className="flex flex-col items-center justify-center mb-16 mt-8 md:mb-16">
-          {/* TODO add modal with where user confirmation deletion */}
           {typeof id === "string" && <ListOfPeople currentList={id} />}
           <div className="block md:hidden mt-8">
             <FramedButton

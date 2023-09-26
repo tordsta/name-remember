@@ -42,7 +42,6 @@ export default function ListOfPeople({
                     {person.fname} {person.mname} {person.lname}
                   </p>
                   <div className="grow" />
-                  {/** TODO make edit button */}
                   <button
                     onClick={() => {
                       if (person.id) {

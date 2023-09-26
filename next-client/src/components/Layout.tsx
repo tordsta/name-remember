@@ -90,7 +90,7 @@ export default function Layout({
               <div
                 className="text-3xl sm:text-4xl"
                 onClick={() => {
-                  router.push("/dashboard"); //TODO change to router.back or if router stack is empty to /dashboard
+                  router.push("/dashboard");
                 }}
               >
                 Name Remember
@@ -99,7 +99,7 @@ export default function Layout({
             {router.pathname !== "/dashboard" && (
               <div
                 className="hidden md:flex items-center justify-center gap-1 cursor-pointer"
-                onClick={() => router.push("/dashboard")} //TODO change to router.back or if router stack is empty to /dashboard
+                onClick={() => router.push("/dashboard")}
               >
                 <div className="invert-0">
                   <Image

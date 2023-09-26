@@ -37,20 +37,20 @@ export default async function handler(
   console.log("Starting hourlyMailSender");
 
   let rows: List[] = [];
-  const maxRetries = 10;
+  const maxRetries = 3;
   const delayMs = 10000;
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const res = await sql({
         query: `
-    SELECT people_lists.*, users.email, users.name as user_name 
-    FROM people_lists
-    INNER JOIN users 
-    ON people_lists.owner_id = users.id
-    WHERE people_lists.reminder_trigger_time <= NOW()
-    AND people_lists.rrule IS NOT NULL
-    `,
+          SELECT people_lists.*, users.email, users.name as user_name 
+          FROM people_lists
+          INNER JOIN users 
+          ON people_lists.owner_id = users.id
+          WHERE people_lists.reminder_trigger_time <= NOW()
+          AND people_lists.rrule IS NOT NULL
+        `,
       });
       rows = res.rows as List[];
       break;
