@@ -22,7 +22,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
           cache-dependency-path: next-client/package-lock.json
-      - run: yarn ci
+      - run: yarn install
         working-directory: ./next-client
       - run: yarn build --if-present
         working-directory: ./next-client
