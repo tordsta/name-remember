@@ -38,6 +38,7 @@
     "react-snap-carousel": "^0.3.2",
     "react-toastify": "^9.1.2",
     "rrule": "^2.7.2",
+    "stripe": "^13.7.0",
     "tailwindcss": "3.3.1",
     "typescript": "5.0.4"
   }

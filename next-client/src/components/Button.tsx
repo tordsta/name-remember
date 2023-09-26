@@ -80,6 +80,7 @@ export function FramedButton({
       }}
     >
       <CanvasBackground
+        // @ts-ignore
         width={158}
         height={38}
         style={{ position: "absolute", top: -0, left: -0, zIndex: "auto" }}
