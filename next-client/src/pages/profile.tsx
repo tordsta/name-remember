@@ -5,6 +5,7 @@ import Layout from "@/components/Layout";
 import FeedbackForm from "@/components/FeedbackForm";
 import { trackAmplitudeData } from "@/lib/amplitude";
 import { useEffect } from "react";
+import Subscriptions from "@/components/Subscriptions";
 
 export default function Profile() {
   const { data: session, status } = useSession();
@@ -28,6 +29,7 @@ export default function Profile() {
             />
           )}
           <LoginButton />
+          <Subscriptions />
         </div>
         <div className="m-auto">
           <FeedbackForm />

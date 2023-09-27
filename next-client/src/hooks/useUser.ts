@@ -6,7 +6,7 @@ const fetchUser = async () => {
 };
 
 const useUser = () => {
-  return useQuery("user", () => fetchUser());
+  return useQuery("user", () => fetchUser()).data;
 };
 
 export { useUser, fetchUser };
