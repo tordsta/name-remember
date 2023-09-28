@@ -4,6 +4,11 @@ Web App for remembering names from face images.
 
 ## Dev setup
 
+### Stripe setup
+
+Run the following to lisen to local webhook events:
+stripe listen --forward-to localhost:3000/api/stripe/webhook
+
 ### DB connection
 
 Run the cloud sql proxy locally to connect to the DB in GCP.

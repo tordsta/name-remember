@@ -4,6 +4,7 @@ import UserEmblem from "./UserEmblem";
 import Image from "next/image";
 import Head from "next/head";
 import CanvasBackground from "./CanvasBackground";
+import { useEffect, useRef, useState } from "react";
 
 export default function Layout({
   children,
@@ -22,6 +23,22 @@ export default function Layout({
   if (status === "unauthenticated" && router.pathname !== "/" && auth) {
     router.push("/");
   }
+
+  const ref = useRef<HTMLElement>(null);
+  const [height, setHeight] = useState<number | null>(null);
+  const [width, setWidth] = useState<number | null>(null);
+
+  const set = () => {
+    if (!ref || !ref.current) return;
+    setHeight(ref.current.getBoundingClientRect().height);
+    setWidth(ref.current.getBoundingClientRect().width);
+  };
+
+  useEffect(() => {
+    set();
+    window.addEventListener("resize", set);
+    return () => window.removeEventListener("resize", set);
+  }, []);
 
   return (
     <>
@@ -68,8 +85,11 @@ export default function Layout({
           href="/favicon-16x16.png"
         />
       </Head>
-      <main className="flex flex-col md:flex-row items-stretch justify-start min-h-screen min-w-full">
-        <CanvasBackground />
+      <main
+        ref={ref}
+        className="flex flex-col md:flex-row items-stretch justify-start min-h-screen min-w-full overflow-hidden"
+      >
+        {width && height && <CanvasBackground width={width} height={height} />}
         {nav && (
           <div className="flex flex-row md:flex-col justify-stretch w-full md:max-w-min mx-auto md:mx-0 border-b md:border-b-0 md:border-r border-black">
             <div className="md:mx-4 my-6 ml-6 mr-auto flex flex-row">

@@ -1,4 +1,4 @@
-import "@/styles/globals.css";
+import "@/utils/globals.css";
 import { SessionProvider } from "next-auth/react";
 import { QueryClient, QueryClientProvider, Hydrate } from "react-query";
 import { NotifyContainer } from "@/components/Notify";

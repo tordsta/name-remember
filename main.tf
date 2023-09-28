@@ -93,6 +93,22 @@ resource "google_cloud_run_v2_service" "default" {
         name = "NEXT_PUBLIC_AMPLITUDE_API_KEY"
         value = var.NEXT_PUBLIC_AMPLITUDE_API_KEY
       }
+      env {
+        name = "STRIPE_SECRET_KEY"
+        value = var.STRIPE_SECRET_KEY
+      }
+      env {
+        name = "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"
+        value = var.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+      }
+      env {
+        name = "NEXT_PUBLIC_STRIPE_RETURN_URL"
+        value = var.NEXT_PUBLIC_STRIPE_RETURN_URL
+      }
+      env {
+        name = "STRIPE_WEBHOOK_SECRET"
+        value = var.STRIPE_WEBHOOK_SECRET
+      }
     }
   }
 }

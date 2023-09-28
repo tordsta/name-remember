@@ -23,3 +23,15 @@ export type Person = {
   lname?: string;
   image?: string;
 };
+
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  verified_email: boolean;
+  image?: string;
+  createdAt: string;
+  updatedAt: string;
+  subscription_plan: "free" | "basic" | "standard" | "premium" | "professional";
+  stripe_customer_id?: string;
+};

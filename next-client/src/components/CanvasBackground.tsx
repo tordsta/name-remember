@@ -1,12 +1,17 @@
 import React, { useRef, useEffect } from "react";
 
-const CanvasBackground: React.FC = ({
+const CanvasBackground = ({
   width,
   height,
-  style = { position: "absolute", top: 0, left: 0, zIndex: -1 },
+  style = {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: -1,
+  },
 }: {
-  width?: number;
-  height?: number;
+  width: number;
+  height: number;
   style?: React.CSSProperties;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -19,13 +24,8 @@ const CanvasBackground: React.FC = ({
     if (!ctx) return;
 
     const resizeCanvas = () => {
-      if (width && height) {
-        canvas.width = width;
-        canvas.height = height;
-      } else {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
+      canvas.width = width;
+      canvas.height = height;
       drawBackground(ctx, canvas.width, canvas.height);
     };
 
