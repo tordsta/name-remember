@@ -1,9 +1,14 @@
 import React, { useRef, useEffect } from "react";
 
-const CanvasBackground: React.FC = ({
+const CanvasBackground = ({
   width,
   height,
-  style = { position: "absolute", top: 0, left: 0, zIndex: -1 },
+  style = {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: -1,
+  },
 }: {
   width?: number;
   height?: number;
@@ -23,8 +28,8 @@ const CanvasBackground: React.FC = ({
         canvas.width = width;
         canvas.height = height;
       } else {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        canvas.width = window.outerWidth;
+        canvas.height = window.outerHeight;
       }
       drawBackground(ctx, canvas.width, canvas.height);
     };

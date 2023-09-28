@@ -4,6 +4,7 @@ import UserEmblem from "./UserEmblem";
 import Image from "next/image";
 import Head from "next/head";
 import CanvasBackground from "./CanvasBackground";
+import { useCallback, useState } from "react";
 
 export default function Layout({
   children,
@@ -22,6 +23,16 @@ export default function Layout({
   if (status === "unauthenticated" && router.pathname !== "/" && auth) {
     router.push("/");
   }
+
+  const [height, setHeight] = useState(null);
+  const [width, setWidth] = useState(null);
+  //@ts-ignore
+  const main = useCallback((node) => {
+    if (node !== null) {
+      setHeight(node.getBoundingClientRect().height);
+      setWidth(node.getBoundingClientRect().width);
+    }
+  }, []);
 
   return (
     <>
@@ -68,8 +79,14 @@ export default function Layout({
           href="/favicon-16x16.png"
         />
       </Head>
-      <main className="flex flex-col md:flex-row items-stretch justify-start min-h-screen min-w-full">
-        <CanvasBackground />
+      <main
+        ref={main}
+        className="flex flex-col md:flex-row items-stretch justify-start min-h-screen min-w-full overflow-hidden"
+      >
+        <CanvasBackground
+          width={width ? width : undefined}
+          height={height ? height : undefined}
+        />
         {nav && (
           <div className="flex flex-row md:flex-col justify-stretch w-full md:max-w-min mx-auto md:mx-0 border-b md:border-b-0 md:border-r border-black">
             <div className="md:mx-4 my-6 ml-6 mr-auto flex flex-row">
