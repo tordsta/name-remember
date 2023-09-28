@@ -1,6 +1,6 @@
-import Layout from "@/components/Layout";
+import Layout from "@/components/navigation/Layout";
 import Image from "next/image";
-import LoginButton from "@/components/LoginButton";
+import LoginButton from "@/components/navigation/LoginButton";
 import LegalInfo from "@/components/LegalInfo";
 import { useEffect } from "react";
 import { trackAmplitudeData } from "@/lib/amplitude";

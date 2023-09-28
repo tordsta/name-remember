@@ -9,7 +9,7 @@ import { authOptions } from "../api/auth/[...nextauth]";
 import ListOfPeople from "@/components/ListOfPeople";
 import useDeleteList from "@/hooks/useDeletePeopleList";
 import { FramedButton } from "@/components/Button";
-import Layout from "@/components/Layout";
+import Layout from "@/components/navigation/Layout";
 import AddPersonToListModal from "@/components/AddPersonToListModal";
 import ReminderInput from "@/components/ReminderInput";
 import getList from "@/database/getList";

@@ -1,4 +1,4 @@
-import Layout from "@/components/Layout";
+import Layout from "@/components/navigation/Layout";
 import { trackAmplitudeData } from "@/lib/amplitude";
 import { useEffect } from "react";
 

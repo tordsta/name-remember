@@ -1,7 +1,7 @@
-import LoginButton from "@/components/LoginButton";
+import LoginButton from "@/components/navigation/LoginButton";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import Layout from "@/components/Layout";
+import Layout from "@/components/navigation/Layout";
 import FeedbackForm from "@/components/FeedbackForm";
 import { trackAmplitudeData } from "@/lib/amplitude";
 import { useEffect } from "react";

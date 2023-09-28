@@ -1,4 +1,4 @@
-import Layout from "@/components/Layout";
+import Layout from "@/components/navigation/Layout";
 import Lists from "@/components/Lists";
 import { getServerSession } from "next-auth";
 import { QueryClient, dehydrate } from "react-query";

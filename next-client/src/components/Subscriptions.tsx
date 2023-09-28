@@ -21,12 +21,18 @@ export default function Subscriptions() {
     undefined
   );
   const router = useRouter();
+  console.log("products main", products);
 
   useEffect(() => {
     if (products.length == 0) {
       try {
+        console.log("fetching products");
+        console.log(products);
         fetch("/api/stripe/getProducts")
-          .then((res) => res.json())
+          .then((res) => {
+            if (!res.ok) throw Error("Error fetching products");
+            return res.json();
+          })
           .then((res) => setProducts(res));
       } catch (err) {
         console.error(err);
