@@ -7,7 +7,7 @@ import {
 import DefaultModal from "./Modal";
 import { FramedButton } from "./Button";
 
-export default function CardModal({
+export default function CreditCardModal({
   clientSecret,
   openSignal,
   setOpenSignal,
@@ -54,11 +54,11 @@ export default function CardModal({
       >
         <PaymentElement />
         <div className="flex gap-3">
-          <FramedButton typeSubmit={true} disabled={!stripe}>
-            Submit
-          </FramedButton>
           <FramedButton onClick={() => setOpenSignal(false)}>
             Cancel
+          </FramedButton>
+          <FramedButton typeSubmit={true} disabled={!stripe}>
+            Submit
           </FramedButton>
         </div>
       </form>

@@ -66,3 +66,7 @@ variable "STRIPE_WEBHOOK_SECRET" {
     description = "Stripe Webhook Secret"
     type        = string
 }
+variable "STRIPE_PREMIUM_PRODUCT_ID" {
+    description = "Stripe Premium Product ID"
+    type        = string
+}
