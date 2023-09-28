@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Stripe from "stripe";
-import CardModal from "./CardModal";
+import CreditCardModal from "./CreditCardModal";
 import { Elements } from "@stripe/react-stripe-js";
 import { stripeClientPromise } from "@/lib/stripe";
 import { useRouter } from "next/router";
@@ -23,16 +23,45 @@ export default function Subscriptions() {
   const router = useRouter();
 
   useEffect(() => {
-    fetch("/api/stripe/getProducts")
-      .then((res) => res.json())
-      .then((res) => setProducts(res));
-    fetch("/api/crud/getUser")
-      .then((res) => res.json())
-      .then((res) => setUser(res));
-    handlePaymentRedirect({
-      redirectStatus: router.query.redirect_status as string,
-    });
-  }, [router.query.redirect_status]);
+    if (products.length == 0) {
+      try {
+        fetch("/api/stripe/getProducts")
+          .then((res) => res.json())
+          .then((res) => setProducts(res));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    if (!user || router.query.redirect_status) {
+      try {
+        fetch("/api/crud/getUser")
+          .then((res) => res.json())
+          .then((res) => setUser(res));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    if (router.query.redirect_status) {
+      switch (router.query.redirect_status) {
+        case "succeeded":
+          notifySuccess("Success! Payment received.");
+          break;
+        case "processing":
+          notifyInfo(
+            "Payment processing. We'll update you when payment is received."
+          );
+          break;
+        case "requires_payment_method":
+          notifyError("Payment failed. Please try another payment method.");
+          break;
+
+        default:
+          notifyWarning("Something went wrong");
+          break;
+      }
+      router.replace("/profile", undefined, { shallow: true });
+    }
+  }, [router, products, user]);
 
   const handleSubscription = async ({
     priceId,
@@ -75,38 +104,13 @@ export default function Subscriptions() {
     }
   };
 
-  const handlePaymentRedirect = ({
-    redirectStatus,
-  }: {
-    redirectStatus: string;
-  }) => {
-    if (redirectStatus) {
-      switch (redirectStatus) {
-        case "succeeded":
-          notifySuccess("Success! Payment received.");
-          break;
-        case "processing":
-          notifyInfo(
-            "Payment processing. We'll update you when payment is received."
-          );
-          break;
-        case "requires_payment_method":
-          notifyError("Payment failed. Please try another payment method.");
-          break;
-
-        default:
-          notifyWarning("Something went wrong");
-          break;
-      }
-      router.replace("/profile", undefined, { shallow: true });
-    }
-  };
-
   return (
     <div className="flex flex-col items-center m-8">
       <div className="flex justify-center gap-8">
-        {products &&
-          products.map((product) => (
+        <Suspense
+          fallback={<div className="text-xl bg-purple-900">Loading...</div>}
+        >
+          {products.map((product) => (
             <div
               key={product.id}
               className="w-72 flex flex-col justify-center items-center text-center bg-white rounded-lg border py-4 px-6"
@@ -136,13 +140,14 @@ export default function Subscriptions() {
               )}
             </div>
           ))}
+        </Suspense>
       </div>
       {clientSecret && (
         <Elements
           stripe={stripeClientPromise}
           options={{ clientSecret: clientSecret }}
         >
-          <CardModal
+          <CreditCardModal
             clientSecret={clientSecret}
             openSignal={openSignal}
             setOpenSignal={setOpenSignal}

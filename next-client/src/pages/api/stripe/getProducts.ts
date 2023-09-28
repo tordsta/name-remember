@@ -14,9 +14,11 @@ export default async function handler(
   }
 
   try {
-    const product = await stripeServer.products.retrieve("prod_OhxqtgA42Sfq6u");
-
-    //Send an array of products
+    const product = await stripeServer.products.retrieve(
+      process.env.STRIPE_PREMIUM_PRODUCT_ID!
+    );
+    if (!product) res.status(404).json("Product not found");
+    //Return an array of products
     res.status(200).json([product] as unknown as string);
     return;
   } catch (error) {

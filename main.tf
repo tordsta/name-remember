@@ -109,6 +109,10 @@ resource "google_cloud_run_v2_service" "default" {
         name = "STRIPE_WEBHOOK_SECRET"
         value = var.STRIPE_WEBHOOK_SECRET
       }
+      env {
+        name = "STRIPE_PREMIUM_PRODUCT_ID"
+        value = var.STRIPE_PREMIUM_PRODUCT_ID
+      }
     }
   }
 }
