@@ -10,8 +10,8 @@ const CanvasBackground = ({
     zIndex: -1,
   },
 }: {
-  width?: number;
-  height?: number;
+  width: number;
+  height: number;
   style?: React.CSSProperties;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -24,13 +24,8 @@ const CanvasBackground = ({
     if (!ctx) return;
 
     const resizeCanvas = () => {
-      if (width && height) {
-        canvas.width = width;
-        canvas.height = height;
-      } else {
-        canvas.width = window.outerWidth;
-        canvas.height = window.outerHeight;
-      }
+      canvas.width = width;
+      canvas.height = height;
       drawBackground(ctx, canvas.width, canvas.height);
     };
 
