@@ -1,11 +1,21 @@
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 import {
   PaymentElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
+import DefaultModal from "./Modal";
+import { FramedButton } from "./Button";
 
-export default function CardModal({ clientSecret }: { clientSecret: string }) {
+export default function CardModal({
+  clientSecret,
+  openSignal,
+  setOpenSignal,
+}: {
+  clientSecret: string;
+  openSignal: boolean;
+  setOpenSignal: (arg: boolean) => void;
+}) {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -28,6 +38,7 @@ export default function CardModal({ clientSecret }: { clientSecret: string }) {
     if (result.error) {
       console.log(result.error.message);
     } else {
+      setOpenSignal(false);
       // Your customer will be redirected to your `return_url`. For some payment
       // methods like iDEAL, your customer will be redirected to an intermediate
       // site first to authorize the payment, then redirected to the `return_url`.
@@ -36,11 +47,21 @@ export default function CardModal({ clientSecret }: { clientSecret: string }) {
 
   //make modal
   return (
-    <div className="">
-      <form onSubmit={handleCardInfo}>
+    <DefaultModal openSignal={openSignal} setOpenSignal={setOpenSignal}>
+      <form
+        onSubmit={handleCardInfo}
+        className="flex flex-col justify-center gap-8"
+      >
         <PaymentElement />
-        <button disabled={!stripe}>Submit</button>
+        <div className="flex gap-3">
+          <FramedButton typeSubmit={true} disabled={!stripe}>
+            Submit
+          </FramedButton>
+          <FramedButton onClick={() => setOpenSignal(false)}>
+            Cancel
+          </FramedButton>
+        </div>
       </form>
-    </div>
+    </DefaultModal>
   );
 }

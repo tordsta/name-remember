@@ -60,16 +60,18 @@ export function FramedButton({
   onSubmit,
   typeSubmit,
   children,
+  disabled,
 }: {
   style?: undefined | string | "small" | "green" | "cancel" | "submit";
   onClick?: (e?: any) => void;
   onSubmit?: () => void;
   typeSubmit?: boolean;
   children?: React.ReactNode;
+  disabled?: boolean;
 }) {
   return (
     <button
-      className={style ? style : "relative w-40 h-10"}
+      className={style ? style : "relative w-40 h-10 bg-white"}
       onClick={onClick}
       onSubmit={onSubmit}
       type={typeSubmit ? "submit" : "button"}
@@ -78,6 +80,7 @@ export function FramedButton({
         borderWidth: "1px",
         borderColor: "black",
       }}
+      disabled={disabled}
     >
       <CanvasBackground
         // @ts-ignore

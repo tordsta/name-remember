@@ -6,7 +6,14 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head />
-      <body>
+      <body
+        style={{
+          margin: 0,
+          padding: 0,
+          fontFamily: "Indie Flower",
+          fontStyle: "cursive",
+        }}
+      >
         <noscript>
           <iframe
             src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}

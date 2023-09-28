@@ -15,5 +15,6 @@
       "database": "userdata",
       "username": "postgres"
     }
-  ]
+  ],
+  "cSpell.words": ["tailwindcss"]
 }

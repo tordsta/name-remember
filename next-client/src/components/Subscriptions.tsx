@@ -11,8 +11,10 @@ import {
   notifyWarning,
 } from "./Notify";
 import { User } from "@/utils/types";
+import { FramedButton } from "./Button";
 
 export default function Subscriptions() {
+  const [openSignal, setOpenSignal] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [products, setProducts] = useState<Stripe.Product[]>([]);
   const [clientSecret, setClientSecret] = useState<string | undefined>(
@@ -37,17 +39,20 @@ export default function Subscriptions() {
   }: {
     priceId: string | Stripe.Price | null | undefined;
   }) => {
-    const res = await fetch("/api/stripe/newSubscription", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        priceId: priceId,
-      }),
-    });
-    const data = await res.json();
-    setClientSecret(data.clientSecret);
+    if (!clientSecret) {
+      const res = await fetch("/api/stripe/newSubscription", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          priceId: priceId,
+        }),
+      });
+      const data = await res.json();
+      setClientSecret(data.clientSecret);
+    }
+    setOpenSignal(true);
   };
 
   const handleCancelSubscription = async ({
@@ -104,32 +109,30 @@ export default function Subscriptions() {
           products.map((product) => (
             <div
               key={product.id}
-              className="w-60 flex flex-col justify-center text-center"
+              className="w-72 flex flex-col justify-center items-center text-center bg-white rounded-lg border py-4 px-6"
             >
               <h3 className="font-bold text-xl">{product.name}</h3>
               {user && user.subscription_plan == "premium" && (
-                <h3 className="font-bold">Status: Active</h3>
+                <h3 className="font-bold m-1">Status: Active</h3>
               )}
-              <p>{product.description}</p>
+              <p className="mb-4">{product.description}</p>
               {(!user || user.subscription_plan == "free") && (
-                <button
-                  className="border border-black rounded my-4 px-2 pt-1"
+                <FramedButton
                   onClick={() =>
                     handleSubscription({ priceId: product.default_price })
                   }
                 >
                   Upgrade
-                </button>
+                </FramedButton>
               )}
               {user && user.subscription_plan == "premium" && (
-                <button
-                  className="border border-black rounded my-4 px-2 pt-1"
+                <FramedButton
                   onClick={() =>
                     handleCancelSubscription({ productId: product.id })
                   }
                 >
                   Cancel subscription
-                </button>
+                </FramedButton>
               )}
             </div>
           ))}
@@ -139,7 +142,11 @@ export default function Subscriptions() {
           stripe={stripeClientPromise}
           options={{ clientSecret: clientSecret }}
         >
-          <CardModal clientSecret={clientSecret} />
+          <CardModal
+            clientSecret={clientSecret}
+            openSignal={openSignal}
+            setOpenSignal={setOpenSignal}
+          />
         </Elements>
       )}
     </div>
