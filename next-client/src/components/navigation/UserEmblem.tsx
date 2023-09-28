@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import FeedbackForm from "./FeedbackForm";
+import FeedbackForm from "@/components/FeedbackForm";
 
 export default function UserEmblem() {
   const { data: session, status } = useSession();

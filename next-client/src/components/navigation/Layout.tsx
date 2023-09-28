@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import UserEmblem from "./UserEmblem";
 import Image from "next/image";
 import Head from "next/head";
-import CanvasBackground from "./CanvasBackground";
+import CanvasBackground from "../CanvasBackground";
 import { useEffect, useRef, useState } from "react";
 import FeedbackForm from "@/components/FeedbackForm";
 
@@ -96,6 +96,7 @@ export default function Layout({
             {/* for mobile */}
             <div className="md:mx-4 my-6 ml-6 mr-auto flex flex-row">
               {router.pathname !== "/dashboard" && (
+                // back chevron for mobile
                 <div
                   className="md:hidden invert-0 my-auto mr-2"
                   onClick={() => router.push("/dashboard")}
@@ -118,10 +119,13 @@ export default function Layout({
                 Name Remember
               </div>
             </div>
-            {/* for desktop */}
+            <div className="hidden md:block mx-4 mb-8">
+              <FeedbackForm />
+            </div>
+            {/* back button for desktop */}
             {router.pathname !== "/dashboard" && (
               <div
-                className="hidden md:flex items-center justify-center gap-1 cursor-pointer"
+                className="hidden md:flex items-center justify-center gap-1 pr-6 cursor-pointer"
                 onClick={() => router.push("/dashboard")}
               >
                 <div className="invert-0">
@@ -136,6 +140,7 @@ export default function Layout({
                 Back
               </div>
             )}
+
             <UserEmblem />
           </div>
         )}

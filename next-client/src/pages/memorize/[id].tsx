@@ -7,7 +7,7 @@ import { usePeopleList } from "@/hooks/usePeopleList";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import Memorization from "@/components/Memorization";
-import Layout from "@/components/Layout";
+import Layout from "@/components/navigation/Layout";
 import getList from "@/database/getList";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
