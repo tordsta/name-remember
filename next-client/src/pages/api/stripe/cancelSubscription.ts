@@ -32,7 +32,7 @@ export default async function handler(
 
     const { rows: rows2 } = await sql({
       query:
-        "SELECT * FROM stripe_subscriptions WHERE customer_id = $1 AND product_id = $2",
+        "SELECT * FROM stripe_subscriptions WHERE customer_id = $1 AND product_id = $2 AND status = 'active'",
       values: [stripe_customer_id, productId],
     });
     if (rows2.length > 1) {
