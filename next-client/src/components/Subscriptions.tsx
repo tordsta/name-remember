@@ -107,9 +107,7 @@ export default function Subscriptions() {
   return (
     <div className="flex flex-col items-center m-8">
       <div className="flex justify-center gap-8">
-        <Suspense
-          fallback={<div className="text-xl bg-purple-900">Loading...</div>}
-        >
+        <Suspense fallback={<div className="text-xl">Loading...</div>}>
           {products.map((product) => (
             <div
               key={product.id}
