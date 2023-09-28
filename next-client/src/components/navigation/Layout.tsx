@@ -93,6 +93,7 @@ export default function Layout({
         {width && height && <CanvasBackground width={width} height={height} />}
         {nav && (
           <div className="flex flex-row md:flex-col justify-stretch w-full md:max-w-min mx-auto md:mx-0 border-b md:border-b-0 md:border-r border-black">
+            {/* for mobile */}
             <div className="md:mx-4 my-6 ml-6 mr-auto flex flex-row">
               {router.pathname !== "/dashboard" && (
                 // back chevron for mobile
