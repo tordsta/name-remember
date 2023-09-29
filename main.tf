@@ -3,9 +3,9 @@ provider "google" {
   region      = "us-central1"
 }
 
-# Cloud Run Service for web app
+#Cloud Run Service for web app
 resource "google_cloud_run_v2_service" "default" {
-  name     = "name-remember-service"
+  name     = "name-remember-web-service"
   location = "us-central1"
   traffic {
     type = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
@@ -227,7 +227,7 @@ resource "google_sql_database_instance" "default" {
   name             = "name-remember-db"
   database_version = "POSTGRES_13"
   region           = "us-central1"
-  deletion_protection = true
+  deletion_protection = false
   depends_on = [google_service_networking_connection.default]
 
 
@@ -237,7 +237,7 @@ resource "google_sql_database_instance" "default" {
     ip_configuration {
       ipv4_enabled    = true
       require_ssl     = false
-      private_network = google_compute_network.peering_network.id
+      private_network = google_compute_network.nameremember-vpc.id
     }
 
     backup_configuration {
@@ -294,32 +294,32 @@ resource "google_service_account_key" "sql_proxy_key" {
 }
 
 
-# VPC Network
-resource "google_compute_network" "peering_network" {
-  name                    = "private-network"
+# VPC Networking
+resource "google_compute_network" "nameremember-vpc" {
+  name                    = "nameremember-vpc"
   auto_create_subnetworks = "false"
 }
-resource "google_compute_global_address" "private_ip_address" {
-  name          = "private-ip-address"
+resource "google_compute_global_address" "internal_ip_address" {
+  name          = "internal-ip-address"
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16
-  network       = google_compute_network.peering_network.id
+  network       = google_compute_network.nameremember-vpc.id
 }
 resource "google_service_networking_connection" "default" {
-  network                 = google_compute_network.peering_network.id
+  network                 = google_compute_network.nameremember-vpc.id
   service                 = "servicenetworking.googleapis.com"
-  reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
+  reserved_peering_ranges = [google_compute_global_address.internal_ip_address.name]
 }
 resource "google_compute_network_peering_routes_config" "peering_routes" {
   peering              = google_service_networking_connection.default.peering
-  network              = google_compute_network.peering_network.name
+  network              = google_compute_network.nameremember-vpc.name
   import_custom_routes = true
   export_custom_routes = true
 }
 resource "google_vpc_access_connector" "webapp" {
-  name               = "serverless-connector"
-  network            = google_compute_network.peering_network.id
+  name               = "webapp-connector"
+  network            = google_compute_network.nameremember-vpc.id
   ip_cidr_range      = "10.8.0.0/28"
   region             = "us-central1"
 }  

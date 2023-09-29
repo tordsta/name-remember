@@ -16,7 +16,7 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v0
         with:
-          workload_identity_provider: projects/471648801973/locations/global/workloadIdentityPools/github-actions-pool-493039/providers/github-actions
+          workload_identity_provider: projects/471648801973/locations/global/workloadIdentityPools/github-actions-pool-159453/providers/github-actions
           service_account: ga-push-to-registry@name-remember-23.iam.gserviceaccount.com
       - uses: RafikFarhad/push-to-gcr-github-action@v5-beta
         with:
@@ -38,7 +38,7 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v0
         with:
-          workload_identity_provider: projects/471648801973/locations/global/workloadIdentityPools/github-actions-pool-493039/providers/github-actions
+          workload_identity_provider: projects/471648801973/locations/global/workloadIdentityPools/github-actions-pool-159453/providers/github-actions
           service_account: ga-deploy-to-cloud-run@name-remember-23.iam.gserviceaccount.com
       - id: "deploy"
         uses: "google-github-actions/deploy-cloudrun@v1"
