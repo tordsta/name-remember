@@ -43,7 +43,7 @@ jobs:
       - id: "deploy"
         uses: "google-github-actions/deploy-cloudrun@v1"
         with:
-          service: "name-remember-service"
+          service: "name-remember-web-service"
           image: "us-central1-docker.pkg.dev/name-remember-23/webapp-name-remember/name-remember:latest"
       - name: "Use output"
         run: 'curl "${{ steps.deploy.outputs.url }}"'
