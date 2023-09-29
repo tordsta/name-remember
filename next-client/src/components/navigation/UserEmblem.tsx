@@ -18,9 +18,6 @@ export default function UserEmblem() {
         onClick={() => router.push("/profile")}
         className="flex flex-row md:flex-col-reverse md:fixed md:bottom-0 gap-4 mx-4 my-auto md:my-4 cursor-pointer"
       >
-        <div className="hidden md:block">
-          <FeedbackForm />
-        </div>
         <div className="hidden sm:block">
           <p className="text-lg">{session?.user?.name}</p>
           <p className="text-sm">{session?.user?.email}</p>
