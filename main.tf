@@ -323,3 +323,26 @@ resource "google_vpc_access_connector" "webapp" {
   ip_cidr_range      = "10.8.0.0/28"
   region             = "us-central1"
 }  
+
+resource "google_compute_router" "public_router" {
+  name    = "public-router"
+  region  = "us-central1"
+  network = google_compute_network.nameremember-vpc.id
+
+  bgp {
+    asn = 64514
+  }
+}
+
+resource "google_compute_router_nat" "public_cloud_nat" {
+  name                               = "public-cloud-nat"
+  router                             = google_compute_router.public_router.name
+  region                             = google_compute_router.public_router.region
+  nat_ip_allocate_option             = "AUTO_ONLY"
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+
+  log_config {
+    enable = true
+    filter = "ERRORS_ONLY"
+  }
+}
