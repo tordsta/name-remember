@@ -45,7 +45,6 @@ export default function CreditCardModal({
     }
   };
 
-  //make modal
   return (
     <DefaultModal openSignal={openSignal} setOpenSignal={setOpenSignal}>
       <form
