@@ -25,9 +25,10 @@ Run the cloud sql proxy locally to connect to the DB in GCP.
 
 1. Run terraform apply (errors on cloud run is expected due to image not being built yet)
 2. Update the github action workload_identity_provider with the correct pool_id
-3. Trigger the github actions to build image (deploy to cloud run will fail)
-4. Run terraform apply to create final resources
-5. Apply database migrations
+3. Trigger the github actions to build image
+4. Delete the cloud run service created by github actions
+5. Run terraform apply to create final resources
+6. Apply database migrations
 
 ### Terraform destroy
 

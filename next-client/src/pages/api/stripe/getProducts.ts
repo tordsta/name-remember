@@ -14,16 +14,9 @@ export default async function handler(
   }
 
   try {
-    console.log(
-      "Getting products. ID: ",
-      process.env.STRIPE_PREMIUM_PRODUCT_ID,
-      `${process.env.STRIPE_PREMIUM_PRODUCT_ID!}`
-    );
-    console.log("Stripe: ", stripeServer.StripeResource);
     const product = await stripeServer.products.retrieve(
       process.env.STRIPE_PREMIUM_PRODUCT_ID!
     );
-    console.log("Product: ", product);
 
     if (!product) res.status(404).json("Product not found");
     //Return an array of products
