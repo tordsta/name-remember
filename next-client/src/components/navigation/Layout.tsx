@@ -1,10 +1,9 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import UserEmblem from "./UserEmblem";
-import Image from "next/image";
 import Head from "next/head";
 import CanvasBackground from "../CanvasBackground";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import FeedbackForm from "@/components/FeedbackForm";
 import BackButton from "./BackButton";
 
@@ -29,6 +28,7 @@ export default function Layout({
   const ref = useRef<HTMLElement>(null);
   const [height, setHeight] = useState<number | null>(null);
   const [width, setWidth] = useState<number | null>(null);
+  const MemoCanvasBackground = memo(CanvasBackground);
 
   const set = () => {
     if (!ref || !ref.current) return;
@@ -39,7 +39,11 @@ export default function Layout({
   useEffect(() => {
     set();
     window.addEventListener("resize", set);
-    return () => window.removeEventListener("resize", set);
+    window.addEventListener("scroll", set);
+    return () => {
+      window.removeEventListener("resize", set);
+      window.removeEventListener("scroll", set);
+    };
   }, []);
 
   return (
@@ -91,7 +95,9 @@ export default function Layout({
         ref={ref}
         className="flex flex-col md:flex-row items-stretch justify-start min-h-screen min-w-full overflow-hidden"
       >
-        {width && height && <CanvasBackground width={width} height={height} />}
+        {width && height && (
+          <MemoCanvasBackground width={width} height={height} />
+        )}
         {nav && (
           // Row layout for mobile, column layout for desktop, items hidden based on media query
           <div className="flex flex-row md:flex-col justify-stretch w-full md:max-w-min mx-auto md:mx-0 border-b md:border-b-0 md:border-r border-black">
