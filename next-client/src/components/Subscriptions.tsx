@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Stripe from "stripe";
 import CreditCardModal from "./CreditCardModal";
 import { Elements } from "@stripe/react-stripe-js";
@@ -110,8 +110,8 @@ export default function Subscriptions() {
   return (
     <div className="flex flex-col items-center m-8">
       <div className="flex justify-center gap-8">
-        <Suspense fallback={<div className="text-xl">Loading...</div>}>
-          {products.map((product) => (
+        {products &&
+          products.map((product) => (
             <div
               key={product.id}
               className="w-72 flex flex-col justify-center items-center text-center bg-white rounded-lg border py-4 px-6"
@@ -141,7 +141,6 @@ export default function Subscriptions() {
               )}
             </div>
           ))}
-        </Suspense>
       </div>
       {clientSecret && (
         <Elements

@@ -55,14 +55,16 @@ export default function Button({
 }
 
 export function FramedButton({
-  style,
+  width,
+  height,
   onClick,
   onSubmit,
   typeSubmit,
   children,
   disabled,
 }: {
-  style?: undefined | string | "small" | "green" | "cancel" | "submit";
+  width?: number;
+  height?: number;
   onClick?: (e?: any) => void;
   onSubmit?: () => void;
   typeSubmit?: boolean;
@@ -71,21 +73,24 @@ export function FramedButton({
 }) {
   return (
     <button
-      className={style ? style : "relative w-40 h-10 bg-white"}
       onClick={onClick}
       onSubmit={onSubmit}
       type={typeSubmit ? "submit" : "button"}
       style={{
+        position: "relative",
+        backgroundColor: "white",
         boxShadow: "0px 0px 20px 10px white",
         borderWidth: "1px",
         borderColor: "black",
+        width: width ? width : 160,
+        height: height ? height : 40,
       }}
       disabled={disabled}
     >
       <CanvasBackground
         // @ts-ignore
-        width={158}
-        height={38}
+        width={width ? width - 2 : 158}
+        height={height ? height - 2 : 38}
         style={{ position: "absolute", top: -0, left: -0, zIndex: "auto" }}
       />
       <div className="relative">{children && children}</div>
