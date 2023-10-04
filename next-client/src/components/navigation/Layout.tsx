@@ -6,6 +6,7 @@ import Head from "next/head";
 import CanvasBackground from "../CanvasBackground";
 import { useEffect, useRef, useState } from "react";
 import FeedbackForm from "@/components/FeedbackForm";
+import BackButton from "./BackButton";
 
 export default function Layout({
   children,
@@ -93,23 +94,11 @@ export default function Layout({
         {width && height && <CanvasBackground width={width} height={height} />}
         {nav && (
           <div className="flex flex-row md:flex-col justify-stretch w-full md:max-w-min mx-auto md:mx-0 border-b md:border-b-0 md:border-r border-black">
-            {/* for mobile */}
             <div className="md:mx-4 my-6 ml-6 mr-auto flex flex-row">
-              {router.pathname !== "/dashboard" && (
-                // back chevron for mobile
-                <div
-                  className="md:hidden invert-0 my-auto mr-2"
-                  onClick={() => router.push("/dashboard")}
-                >
-                  <Image
-                    src="/backChevron.svg"
-                    alt=""
-                    aria-label="Back Icon"
-                    height={20}
-                    width={20}
-                  />
-                </div>
-              )}
+              {/* for mobile */}
+              <div className="md:hidden my-auto mr-2">
+                <BackButton justChevron />
+              </div>
               <div
                 className="text-3xl sm:text-4xl"
                 onClick={() => {
@@ -122,25 +111,9 @@ export default function Layout({
             <div className="hidden md:block mx-4 mb-8">
               <FeedbackForm />
             </div>
-            {/* back button for desktop */}
-            {router.pathname !== "/dashboard" && (
-              <div
-                className="hidden md:flex items-center justify-center gap-1 pr-6 cursor-pointer"
-                onClick={() => router.push("/dashboard")}
-              >
-                <div className="invert-0">
-                  <Image
-                    src="/backChevron.svg"
-                    alt=""
-                    aria-label="Back Icon"
-                    height={20}
-                    width={20}
-                  />
-                </div>
-                Back
-              </div>
-            )}
-
+            <div className="hidden md:block">
+              <BackButton />
+            </div>
             <UserEmblem />
           </div>
         )}

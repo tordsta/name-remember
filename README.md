@@ -9,6 +9,9 @@ Web App for remembering names from face images.
 Run the following to lisen to local webhook events:
 stripe listen --forward-to localhost:3000/api/stripe/webhook
 
+1. ....
+2. Make a webhook endpoint in stripe and add the signing secret to the .env file (one for test one for prod)
+
 ### DB connection
 
 Run the cloud sql proxy locally to connect to the DB in GCP.
