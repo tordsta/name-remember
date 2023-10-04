@@ -9,12 +9,9 @@ export default function LoginButton({ loginText }: { loginText?: string }) {
 
   if (session && router.pathname === "/") {
     return (
-      <>
-        <p className="text-xl mx-auto text-center mb-3">Already logged in</p>
-        <FramedButton onClick={() => router.push("/dashboard")}>
-          <p className="text-xl">To Dashboard</p>
-        </FramedButton>
-      </>
+      <FramedButton onClick={() => router.push("/dashboard")}>
+        <p className="text-xl">To Dashboard</p>
+      </FramedButton>
     );
   }
 

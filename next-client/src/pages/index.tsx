@@ -52,14 +52,26 @@ export default function Home() {
         <div className="hidden md:flex flex-col bg-white w-[50vw] h-full">
           <h1 className="text-4xl ml-auto p-16">Name Remember</h1>
           <div className="flex flex-col items-center justify-center h-full pb-40">
-            <p className="text-2xl md:text-3xl mx-auto mb-4 text-center">
-              Get started today,
-              <br /> it&apos;s free.
-            </p>
-            <LoginButton loginText="Create new account" />
-            <p className="text-xl mx-auto my-2 text-center">or</p>
-            <LoginButton />
-            <LegalInfo />
+            {session && (
+              <>
+                <p className="text-xl mx-auto text-center mb-3">
+                  Already logged in
+                </p>
+                <LoginButton />
+              </>
+            )}
+            {!session && (
+              <>
+                <p className="text-2xl md:text-3xl mx-auto mb-4 text-center">
+                  Get started today,
+                  <br /> it&apos;s free.
+                </p>
+                <LoginButton loginText="Create new account" />
+                <p className="text-xl mx-auto my-2 text-center">or</p>
+                <LoginButton />
+                <LegalInfo />
+              </>
+            )}
           </div>
         </div>
       </div>
