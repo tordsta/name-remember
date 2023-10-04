@@ -4,8 +4,11 @@ import LoginButton from "@/components/navigation/LoginButton";
 import LegalInfo from "@/components/LegalInfo";
 import { useEffect } from "react";
 import { trackAmplitudeData } from "@/lib/amplitude";
+import { useSession } from "next-auth/react";
+import { FramedButton } from "@/components/Button";
 
 export default function Home() {
+  const { data: session } = useSession();
   useEffect(() => {
     trackAmplitudeData("Loaded Page Landing Page");
   }, []);
@@ -48,7 +51,16 @@ export default function Home() {
         <div className="hidden md:flex flex-col items-center bg-white w-[50vw] h-full">
           <h1 className="text-4xl ml-auto p-16">Name Remember</h1>
           <div className="flex flex-col flex-grow justify-center items-center">
-            <LoginButton />
+            {/* <LoginButton /> */}
+            <div className="flex flex-col justify-center items-center">
+              <p className="text-2xl md:text-3xl mx-auto mb-4 text-center">
+                Get started today,
+                <br /> it&apos;s free.
+              </p>
+              <LoginButton loginText="Create new account" />
+              <p className="text-xl mx-auto my-2 text-center">or</p>
+              <LoginButton />
+            </div>
             <LegalInfo />
           </div>
           <div className="p-20" />

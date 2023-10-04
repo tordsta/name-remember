@@ -93,9 +93,9 @@ export default function Layout({
       >
         {width && height && <CanvasBackground width={width} height={height} />}
         {nav && (
+          // Row layout for mobile, column layout for desktop, items hidden based on media query
           <div className="flex flex-row md:flex-col justify-stretch w-full md:max-w-min mx-auto md:mx-0 border-b md:border-b-0 md:border-r border-black">
             <div className="md:mx-4 my-6 ml-6 mr-auto flex flex-row">
-              {/* for mobile */}
               <div className="md:hidden my-auto mr-2">
                 <BackButton justChevron />
               </div>
