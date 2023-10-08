@@ -7,10 +7,21 @@ import { getCsrfToken } from "next-auth/react";
 export default function EmailSignUp({ csrfToken }: { csrfToken: string }) {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const name = (event.target as any)["name"].value;
     const email = (event.target as any)["email"].value;
     const password = (event.target as any)["password"].value;
     const verifyPassword = (event.target as any)["verify_password"].value;
 
+    if (
+      String(email)
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        ) == null
+    ) {
+      notifyWarning("Invalid email address");
+      return;
+    }
     if (password != verifyPassword) {
       notifyWarning("Passwords do not match");
       return;
@@ -19,6 +30,7 @@ export default function EmailSignUp({ csrfToken }: { csrfToken: string }) {
     const res = await notifyPromiseFetch({
       url: "/api/auth/signup",
       body: JSON.stringify({
+        name,
         email,
         password,
       }),
@@ -38,11 +50,21 @@ export default function EmailSignUp({ csrfToken }: { csrfToken: string }) {
       >
         <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
         <label>
+          Full name
+          <input
+            className="border border-black mx-2 px-1 pt-1"
+            name="name"
+            type="text"
+            required
+          />
+        </label>
+        <label>
           Email
           <input
             className="border border-black mx-2 px-1 pt-1"
             name="email"
             type="text"
+            required
           />
         </label>
         <label>
@@ -51,6 +73,7 @@ export default function EmailSignUp({ csrfToken }: { csrfToken: string }) {
             className="border border-black mx-2 px-1 pt-1"
             name="password"
             type="password"
+            required
           />
         </label>
         <label>
@@ -59,6 +82,7 @@ export default function EmailSignUp({ csrfToken }: { csrfToken: string }) {
             className="border border-black mx-2 px-1 pt-1"
             name="verify_password"
             type="password"
+            required
           />
         </label>
         <div className="mx-auto">

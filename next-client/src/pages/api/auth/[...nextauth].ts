@@ -5,7 +5,7 @@ import GithubProvider from "next-auth/providers/github";
 import SlackProvider from "next-auth/providers/slack";
 import customAuthAdapter from "@/lib/nextAuth/customAuthAdapter";
 import CredentialsProvider from "next-auth/providers/credentials";
-import validatePassword from "@/lib/nextAuth/valitatePassword";
+import validatePassword from "@/lib/nextAuth/validatePassword";
 
 export const authOptions = {
   secret: process.env.NEXT_AUTH as string,
@@ -35,6 +35,7 @@ export const authOptions = {
       clientSecret: process.env.GITHUB_SECRET as string,
     }),
     CredentialsProvider({
+      //this does not do anything, just for the ts types
       name: "Credentials",
       credentials: {
         username: {
@@ -44,12 +45,14 @@ export const authOptions = {
         },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
-        if (!credentials || !credentials.username || !credentials.password)
+      //down to here
+      async authorize(credentials: any) {
+        console.log("credentials", credentials);
+        if (!credentials || !credentials.email || !credentials.password)
           return null;
 
         const user = await validatePassword({
-          email: credentials.username,
+          email: credentials.email,
           password: credentials.password,
         });
         if (!user) return null;
@@ -58,12 +61,35 @@ export const authOptions = {
       },
     }),
   ],
-  debugger: true,
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  debugger: false,
+  pages: {
+    signIn: "/",
+    signOut: "/profile",
+    error: "/error",
+    verifyRequest: "/verify-email",
+    newUser: "/newUser",
+  },
   callbacks: {
     async redirect() {
       return "/dashboard";
     },
+    async jwt({ token, user }: any) {
+      if (user) {
+        token.user = { ...user };
+      }
+      return token;
+    },
+    async session({ session, token }: any) {
+      if (token?.user) {
+        session.user = token.user;
+      }
+      return session;
+    },
   },
 };
 
-export default NextAuth(authOptions);
+export default NextAuth(authOptions as any);

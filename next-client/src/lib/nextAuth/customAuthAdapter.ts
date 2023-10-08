@@ -76,11 +76,15 @@ export default function customAuthAdapter(): Adapter {
       AND a.provider_account_id::varchar = $2`,
         values: [provider, providerAccountId],
       });
+      //To expand the session user object add more information here. (and in validatePassword.ts)
       const user = rows[0]
         ? {
             email: rows[0].email,
+            image: rows[0].image,
+            name: rows[0].name,
+            id: rows[0].id.toString(),
             emailVerified: rows[0].email_verified,
-            id: rows[0].id,
+            subscription_plan: rows[0].subscription_plan,
           }
         : null;
       return user;

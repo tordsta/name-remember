@@ -47,7 +47,17 @@ export default function Home({ providers, csrfToken }: any) {
           </ol>
           {/* Hidden on desktop */}
           <div className="flex flex-col justify-center items-center md:hidden mt-8">
-            <SignInProviders providers={providers} csrfToken={csrfToken} />
+            {!session && (
+              <SignInProviders providers={providers} csrfToken={csrfToken} />
+            )}
+            {session && (
+              <>
+                <p className="text-xl mx-auto text-center mb-3">
+                  Already logged in
+                </p>
+                <LoginButton />
+              </>
+            )}
             <LegalInfo />
           </div>
         </div>

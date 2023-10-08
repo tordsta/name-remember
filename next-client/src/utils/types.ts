@@ -30,8 +30,10 @@ export type User = {
   email: string;
   verified_email: boolean;
   image?: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   subscription_plan: "free" | "basic" | "standard" | "premium" | "professional";
   stripe_customer_id?: string;
+  hashed_password?: string;
+  salt?: string;
 };

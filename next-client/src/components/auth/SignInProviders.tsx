@@ -1,6 +1,9 @@
 import { signIn } from "next-auth/react";
 import { FramedButton } from "../Button";
 import Link from "next/link";
+import { sign } from "crypto";
+import { redirect } from "next/dist/server/api-utils";
+import { useRouter } from "next/router";
 
 export default function SignInProviders({
   providers,
@@ -17,6 +20,26 @@ export default function SignInProviders({
   };
   csrfToken: string;
 }) {
+  const router = useRouter();
+  // const handleCredentialsSignIn = async (e: any) => {
+  //   const res = await signIn("credentials", {
+  //     csrfToken: e.target.csrfToken.value,
+  //     email: e.target.email.value,
+  //     password: e.target.password.value,
+  //     redirect: false,
+  //   });
+  //   if (res?.status == 200) {
+  //     console.log("success");
+  //     router.push("/dashboard");
+  //   } else if (res?.error === "custom error to the client") {
+  //     console.log("custom error");
+  //     // handle this particular error
+  //   } else {
+  //     console.log("generic error");
+  //     // handle generic error
+  //   }
+  // };
+
   if (providers === undefined) return <></>;
 
   return (
@@ -40,8 +63,9 @@ export default function SignInProviders({
           .map((provider) => (
             <form
               method="post"
-              key={provider.name}
               action="/api/auth/callback/credentials"
+              key={provider.name}
+              //onSubmit={handleCredentialsSignIn}
               className="flex flex-col gap-4 justify-center items-center"
             >
               <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
@@ -51,6 +75,7 @@ export default function SignInProviders({
                   className="border border-black mx-2 px-1 pt-1"
                   name="email"
                   type="text"
+                  required
                 />
               </label>
               <label>
@@ -59,6 +84,7 @@ export default function SignInProviders({
                   className="border border-black mx-2 px-1 pt-1"
                   name="password"
                   type="password"
+                  required
                 />
               </label>
               <FramedButton typeSubmit={true}>Log in</FramedButton>

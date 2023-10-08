@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 
 export default function UserEmblem() {
   const { data: session, status } = useSession();
+
   const router = useRouter();
 
   if (status === "loading") {
