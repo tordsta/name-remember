@@ -1,4 +1,4 @@
-import LoginButton from "@/components/navigation/LoginButton";
+import LoginButton from "@/components/auth/LoginButton";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Layout from "@/components/navigation/Layout";

@@ -8,7 +8,7 @@ import {
   VerificationToken,
 } from "next-auth/adapters";
 
-export default function vercelPostgresAdapter(): Adapter {
+export default function customAuthAdapter(): Adapter {
   try {
     const createUser = async (
       user: Omit<AdapterUser, "id">
