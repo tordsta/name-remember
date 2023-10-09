@@ -1,13 +1,12 @@
 import { signIn } from "next-auth/react";
 import { FramedButton } from "../Button";
 import Link from "next/link";
-import { sign } from "crypto";
-import { redirect } from "next/dist/server/api-utils";
+import { useState } from "react";
 import { useRouter } from "next/router";
+import { notifyError } from "../Notify";
 
 export default function SignInProviders({
   providers,
-  csrfToken,
 }: {
   providers: {
     [key: string]: {
@@ -18,27 +17,29 @@ export default function SignInProviders({
       callbackUrl: string;
     };
   };
-  csrfToken: string;
 }) {
   const router = useRouter();
-  // const handleCredentialsSignIn = async (e: any) => {
-  //   const res = await signIn("credentials", {
-  //     csrfToken: e.target.csrfToken.value,
-  //     email: e.target.email.value,
-  //     password: e.target.password.value,
-  //     redirect: false,
-  //   });
-  //   if (res?.status == 200) {
-  //     console.log("success");
-  //     router.push("/dashboard");
-  //   } else if (res?.error === "custom error to the client") {
-  //     console.log("custom error");
-  //     // handle this particular error
-  //   } else {
-  //     console.log("generic error");
-  //     // handle generic error
-  //   }
-  // };
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+
+  const handleCredentialsSignIn = async () => {
+    console.log("password", password);
+    console.log("email", email);
+    if (!email || !password)
+      return notifyError("Please enter an email and password");
+    const res = await signIn("credentials", {
+      redirect: false,
+      email: email,
+      password: password,
+    });
+
+    if (res?.error) {
+      console.log("res.error", res.error);
+      notifyError(res.error);
+    } else if (!res?.error && res?.status === 200) {
+      router.push("/dashboard");
+    }
+  };
 
   if (providers === undefined) return <></>;
 
@@ -61,21 +62,18 @@ export default function SignInProviders({
         {Object.values(providers)
           .filter((provider) => provider.type == "credentials")
           .map((provider) => (
-            <form
-              method="post"
-              action="/api/auth/callback/credentials"
+            <div
               key={provider.name}
-              //onSubmit={handleCredentialsSignIn}
               className="flex flex-col gap-4 justify-center items-center"
             >
-              <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
               <label>
                 Email
                 <input
                   className="border border-black mx-2 px-1 pt-1"
                   name="email"
                   type="text"
-                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </label>
               <label>
@@ -84,11 +82,14 @@ export default function SignInProviders({
                   className="border border-black mx-2 px-1 pt-1"
                   name="password"
                   type="password"
-                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </label>
-              <FramedButton typeSubmit={true}>Log in</FramedButton>
-            </form>
+              <FramedButton onClick={handleCredentialsSignIn}>
+                Log in
+              </FramedButton>
+            </div>
           ))}
         <p className="text-sm w-60 text-center">
           Want to use email, but don&apos;t have an account?{" "}

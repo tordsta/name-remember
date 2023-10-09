@@ -6,6 +6,7 @@ import SlackProvider from "next-auth/providers/slack";
 import customAuthAdapter from "@/lib/nextAuth/customAuthAdapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import validatePassword from "@/lib/nextAuth/validatePassword";
+import validateUser from "@/lib/nextAuth/validateUser";
 
 export const authOptions = {
   secret: process.env.NEXT_AUTH as string,
@@ -35,27 +36,23 @@ export const authOptions = {
       clientSecret: process.env.GITHUB_SECRET as string,
     }),
     CredentialsProvider({
-      //this does not do anything, just for the ts types
-      name: "Credentials",
-      credentials: {
-        username: {
-          label: "Email",
-          type: "text",
-          placeholder: "email@example.com",
-        },
-        password: { label: "Password", type: "password" },
-      },
-      //down to here
+      type: "credentials",
+      credentials: {},
       async authorize(credentials: any) {
         console.log("credentials", credentials);
         if (!credentials || !credentials.email || !credentials.password)
-          return null;
+          return { error: "Missing credentials." } as any;
+
+        const userExists = await validateUser({
+          email: credentials.email,
+        });
+        if (!userExists) return { error: "User does not exist." } as any;
 
         const user = await validatePassword({
           email: credentials.email,
           password: credentials.password,
         });
-        if (!user) return null;
+        if (!user) return { error: "Wrong password." } as any;
 
         return user;
       },
@@ -68,14 +65,20 @@ export const authOptions = {
   debugger: false,
   pages: {
     signIn: "/",
-    signOut: "/profile",
-    error: "/error",
-    verifyRequest: "/verify-email",
-    newUser: "/newUser",
+    signOut: "/",
+    error: "/",
+    verifyRequest: "/",
+    newUser: "/",
   },
   callbacks: {
+    async signIn({ user, account, profile, email, credentials }: any) {
+      if (user?.error) {
+        throw new Error(user.error);
+      }
+      return true;
+    },
     async redirect() {
-      return "/dashboard";
+      return `${process.env.NEXTAUTH_URL}/dashboard`;
     },
     async jwt({ token, user }: any) {
       if (user) {
