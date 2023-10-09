@@ -4,12 +4,11 @@ import LoginButton from "@/components/auth/LoginButton";
 import LegalInfo from "@/components/LegalInfo";
 import { useEffect } from "react";
 import { trackAmplitudeData } from "@/lib/amplitude";
-import { getCsrfToken, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import SignInProviders from "@/components/auth/SignInProviders";
 import { getProviders } from "next-auth/react";
-import { GetServerSidePropsContext } from "next";
 
-export default function Home({ providers, csrfToken }: any) {
+export default function Home({ providers }: any) {
   const { data: session } = useSession();
   useEffect(() => {
     trackAmplitudeData("Loaded Page Landing Page");
@@ -47,9 +46,7 @@ export default function Home({ providers, csrfToken }: any) {
           </ol>
           {/* Hidden on desktop */}
           <div className="flex flex-col justify-center items-center md:hidden mt-8">
-            {!session && (
-              <SignInProviders providers={providers} csrfToken={csrfToken} />
-            )}
+            {!session && <SignInProviders providers={providers} />}
             {session && (
               <>
                 <p className="text-xl mx-auto text-center mb-3">
@@ -79,7 +76,7 @@ export default function Home({ providers, csrfToken }: any) {
                   Get started today,
                   <br /> it&apos;s free.
                 </p>
-                <SignInProviders providers={providers} csrfToken={csrfToken} />
+                <SignInProviders providers={providers} />
                 <LegalInfo />
               </>
             )}
@@ -90,12 +87,11 @@ export default function Home({ providers, csrfToken }: any) {
   );
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
+export async function getServerSideProps() {
   const providers = await getProviders();
   return {
     props: {
       providers: providers ?? [],
-      csrfToken: await getCsrfToken(context),
     },
   };
 }
