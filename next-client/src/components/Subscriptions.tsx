@@ -110,6 +110,11 @@ export default function Subscriptions() {
   return (
     <div className="flex flex-col items-center m-8">
       <div className="flex justify-center gap-8">
+        {products.length == 0 && (
+          <div className="w-72 h-72 flex flex-col justify-center items-center bg-white rounded-lg border">
+            <p className="m-auto">Loading...</p>
+          </div>
+        )}
         {products &&
           products.map((product) => (
             <div
