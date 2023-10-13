@@ -9,8 +9,6 @@ export default async function handler(
 ) {
   const email = req.body.email || null;
   const token = req.body.token || null;
-  console.log("email", email);
-  console.log("token", token);
 
   if (!email) {
     res.status(400).json("Missing email or token");
@@ -45,7 +43,6 @@ export default async function handler(
     }
 
     if (email && token) {
-      console.log("update token");
       const { rows } = await sql({
         query: `
         UPDATE verification_tokens
@@ -55,7 +52,6 @@ export default async function handler(
         `,
         values: [email, token],
       });
-      console.log("rows", rows);
       if (rows.length === 0) {
         res.status(500).json("Error: token not found or token expired");
         return;

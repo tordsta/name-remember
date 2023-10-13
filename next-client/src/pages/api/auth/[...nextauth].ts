@@ -44,7 +44,6 @@ export const authOptions = {
       type: "credentials",
       credentials: {},
       async authorize(credentials: any) {
-        console.log("credentials", credentials);
         if (!credentials || !credentials.email || !credentials.password)
           return { error: "Missing credentials." } as any;
 
@@ -52,8 +51,6 @@ export const authOptions = {
           email: credentials.email,
         });
         if (!userExists) return { error: "User does not exist." } as any;
-
-        console.log("userExists", userExists);
 
         if (!userExists.email_verified)
           return { error: "Email not verified." } as any;

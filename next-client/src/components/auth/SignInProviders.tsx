@@ -23,8 +23,6 @@ export default function SignInProviders({
   const [email, setEmail] = useState("");
 
   const handleCredentialsSignIn = async () => {
-    console.log("password", password);
-    console.log("email", email);
     if (!email || !password)
       return notifyError("Please enter an email and password");
     const res = await signIn("credentials", {
@@ -34,7 +32,6 @@ export default function SignInProviders({
     });
 
     if (res?.error) {
-      console.log("res.error", res.error);
       notifyError(res.error);
       if (res.error === "Email not verified.") {
         router.push(`/verify-email?email=${email}`);
