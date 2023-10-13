@@ -1,8 +1,4 @@
-import postmark from "postmark";
-
-const client = new postmark.ServerClient(
-  process.env.POSTMARK_API_KEY as string
-);
+import postmarkClient from "./postmarkClient";
 
 export default async function sendVerificationMail({
   recipientEmail,
@@ -16,6 +12,8 @@ export default async function sendVerificationMail({
   if (typeof window !== "undefined") {
     throw new Error("Mail functions should not be executed on the client");
   }
+
+  const client = postmarkClient();
 
   client.sendEmailWithTemplate({
     From: "noreply@nameremember.com",

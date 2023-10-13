@@ -1,6 +1,5 @@
 import sql from "@/database/pgConnect";
 import { User } from "../../utils/types";
-import bcrypt from "bcrypt";
 
 export default async function validatePassword({
   email,

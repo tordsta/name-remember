@@ -32,7 +32,7 @@ export default async function validatePassword({
       id: user.id,
       name: user.name,
       email: user.email,
-      verified_email: user.email_verified,
+      email_verified: user.email_verified,
       image: user.image,
       subscription_plan: user.subscription_plan,
     };

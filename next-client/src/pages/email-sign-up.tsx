@@ -1,10 +1,15 @@
 import { FramedButton } from "@/components/Button";
-import { notify, notifyPromiseFetch, notifyWarning } from "@/components/Notify";
+import {
+  notifyError,
+  notifyPromiseFetch,
+  notifyWarning,
+} from "@/components/Notify";
 import Layout from "@/components/navigation/Layout";
-import { GetServerSidePropsContext } from "next";
-import { getCsrfToken } from "next-auth/react";
+import { useRouter } from "next/router";
 
-export default function EmailSignUp({ csrfToken }: { csrfToken: string }) {
+export default function EmailSignUp() {
+  const router = useRouter();
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const name = (event.target as any)["name"].value;
@@ -27,18 +32,26 @@ export default function EmailSignUp({ csrfToken }: { csrfToken: string }) {
       return;
     }
 
-    const res = await notifyPromiseFetch({
-      url: "/api/auth/signup",
-      body: JSON.stringify({
-        name,
-        email,
-        password,
-      }),
-      pending: "Creating account...",
-      success: "Account created",
-      error: "Account creation failed",
-    });
-    console.log(res);
+    try {
+      const res = await notifyPromiseFetch({
+        url: "/api/auth/sign-up",
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
+        pending: "Creating account...",
+        success: "Account created",
+        error: "Account creation failed",
+      });
+      if (res.ok) {
+        router.push(`/verify-email?email=${email}`);
+      }
+    } catch (e) {
+      const res = e as Response;
+      const errorMessage = await res.json();
+      notifyError(errorMessage);
+    }
   };
 
   return (
@@ -48,7 +61,6 @@ export default function EmailSignUp({ csrfToken }: { csrfToken: string }) {
         onSubmit={handleSubmit}
         className="flex flex-col m-auto gap-4 justify-center items-end"
       >
-        <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
         <label>
           Full name
           <input
@@ -91,12 +103,4 @@ export default function EmailSignUp({ csrfToken }: { csrfToken: string }) {
       </form>
     </Layout>
   );
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  return {
-    props: {
-      csrfToken: await getCsrfToken(context),
-    },
-  };
 }

@@ -7,6 +7,7 @@ import customAuthAdapter from "@/lib/nextAuth/customAuthAdapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import validatePassword from "@/lib/nextAuth/validatePassword";
 import validateUser from "@/lib/nextAuth/validateUser";
+import { User } from "@/utils/types";
 
 export const authOptions = {
   secret: process.env.NEXT_AUTH as string,
@@ -22,18 +23,22 @@ export const authOptions = {
           response_type: "code",
         },
       },
+      allowDangerousEmailAccountLinking: true,
     }),
     SlackProvider({
       clientId: process.env.SLACK_ID as string,
       clientSecret: process.env.SLACK_SECRET as string,
+      allowDangerousEmailAccountLinking: true,
     }),
     FacebookProvider({
       clientId: process.env.FACEBOOK_ID as string,
       clientSecret: process.env.FACEBOOK_SECRET as string,
+      allowDangerousEmailAccountLinking: true,
     }),
     GithubProvider({
       clientId: process.env.GITHUB_ID as string,
       clientSecret: process.env.GITHUB_SECRET as string,
+      allowDangerousEmailAccountLinking: true,
     }),
     CredentialsProvider({
       type: "credentials",
@@ -47,6 +52,17 @@ export const authOptions = {
           email: credentials.email,
         });
         if (!userExists) return { error: "User does not exist." } as any;
+
+        console.log("userExists", userExists);
+
+        if (!userExists.email_verified)
+          return { error: "Email not verified." } as any;
+        if (!userExists.hashed_password || !userExists.salt) {
+          return {
+            error:
+              "Log in with a provider, go to your profile and set a password there.",
+          } as any;
+        }
 
         const user = await validatePassword({
           email: credentials.email,

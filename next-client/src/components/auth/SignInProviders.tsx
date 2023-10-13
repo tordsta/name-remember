@@ -36,6 +36,9 @@ export default function SignInProviders({
     if (res?.error) {
       console.log("res.error", res.error);
       notifyError(res.error);
+      if (res.error === "Email not verified.") {
+        router.push(`/verify-email?email=${email}`);
+      }
     } else if (!res?.error && res?.status === 200) {
       router.push("/dashboard");
     }
@@ -93,7 +96,7 @@ export default function SignInProviders({
           ))}
         <p className="text-sm w-60 text-center">
           Want to use email, but don&apos;t have an account?{" "}
-          <Link href={"/emailsignup"} className=" underline">
+          <Link href={"/email-sign-up"} className=" underline">
             Sign up here.
           </Link>
         </p>

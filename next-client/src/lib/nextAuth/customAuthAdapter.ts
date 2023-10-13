@@ -23,7 +23,7 @@ export default function customAuthAdapter(): Adapter {
       const newUser: AdapterUser = {
         ...rows[0],
         id: rows[0].id.toString(),
-        emailVerified: rows[0].email_verified,
+        email_verified: rows[0].email_verified,
         email: rows[0].email,
       };
       return newUser;
@@ -41,7 +41,7 @@ export default function customAuthAdapter(): Adapter {
       return {
         ...rows[0],
         id: rows[0].id.toString(),
-        emailVerified: rows[0].email_verified,
+        email_verified: rows[0].email_verified,
         email: rows[0].email,
       };
     };
@@ -55,7 +55,7 @@ export default function customAuthAdapter(): Adapter {
         ? {
             ...rows[0],
             id: rows[0].id.toString(),
-            emailVerified: rows[0].email_verified,
+            email_verified: rows[0].email_verified,
             email: rows[0].email,
           }
         : null;
@@ -83,7 +83,7 @@ export default function customAuthAdapter(): Adapter {
             image: rows[0].image,
             name: rows[0].name,
             id: rows[0].id.toString(),
-            emailVerified: rows[0].email_verified,
+            email_verified: rows[0].email_verified,
             subscription_plan: rows[0].subscription_plan,
           }
         : null;
@@ -105,7 +105,7 @@ export default function customAuthAdapter(): Adapter {
       const updatedUser: AdapterUser = {
         ...rows[0],
         id: rows[0].id.toString(),
-        emailVerified: rows[0].email_verified,
+        email_verified: rows[0].email_verified,
         email: rows[0].email,
       };
       return updatedUser;
@@ -170,7 +170,7 @@ export default function customAuthAdapter(): Adapter {
         },
         user: {
           id: rows[0].id,
-          emailVerified: rows[0].email_verified,
+          email_verified: rows[0].email_verified,
           email: rows[0].email,
           name: rows[0].name,
           image: rows[0].image,
@@ -298,20 +298,20 @@ export default function customAuthAdapter(): Adapter {
       const { rows } = await sql({
         query: `
         SELECT * FROM verification_tokens 
-        WHERE identifier = $1
+        WHERE email = $1
         AND token = $2 AND expires > NOW()`,
         values: [identifier, token],
       });
       await sql({
         query: `
         DELETE FROM verification_tokens
-        WHERE identifier = $1
+        WHERE email = $1
         AND token = $2`,
         values: [identifier, token],
       });
       return {
         expires: rows[0].expires,
-        identifier: rows[0].identifier,
+        identifier: rows[0].email,
         token: rows[0].token,
       };
     };
