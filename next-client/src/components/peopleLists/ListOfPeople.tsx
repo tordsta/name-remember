@@ -1,6 +1,5 @@
 import { usePeopleList } from "@/lib/reactQuery/clientHooks/usePeopleList";
 import useDeletePeople from "@/lib/reactQuery/clientHooks/useDeletePeople";
-import Modal from "react-modal";
 import NextImage from "next/image";
 import { trackAmplitudeData } from "@/lib/amplitude";
 
@@ -20,7 +19,7 @@ export default function ListOfPeople({
       {isLoading && <div>Loading... </div>}
       {!isLoading && !error && data && (
         <div className="flex flex-col">
-          <p className="text-2xl font-bold w-52">People</p>
+          <p className="text-2xl font-bold w-52">Group members</p>
           {data.people_in_list &&
             data.people_in_list.length > 0 &&
             data.people_in_list.map((person) => {
@@ -63,5 +62,3 @@ export default function ListOfPeople({
     </>
   );
 }
-
-Modal.setAppElement("#__next");

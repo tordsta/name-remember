@@ -1,9 +1,9 @@
 import { trackAmplitudeData } from "@/lib/amplitude";
-import { FramedButton } from "./Button";
+import { FramedButton } from "../Button";
 import useDeleteList from "@/lib/reactQuery/clientHooks/useDeletePeopleList";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import Modal from "./Modal";
+import Modal from "../Modal";
 
 export default function DeleteListButton({ listId }: { listId: string }) {
   const router = useRouter();

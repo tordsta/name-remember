@@ -1,5 +1,5 @@
 import Layout from "@/components/navigation/Layout";
-import Lists from "@/components/Lists";
+import Lists from "@/components/peopleLists/Lists";
 import { getServerSession } from "next-auth";
 import { QueryClient, dehydrate } from "react-query";
 import { authOptions } from "./api/auth/[...nextauth]";

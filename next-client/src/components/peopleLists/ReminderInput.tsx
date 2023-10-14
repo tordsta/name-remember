@@ -1,8 +1,8 @@
 import React, { useLayoutEffect, useState } from "react";
-import Button, { FramedButton } from "./Button";
+import Button, { FramedButton } from "../Button";
 import { Frequency, RRule } from "rrule";
-import { notifyError, notifyWarning } from "./Notify";
-import Modal from "./Modal";
+import { notifyError, notifyWarning } from "../Notify";
+import Modal from "../Modal";
 import useAddReminder from "@/lib/reactQuery/clientHooks/useAddReminder";
 import { trackAmplitudeData } from "@/lib/amplitude";
 import useDeleteReminder from "@/lib/reactQuery/clientHooks/useDeleteReminder";

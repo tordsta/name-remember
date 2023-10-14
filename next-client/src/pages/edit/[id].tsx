@@ -6,15 +6,15 @@ import { GetServerSidePropsContext } from "next";
 import { usePeopleList } from "@/lib/reactQuery/clientHooks/usePeopleList";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
-import ListOfPeople from "@/components/ListOfPeople";
+import ListOfPeople from "@/components/peopleLists/ListOfPeople";
 import useDeleteList from "@/lib/reactQuery/clientHooks/useDeletePeopleList";
 import { FramedButton } from "@/components/Button";
 import Layout from "@/components/navigation/Layout";
-import AddPersonToListModal from "@/components/AddPersonToListModal";
-import ReminderInput from "@/components/ReminderInput";
+import AddPersonToListModal from "@/components/peopleLists/AddPersonToListModal";
+import ReminderInput from "@/components/peopleLists/ReminderInput";
 import getList from "@/lib/reactQuery/serverHydration/getList";
 import { Session } from "@/utils/types";
-import DeleteListButton from "@/components/DeleteListButton";
+import DeleteListButton from "@/components/peopleLists/DeleteListButton";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req, res } = context;
@@ -67,15 +67,21 @@ export default function EditListPage() {
       <div className="flex flex-col justify-center items-center w-full mb-8">
         <p className="text-3xl mt-8">{data?.name}</p>
         <div className="flex flex-col md:flex-row-reverse justify-start md:justify-evenly w-full items-center">
-          <div className="flex flex-col items-center justify-center gap-4 mt-8 md:mt-0">
+          <div className="flex flex-col items-center justify-center gap-8 my-6 md:mt-0">
+            <div className="flex flex-col items-center justify-center gap-4">
+              <p className="text-xl">Upload methods</p>
+              <AddPersonToListModal listId={id} />
+            </div>
             <ReminderInput id={id} rrule={data?.rrule} />
+            <div className="flex flex-col items-center justify-center gap-4">
+              <p className="text-xl">Group settings</p>
+              <DeleteListButton listId={id} />
+            </div>
           </div>
           <div className="flex flex-col items-center justify-center mb-16 mt-8 md:mb-16 gap-6">
             <ListOfPeople currentList={id} />
-            <AddPersonToListModal listId={id} />
           </div>
         </div>
-        <DeleteListButton listId={id} />
       </div>
     </Layout>
   );
