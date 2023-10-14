@@ -3,16 +3,15 @@ import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import SlackProvider from "next-auth/providers/slack";
-import vercelPostgresAdapter from "@/lib/vercelPostgresAdapter";
+import customAuthAdapter from "@/lib/nextAuth/customAuthAdapter";
+import CredentialsProvider from "next-auth/providers/credentials";
+import validatePassword from "@/lib/nextAuth/validatePassword";
+import validateUser from "@/lib/nextAuth/validateUser";
 
 export const authOptions = {
   secret: process.env.NEXT_AUTH as string,
-  adapter: vercelPostgresAdapter(),
+  adapter: customAuthAdapter(),
   providers: [
-    FacebookProvider({
-      clientId: process.env.FACEBOOK_ID as string,
-      clientSecret: process.env.FACEBOOK_SECRET as string,
-    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_ID as string,
       clientSecret: process.env.GOOGLE_SECRET as string,
@@ -23,22 +22,89 @@ export const authOptions = {
           response_type: "code",
         },
       },
-    }),
-    GithubProvider({
-      clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET as string,
+      allowDangerousEmailAccountLinking: true,
     }),
     SlackProvider({
       clientId: process.env.SLACK_ID as string,
       clientSecret: process.env.SLACK_SECRET as string,
+      allowDangerousEmailAccountLinking: true,
+    }),
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_ID as string,
+      clientSecret: process.env.FACEBOOK_SECRET as string,
+      allowDangerousEmailAccountLinking: true,
+    }),
+    GithubProvider({
+      clientId: process.env.GITHUB_ID as string,
+      clientSecret: process.env.GITHUB_SECRET as string,
+      allowDangerousEmailAccountLinking: true,
+    }),
+    CredentialsProvider({
+      type: "credentials",
+      credentials: {},
+      async authorize(credentials: any) {
+        if (!credentials || !credentials.email || !credentials.password)
+          return { error: "Missing credentials." } as any;
+
+        const userExists = await validateUser({
+          email: credentials.email,
+        });
+        if (!userExists) return { error: "User does not exist." } as any;
+
+        if (!userExists.email_verified)
+          return { error: "Email not verified." } as any;
+        if (!userExists.hashed_password || !userExists.salt) {
+          return {
+            error:
+              "Log in with a provider, go to your profile and set a password there.",
+          } as any;
+        }
+
+        const user = await validatePassword({
+          email: credentials.email,
+          password: credentials.password,
+        });
+        if (!user) return { error: "Wrong password." } as any;
+
+        return user;
+      },
     }),
   ],
-  debugger: true,
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  debugger: false,
+  pages: {
+    signIn: "/",
+    signOut: "/",
+    error: "/",
+    verifyRequest: "/",
+    newUser: "/",
+  },
   callbacks: {
+    async signIn({ user, account, profile, email, credentials }: any) {
+      if (user?.error) {
+        throw new Error(user.error);
+      }
+      return true;
+    },
     async redirect() {
-      return "/dashboard";
+      return `${process.env.NEXTAUTH_URL}/dashboard`;
+    },
+    async jwt({ token, user }: any) {
+      if (user) {
+        token.user = { ...user };
+      }
+      return token;
+    },
+    async session({ session, token }: any) {
+      if (token?.user) {
+        session.user = token.user;
+      }
+      return session;
     },
   },
 };
 
-export default NextAuth(authOptions);
+export default NextAuth(authOptions as any);

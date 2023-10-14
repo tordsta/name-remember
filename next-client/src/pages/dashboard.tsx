@@ -9,10 +9,15 @@ import { usePeopleLists } from "@/hooks/usePeopleLists";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { setAmplitudeUserId, trackAmplitudeData } from "@/lib/amplitude";
+import { Session } from "@/utils/types";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req, res } = context;
-  const session = await getServerSession(req, res, authOptions);
+  const session: Session | null | undefined = await getServerSession(
+    req,
+    res,
+    authOptions as any
+  );
 
   if (!session) {
     return {
