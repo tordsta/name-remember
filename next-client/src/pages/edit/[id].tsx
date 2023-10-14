@@ -13,10 +13,15 @@ import Layout from "@/components/navigation/Layout";
 import AddPersonToListModal from "@/components/AddPersonToListModal";
 import ReminderInput from "@/components/ReminderInput";
 import getList from "@/database/getList";
+import { Session } from "@/utils/types";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req, res } = context;
-  const session = await getServerSession(req, res, authOptions);
+  const session: Session | null | undefined = await getServerSession(
+    req,
+    res,
+    authOptions as any
+  );
 
   if (!session) {
     return {

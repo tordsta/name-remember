@@ -87,7 +87,7 @@ export default function customAuthAdapter(): Adapter {
             subscription_plan: rows[0].subscription_plan,
           }
         : null;
-      return user;
+      return user as any;
     };
 
     const updateUser = async (
@@ -162,7 +162,7 @@ export default function customAuthAdapter(): Adapter {
         values: [session.rows[0].user_id],
       });
       const expiresDate = new Date(session.rows[0].expires);
-      const sessionAndUser: { session: AdapterSession; user: AdapterUser } = {
+      const sessionAndUser: { session: AdapterSession; user: any } = {
         session: {
           sessionToken: session.rows[0].session_token,
           userId: session.rows[0].user_id,

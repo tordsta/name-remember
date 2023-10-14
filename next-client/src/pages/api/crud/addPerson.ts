@@ -3,12 +3,17 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import sql from "@/database/pgConnect";
 import { Person } from "@/utils/types";
+import { Session } from "@/utils/types";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string>
 ) {
-  const session = await getServerSession(req, res, authOptions);
+  const session: Session | null | undefined = await getServerSession(
+    req,
+    res,
+    authOptions as any
+  );
   if (session) {
     const email = session.user?.email || null;
     const person: Person | null = req.body.person || null;
