@@ -43,7 +43,7 @@ export default function AddPersonToListModal({ listId }: { listId: string }) {
   return (
     <>
       <FramedButton onClick={() => setOpenSignal(true)}>
-        Add Person
+        Add people
       </FramedButton>
       <DefaultModal openSignal={openSignal} setOpenSignal={setOpenSignal}>
         <div className="text-xl text-center mt-4">Add person</div>

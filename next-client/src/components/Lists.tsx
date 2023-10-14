@@ -59,29 +59,31 @@ export default function Lists({
                 >
                   <div className="flex justify-between items-start">
                     <p className="text-3xl ml-2 pt-2 pl-2">{list.name}</p>
-                    <div className="flex justify-center items-center gap-1">
-                      <p className="text-xl">Edit:</p>
-                      <button
-                        className="w-7 h-7 md:w-10 md:h-10 relative"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          router.push(`/edit/${list.id}`);
-                        }}
-                      >
+                    <div
+                      className="flex justify-center items-center gap-1 cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/edit/${list.id}`);
+                      }}
+                    >
+                      <p className="md:text-xl">Edit:</p>
+                      <div className="w-7 h-7 md:w-10 md:h-10 relative">
                         <Image
                           src="/icons/settingsFramed110x110.png"
                           alt="edit icon"
                           fill
                           sizes="100%"
                         />
-                      </button>
+                      </div>
                     </div>
                   </div>
                   <div className="flex h-full justify-between items-end text-xl pb-1">
-                    <p className="ml-4">
-                      Size: {list.people_in_lists_count}{" "}
-                      {list.rrule && <> - Reminder: {ruleText}</>}
-                    </p>
+                    <div className="ml-4 text-md md:text-lg">
+                      <p>Size: {list.people_in_lists_count}</p>
+                      {list.rrule && (
+                        <p className="hidden md:block">Reminder: {ruleText}</p>
+                      )}
+                    </div>
                     <FramedButton
                       onClick={(e) => {
                         e.stopPropagation();
