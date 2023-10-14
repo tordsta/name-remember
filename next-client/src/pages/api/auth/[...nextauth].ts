@@ -7,7 +7,6 @@ import customAuthAdapter from "@/lib/nextAuth/customAuthAdapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import validatePassword from "@/lib/nextAuth/validatePassword";
 import validateUser from "@/lib/nextAuth/validateUser";
-import { User } from "@/utils/types";
 
 export const authOptions = {
   secret: process.env.NEXT_AUTH as string,
