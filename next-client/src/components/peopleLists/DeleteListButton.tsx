@@ -28,10 +28,12 @@ export default function DeleteListButton({ listId }: { listId: string }) {
               <p>Cancel</p>
             </FramedButton>
             <FramedButton
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.stopPropagation();
                 trackAmplitudeData("Clicked Delete List", { id: listId });
+                console.log("delete list", listId);
                 deleteList.mutate(listId);
+                console.log("router push dashboard");
                 router.push("/dashboard");
               }}
             >

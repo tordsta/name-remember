@@ -54,6 +54,7 @@ export default function AddPerson({
     setDisableSubmit(true);
     event.preventDefault();
     const file = (event.target as any).files[0];
+    if (!file) return;
 
     const targetSizeKb = 200;
     await resizeImage({ file, targetSizeKb, setImageFile });

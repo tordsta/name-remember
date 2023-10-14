@@ -81,6 +81,9 @@ export default async function getList({
         `,
         values: [email, listId],
       });
+      if (rows.length === 0) {
+        throw new Error("No list found");
+      }
       return rows[0];
     }
   } catch (error) {

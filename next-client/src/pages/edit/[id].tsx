@@ -7,8 +7,6 @@ import { usePeopleList } from "@/lib/reactQuery/clientHooks/usePeopleList";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import ListOfPeople from "@/components/peopleLists/ListOfPeople";
-import useDeleteList from "@/lib/reactQuery/clientHooks/useDeletePeopleList";
-import { FramedButton } from "@/components/Button";
 import Layout from "@/components/navigation/Layout";
 import AddPersonToListModal from "@/components/peopleLists/AddPersonToListModal";
 import ReminderInput from "@/components/peopleLists/ReminderInput";
@@ -34,7 +32,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   const queryClient = new QueryClient();
-  const { id } = context.params?.id ? context.params : { id: "" };
+  const { id } = context.params?.id ? context.params : { id: null };
+
+  if (!id) {
+    return {
+      redirect: {
+        destination: "/dashboard",
+        permanent: false,
+      },
+      props: {},
+    };
+  }
 
   await queryClient.prefetchQuery(["peopleList", id], () => {
     if (typeof id === "string" && session) {
@@ -53,14 +61,13 @@ export default function EditListPage() {
   const router = useRouter();
   const { id } = router.query;
   const { data, isError, isLoading } = usePeopleList({ id: id as string });
-  const deleteList = useDeleteList();
 
   useEffect(() => {
     trackAmplitudeData("Loaded Page Edit List", { id: id });
   }, [id]);
 
   if (isLoading || typeof id !== "string") return <p>Loading...</p>;
-  if (isError) return <p>Error :</p>;
+  if (isError) return <p>Error</p>;
 
   return (
     <Layout>
