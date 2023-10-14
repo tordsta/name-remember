@@ -3,7 +3,8 @@ import { FramedButton } from "../Button";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { notifyError } from "../Notify";
+import { notifyError, notifyPromiseFetch } from "../Notify";
+import Modal from "../Modal";
 
 export default function SignInProviders({
   providers,
@@ -21,6 +22,8 @@ export default function SignInProviders({
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [openSignal, setOpenSignal] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
 
   const handleCredentialsSignIn = async () => {
     if (!email || !password)
@@ -97,6 +100,43 @@ export default function SignInProviders({
             Sign up here.
           </Link>
         </p>
+        <p
+          onClick={() => {
+            setForgotPasswordEmail(email);
+            setOpenSignal(true);
+          }}
+          className="text-sm underline"
+        >
+          Forgot password?
+        </p>
+        <Modal openSignal={openSignal} setOpenSignal={setOpenSignal}>
+          <div className="flex flex-col justify-center items-center gap-4">
+            Forgot password?
+            <input
+              placeholder="Email"
+              defaultValue={email}
+              className="border border-black text-center mx-2 px-1 pt-1 w-52"
+              onChange={(e) => {
+                setForgotPasswordEmail(e.target.value);
+              }}
+              type="text"
+            />
+            <FramedButton
+              onClick={() => {
+                notifyPromiseFetch({
+                  url: "/api/auth/reset-password",
+                  body: JSON.stringify({ email: forgotPasswordEmail }),
+                  pending: "Processing...",
+                  success: "Email sent.",
+                  error: "An error occurred.",
+                });
+                setOpenSignal(false);
+              }}
+            >
+              Reset password
+            </FramedButton>
+          </div>
+        </Modal>
       </div>
     </div>
   );

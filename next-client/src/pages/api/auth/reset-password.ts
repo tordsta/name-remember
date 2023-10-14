@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import sql from "@/database/pgConnect";
 import { v4 as uuidv4 } from "uuid";
-import sendVerificationMail from "@/lib/postmarkEmail/sendVerificationMail";
+import sendResetPasswordEmail from "@/lib/postmarkEmail/sendResetPasswordMail";
+import bcrypt from "bcrypt";
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,6 +10,7 @@ export default async function handler(
 ) {
   const email = req.body.email || null;
   const token = req.body.token || null;
+  const password = req.body.password || null;
 
   if (!email) {
     res.status(400).json("Missing email");
@@ -31,16 +33,16 @@ export default async function handler(
         return;
       }
 
-      await sendVerificationMail({
+      await sendResetPasswordEmail({
         recipientEmail: email,
         recipientName: email,
-        tokenUrl: `${process.env.NEXTAUTH_URL}/verify-email?email=${email}&token=${newToken}`,
+        tokenUrl: `${process.env.NEXTAUTH_URL}/reset-password?email=${email}&token=${newToken}`,
       });
 
       res.status(200).json("Success");
     }
 
-    if (email && token) {
+    if (email && token && password) {
       const { rows } = await sql({
         query: `
         UPDATE verification_tokens
@@ -55,15 +57,16 @@ export default async function handler(
         return;
       }
 
+      const salt = bcrypt.genSaltSync(10);
+      const hash = bcrypt.hashSync(password, salt);
+
       await sql({
         query: `
-        UPDATE users
-        SET email_verified = true
-        WHERE email = $1;
-        `,
-        values: [email],
+                UPDATE users
+                SET salt = $1, hashed_password = $2
+                WHERE email = $3`,
+        values: [salt, hash, email],
       });
-
       res.status(200).json("Success");
     }
   } catch (error) {
