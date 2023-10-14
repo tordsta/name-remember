@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import sql from "@/database/pgConnect";
+import sql from "@/lib/pgConnect";
 import { Session } from "@/utils/types";
 
 export default async function handler(

@@ -1,4 +1,4 @@
-import sql from "@/database/pgConnect";
+import sql from "@/lib/pgConnect";
 import { Account } from "next-auth";
 import {
   Adapter,

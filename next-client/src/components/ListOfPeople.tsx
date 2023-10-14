@@ -1,5 +1,5 @@
-import { usePeopleList } from "@/hooks/usePeopleList";
-import useDeletePeople from "@/hooks/useDeletePeople";
+import { usePeopleList } from "@/lib/reactQuery/clientHooks/usePeopleList";
+import useDeletePeople from "@/lib/reactQuery/clientHooks/useDeletePeople";
 import Modal from "react-modal";
 import NextImage from "next/image";
 import { trackAmplitudeData } from "@/lib/amplitude";

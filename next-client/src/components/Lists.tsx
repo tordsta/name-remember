@@ -1,12 +1,12 @@
 import { useState } from "react";
-import Modal from "react-modal";
 import { Lists } from "@/utils/types";
 import Button, { FramedButton } from "./Button";
 import DefaultModal from "./Modal";
-import useCreateList from "@/hooks/useCreateList";
+import useCreateList from "@/lib/reactQuery/clientHooks/useCreateList";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { trackAmplitudeData } from "@/lib/amplitude";
+import { RRule } from "rrule";
 
 export default function Lists({
   data,
@@ -45,6 +45,13 @@ export default function Lists({
         {!isLoading && !isError && data && Array.isArray(data) && (
           <>
             {data.map((list) => {
+              let rule: RRule | null = null;
+              let ruleText = "";
+              if (list.rrule) {
+                let ruleOption = RRule.parseString(list.rrule);
+                rule = new RRule(ruleOption);
+                ruleText = rule.toText();
+              }
               return (
                 <li
                   key={list.id}
@@ -52,22 +59,29 @@ export default function Lists({
                 >
                   <div className="flex justify-between items-start">
                     <p className="text-3xl ml-2 pt-2 pl-2">{list.name}</p>
-                    <button
-                      className="w-7 h-7 md:w-10 md:h-10 relative"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/edit/${list.id}`);
-                      }}
-                    >
-                      <Image
-                        src="/icons/settingsFramed110x110.png"
-                        alt="edit icon"
-                        fill
-                        sizes="100%"
-                      />
-                    </button>
+                    <div className="flex justify-center items-center gap-1">
+                      <p className="text-xl">Edit:</p>
+                      <button
+                        className="w-7 h-7 md:w-10 md:h-10 relative"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/edit/${list.id}`);
+                        }}
+                      >
+                        <Image
+                          src="/icons/settingsFramed110x110.png"
+                          alt="edit icon"
+                          fill
+                          sizes="100%"
+                        />
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex h-full justify-end items-end text-xl pb-1">
+                  <div className="flex h-full justify-between items-end text-xl pb-1">
+                    <p className="ml-4">
+                      Size: {list.people_in_lists_count}{" "}
+                      {list.rrule && <> - Reminder: {ruleText}</>}
+                    </p>
                     <FramedButton
                       onClick={(e) => {
                         e.stopPropagation();
@@ -109,5 +123,3 @@ export default function Lists({
     </div>
   );
 }
-
-Modal.setAppElement("#__next");

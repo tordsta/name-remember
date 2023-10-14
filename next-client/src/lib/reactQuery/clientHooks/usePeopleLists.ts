@@ -4,6 +4,8 @@ type FetchPeopleListsData = Array<{
   id: string;
   name: string;
   owner_id: string;
+  rrule: string;
+  people_in_lists_count: string;
 }>;
 
 export const usePeopleLists = (): UseQueryResult<FetchPeopleListsData> => {

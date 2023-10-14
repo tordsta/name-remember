@@ -1,4 +1,4 @@
-import sql from "@/database/pgConnect";
+import sql from "@/lib/pgConnect";
 import { Session } from "next-auth";
 
 export default async function getList({

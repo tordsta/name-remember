@@ -3,12 +3,12 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { dehydrate, QueryClient } from "react-query";
 import { GetServerSidePropsContext } from "next";
-import { usePeopleList } from "@/hooks/usePeopleList";
+import { usePeopleList } from "@/lib/reactQuery/clientHooks/usePeopleList";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import Memorization from "@/components/Memorization";
 import Layout from "@/components/navigation/Layout";
-import getList from "@/database/getList";
+import getList from "@/lib/reactQuery/serverHydration/getList";
 import { Session } from "@/utils/types";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {

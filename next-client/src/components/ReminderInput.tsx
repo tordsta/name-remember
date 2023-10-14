@@ -3,9 +3,9 @@ import Button, { FramedButton } from "./Button";
 import { Frequency, RRule } from "rrule";
 import { notifyError, notifyWarning } from "./Notify";
 import Modal from "./Modal";
-import useAddReminder from "@/hooks/useAddReminder";
+import useAddReminder from "@/lib/reactQuery/clientHooks/useAddReminder";
 import { trackAmplitudeData } from "@/lib/amplitude";
-import useDeleteReminder from "@/hooks/useDeleteReminder";
+import useDeleteReminder from "@/lib/reactQuery/clientHooks/useDeleteReminder";
 
 export default function ReminderInput({
   id,

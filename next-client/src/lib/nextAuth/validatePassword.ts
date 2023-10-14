@@ -1,4 +1,4 @@
-import sql from "@/database/pgConnect";
+import sql from "@/lib/pgConnect";
 import { User } from "../../utils/types";
 import bcrypt from "bcrypt";
 

@@ -3,7 +3,7 @@ import DefaultModal from "./Modal";
 import Button, { FramedButton } from "./Button";
 import NextImage from "next/image";
 import resizeImage from "@/utils/resizeImage";
-import useAddPeople from "@/hooks/useAddPeople";
+import useAddPeople from "@/lib/reactQuery/clientHooks/useAddPeople";
 import { trackAmplitudeData } from "@/lib/amplitude";
 
 export default function AddPersonToListModal({ listId }: { listId: string }) {

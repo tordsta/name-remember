@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import sql from "@/database/pgConnect";
+import sql from "@/lib/pgConnect";
 import bcrypt from "bcrypt";
 import { getServerSession } from "next-auth";
 import validateUser from "@/lib/nextAuth/validateUser";

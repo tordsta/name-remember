@@ -3,16 +3,16 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { dehydrate, QueryClient, useQuery } from "react-query";
 import { GetServerSidePropsContext } from "next";
-import { usePeopleList } from "@/hooks/usePeopleList";
+import { usePeopleList } from "@/lib/reactQuery/clientHooks/usePeopleList";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import ListOfPeople from "@/components/ListOfPeople";
-import useDeleteList from "@/hooks/useDeletePeopleList";
+import useDeleteList from "@/lib/reactQuery/clientHooks/useDeletePeopleList";
 import { FramedButton } from "@/components/Button";
 import Layout from "@/components/navigation/Layout";
 import AddPersonToListModal from "@/components/AddPersonToListModal";
 import ReminderInput from "@/components/ReminderInput";
-import getList from "@/database/getList";
+import getList from "@/lib/reactQuery/serverHydration/getList";
 import { Session } from "@/utils/types";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
