@@ -2,6 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import sql from "@/lib/pgConnect";
 import { User } from "@/utils/types";
 import bcrypt from "bcrypt";
+import { create } from "domain";
+import createWelcomeList from "@/utils/createWelcomeList";
 
 export default async function handler(
   req: NextApiRequest,
@@ -42,12 +44,14 @@ export default async function handler(
   const hash = bcrypt.hashSync(password, salt);
 
   try {
-    await sql({
+    const { rows } = await sql({
       query: `
             INSERT INTO users (name, email, salt, hashed_password) 
-            VALUES ($1, $2, $3, $4)`,
+            VALUES ($1, $2, $3, $4)
+            RETURNING id;`,
       values: [name, email, salt, hash],
     });
+    createWelcomeList({ userId: rows[0].id });
     res.status(200).json("Success");
     return;
   } catch (error) {
