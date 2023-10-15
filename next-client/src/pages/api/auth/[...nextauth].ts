@@ -49,7 +49,11 @@ export const authOptions = {
         const userExists = await validateUser({
           email: credentials.email,
         });
-        if (!userExists) return { error: "User does not exist." } as any;
+        if (!userExists)
+          return {
+            error:
+              "User does not exist. You must create a user before you sign in.",
+          } as any;
 
         if (!userExists.email_verified)
           return { error: "Email not verified." } as any;

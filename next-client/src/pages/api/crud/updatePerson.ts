@@ -17,40 +17,44 @@ export default async function handler(
   if (session) {
     const email = session.user?.email || null;
     const person: Person | null = req.body.person || null;
-    const listId: string | null = req.body.listId || null;
-    if (!person || !listId || !email) {
+    if (!email || !person || !person.id || !person.list_id) {
       console.log(
-        "Missing person or id or email",
-        person,
+        "Missing person or email",
         email,
-        JSON.stringify(req.body)
+        person?.id,
+        person?.fname,
+        person?.mname,
+        person?.lname
       );
       res.status(400).json("Missing name or email");
       return;
     }
     try {
+      console.log(email, person.list_id);
       const verifyOwner = await sql({
         query: `
-        SELECT id FROM people_lists WHERE owner_id = (SELECT id FROM users WHERE email = $1) AND id = $2;
+        SELECT * 
+        FROM people_lists 
+        WHERE owner_id = (SELECT id FROM users WHERE email = $1) AND id = $2;
         `,
-        values: [email, listId],
+        values: [email, person.list_id],
       });
       if (!verifyOwner.rows[0]) {
         res.status(401).json("Unauthorized");
         return;
       }
-
       const people = await sql({
         query: `
-        INSERT INTO people (fname, mname, lname, image, list_id)
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING id, fname;`,
+        UPDATE people
+        SET fname = $1, mname = $2, lname = $3, image = $4
+        WHERE id = $5 AND list_id = $6;`,
         values: [
-          person.fname,
-          person.mname,
-          person.lname,
-          person.image,
-          listId,
+          person.fname || "",
+          person.mname || "",
+          person.lname || "",
+          person.image || "",
+          person.id,
+          person.list_id,
         ],
       });
       res.status(200).json(JSON.stringify(people.rows[0]));

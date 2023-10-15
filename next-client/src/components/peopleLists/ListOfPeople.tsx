@@ -2,12 +2,10 @@ import { usePeopleList } from "@/lib/reactQuery/clientHooks/usePeopleList";
 import useDeletePeople from "@/lib/reactQuery/clientHooks/useDeletePeople";
 import NextImage from "next/image";
 import { trackAmplitudeData } from "@/lib/amplitude";
+import Button from "../Button";
+import EditPersonModal from "./EditPersonModal";
 
-export default function ListOfPeople({
-  currentList,
-}: {
-  currentList: string | null;
-}) {
+export default function ListOfPeople({ currentList }: { currentList: string }) {
   const { data, isLoading, error } = usePeopleList({
     id: currentList,
   });
@@ -26,7 +24,7 @@ export default function ListOfPeople({
               return (
                 <div
                   key={person.id}
-                  className="flex h-12 justify-start items-center gap-4 mt-2 border-b border-black"
+                  className="flex h-12 justify-start items-center gap-4 mt-2 px-2 border-b border-black"
                 >
                   <div className="relative w-10 h-10 rounded-full overflow-hidden">
                     <NextImage
@@ -41,10 +39,12 @@ export default function ListOfPeople({
                     {person.fname} {person.mname} {person.lname}
                   </p>
                   <div className="grow" />
-                  <button
+                  <EditPersonModal person={person} />
+                  <Button
+                    style="small"
                     onClick={() => {
                       if (person.id) {
-                        deletePerson.mutate(person.id);
+                        deletePerson.mutate({ person });
                         trackAmplitudeData("Deleted Person", {
                           personId: person.id,
                           personName: `${person.fname} ${person.mname} ${person.lname}`,
@@ -52,8 +52,8 @@ export default function ListOfPeople({
                       }
                     }}
                   >
-                    Delete
-                  </button>
+                    <p className="text-sm">Delete</p>
+                  </Button>
                 </div>
               );
             })}

@@ -4,5 +4,5 @@ ALTER TABLE stripe_subscriptions DROP CONSTRAINT fk_customer_id, ADD CONSTRAINT 
 ALTER TABLE accounts DROP CONSTRAINT accounts_user_id_fkey, ADD CONSTRAINT accounts_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE; 
 ALTER TABLE people ADD COLUMN list_id UUID REFERENCES people_lists(id) ON DELETE CASCADE;
 DROP TABLE IF EXISTS people_in_lists;
-
+DROP FUNCTION IF EXISTS delete_person;
 

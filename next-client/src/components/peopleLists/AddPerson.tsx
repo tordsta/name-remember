@@ -51,8 +51,8 @@ export default function AddPerson({
   };
 
   const handleImageChange = async (event: React.ChangeEvent) => {
-    setDisableSubmit(true);
     event.preventDefault();
+    setDisableSubmit(true);
     const file = (event.target as any).files[0];
     if (!file) return;
 

@@ -18,10 +18,11 @@ export type Lists = {
 
 export type Person = {
   id?: string;
-  fname?: string;
-  mname?: string;
-  lname?: string;
-  image?: string;
+  fname?: string | null;
+  mname?: string | null;
+  lname?: string | null;
+  image?: string | null;
+  list_id?: string;
 };
 
 export type User = {
