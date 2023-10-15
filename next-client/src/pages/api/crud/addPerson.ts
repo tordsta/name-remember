@@ -31,30 +31,18 @@ export default async function handler(
     try {
       const people = await sql({
         query: `
-        INSERT INTO people (fname, mname, lname, image)
-        VALUES ($1, $2, $3, $4)
+        INSERT INTO people (fname, mname, lname, image, list_id)
+        VALUES ($1, $2, $3, $4, $5)
         RETURNING id, fname;`,
-        values: [person.fname, person.mname, person.lname, person.image],
+        values: [
+          person.fname,
+          person.mname,
+          person.lname,
+          person.image,
+          listId,
+        ],
       });
-
-      const results = await sql({
-        query: `
-      WITH user_id AS (
-        SELECT id 
-        FROM users 
-        WHERE email = $1
-      ), 
-      list_id AS (
-        SELECT id 
-        FROM people_lists 
-        WHERE id = $2
-        AND owner_id = (SELECT id FROM user_id)
-      )
-      INSERT INTO people_in_lists (people_id, people_list_id)
-      VALUES ($3, (SELECT id FROM list_id))`,
-        values: [email, listId, people.rows[0].id],
-      });
-      res.status(200).json(JSON.stringify(results.rowCount));
+      res.status(200).json(JSON.stringify(people.rows[0]));
       return;
     } catch (error) {
       console.log(error);

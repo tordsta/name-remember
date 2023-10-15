@@ -31,9 +31,7 @@ export default function DeleteListButton({ listId }: { listId: string }) {
               onClick={async (e) => {
                 e.stopPropagation();
                 trackAmplitudeData("Clicked Delete List", { id: listId });
-                console.log("delete list", listId);
                 deleteList.mutate(listId);
-                console.log("router push dashboard");
                 router.push("/dashboard");
               }}
             >
