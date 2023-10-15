@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import sql from "@/lib/pgConnect";
 import { Session } from "@/utils/types";
+import sendNewFeedbackMail from "@/lib/postmarkEmail/sendNewFeedbackMail";
 
 export default async function handler(
   req: NextApiRequest,
@@ -36,6 +37,15 @@ export default async function handler(
         VALUES ($1, $2, $3, $4)`,
       values: [email, type, message, file],
     });
+    const file_upload = file ? true : false;
+    const recipientEmail = process.env.ADMIN_EMAIL as string;
+    sendNewFeedbackMail({
+      recipientEmail,
+      type,
+      message,
+      file_upload,
+    });
+
     res.status(200).json("Success");
     return;
   } catch (error) {

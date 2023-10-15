@@ -113,6 +113,10 @@ resource "google_cloud_run_v2_service" "default" {
         name = "STRIPE_PREMIUM_PRODUCT_ID"
         value = var.STRIPE_PREMIUM_PRODUCT_ID
       }
+      env {
+        name = "ADMIN_EMAIL"
+        value = var.ADMIN_EMAIL
+      }
     }
   }
 }

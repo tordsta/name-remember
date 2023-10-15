@@ -42,6 +42,10 @@ variable "POSTMARK_API_KEY" {
     description = "Postmark API Key"
     type        = string
 }
+variable "ADMIN_EMAIL" {
+    description = "Admin Email"
+    type        = string
+}  
 variable "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID" {
     description = "Google Tag Manager ID"
     type        = string
