@@ -10,7 +10,7 @@ type FetchPeopleListsData = Array<{
 
 export const usePeopleLists = (): UseQueryResult<FetchPeopleListsData> => {
   return useQuery("peopleLists", async () => {
-    const response = await fetch("/api/crud/getLists");
+    const response = await fetch("/api/crud/readLists");
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }

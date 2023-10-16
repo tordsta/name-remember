@@ -16,7 +16,7 @@ export default function FeedbackForm() {
     const description = (event.target as any)["description"].value as string;
 
     await notifyPromiseFetch({
-      url: "/api/crud/addFeedback",
+      url: "/api/crud/createFeedback",
       body: JSON.stringify({
         type,
         message: description,

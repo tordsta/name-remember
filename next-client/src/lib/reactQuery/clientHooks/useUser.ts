@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 
 const fetchUser = async () => {
-  const response = await (await fetch("/api/crud/getUser")).json();
+  const response = await (await fetch("/api/crud/readUser")).json();
   return response;
 };
 

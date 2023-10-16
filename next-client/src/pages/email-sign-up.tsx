@@ -12,10 +12,12 @@ export default function EmailSignUp() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const name = (event.target as any)["name"].value;
-    const email = (event.target as any)["email"].value;
-    const password = (event.target as any)["password"].value;
-    const verifyPassword = (event.target as any)["verify_password"].value;
+    const name = (event.target as any)["name"].value.trim();
+    const email = (event.target as any)["email"].value.trim();
+    const password = (event.target as any)["password"].value.trim();
+    const verifyPassword = (event.target as any)[
+      "verify_password"
+    ].value.trim();
 
     if (
       String(email)

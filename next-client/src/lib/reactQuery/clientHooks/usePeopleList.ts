@@ -17,7 +17,7 @@ export const usePeopleList = ({
     if (!id) {
       id = "";
     }
-    const response = await fetch("/api/crud/getList?id=" + id);
+    const response = await fetch("/api/crud/readList?id=" + id);
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }

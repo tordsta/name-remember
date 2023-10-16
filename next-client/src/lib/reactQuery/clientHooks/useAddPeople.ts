@@ -10,7 +10,7 @@ const addPeople = async ({
   person: Person;
 }) => {
   await notifyPromiseFetch({
-    url: "/api/crud/addPerson",
+    url: "/api/crud/createPerson",
     body: JSON.stringify({ listId, person }),
     pending: "... processing",
     success: `${person.fname} added to list!`,
