@@ -1,4 +1,4 @@
-import * as postmark from "postmark";
+import postmarkClient from "./postmarkClient";
 
 export default function sendMemorizerReminder({
   recipientEmail,
@@ -14,11 +14,8 @@ export default function sendMemorizerReminder({
   if (typeof window !== "undefined") {
     throw new Error("Mail functions should not be executed on the client");
   }
-  const apiKey = process.env.POSTMARK_API_KEY;
-  if (typeof apiKey === "undefined") throw new Error("No API key");
 
-  const { ServerClient } = postmark;
-  const client = new ServerClient(apiKey);
+  const client = postmarkClient();
 
   try {
     client.sendEmailWithTemplate({

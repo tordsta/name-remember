@@ -1,4 +1,4 @@
-import LoginButton from "@/components/navigation/LoginButton";
+import LoginButton from "@/components/auth/LoginButton";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Layout from "@/components/navigation/Layout";
@@ -6,6 +6,7 @@ import FeedbackForm from "@/components/FeedbackForm";
 import { trackAmplitudeData } from "@/lib/amplitude";
 import { useEffect } from "react";
 import Subscriptions from "@/components/Subscriptions";
+import UpdatePassword from "@/components/auth/UpdatePassword";
 
 export default function Profile() {
   const { data: session } = useSession();
@@ -28,6 +29,7 @@ export default function Profile() {
               height={100}
             />
           )}
+          <UpdatePassword />
           <LoginButton />
         </div>
         <div className="display md:hidden mx-auto">

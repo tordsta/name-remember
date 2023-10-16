@@ -6,6 +6,7 @@ import CanvasBackground from "../CanvasBackground";
 import { memo, useEffect, useRef, useState } from "react";
 import FeedbackForm from "@/components/FeedbackForm";
 import BackButton from "./BackButton";
+import { Session } from "@/utils/types";
 
 export default function Layout({
   children,
@@ -18,7 +19,9 @@ export default function Layout({
   auth?: boolean;
   nav?: boolean;
 }) {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
+  const session = useSession().data as Session;
+
   const router = useRouter();
 
   if (status === "unauthenticated" && router.pathname !== "/" && auth) {
