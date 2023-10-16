@@ -1,10 +1,6 @@
-import postmark from "postmark";
+import postmarkClient from "./postmarkClient";
 
-const client = new postmark.ServerClient(
-  process.env.POSTMARK_API_KEY as string
-);
-
-export default async function sendVerificationMail({
+export default async function sendResetPasswordEmail({
   recipientEmail,
   recipientName,
   tokenUrl,
@@ -17,10 +13,12 @@ export default async function sendVerificationMail({
     throw new Error("Mail functions should not be executed on the client");
   }
 
+  const client = postmarkClient();
+
   client.sendEmailWithTemplate({
     From: "noreply@nameremember.com",
     To: recipientEmail,
-    TemplateAlias: "confirm-email",
+    TemplateAlias: "reset-password",
     TemplateModel: {
       name: recipientName,
       action_url: tokenUrl,

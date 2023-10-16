@@ -1,12 +1,14 @@
 import Layout from "@/components/navigation/Layout";
 import Image from "next/image";
-import LoginButton from "@/components/navigation/LoginButton";
+import LoginButton from "@/components/auth/LoginButton";
 import LegalInfo from "@/components/LegalInfo";
 import { useEffect } from "react";
 import { trackAmplitudeData } from "@/lib/amplitude";
 import { useSession } from "next-auth/react";
+import SignInProviders from "@/components/auth/SignInProviders";
+import { getProviders } from "next-auth/react";
 
-export default function Home() {
+export default function Home({ providers }: any) {
   const { data: session } = useSession();
   useEffect(() => {
     trackAmplitudeData("Loaded Page Landing Page");
@@ -44,7 +46,15 @@ export default function Home() {
           </ol>
           {/* Hidden on desktop */}
           <div className="flex flex-col justify-center items-center md:hidden mt-8">
-            <LoginButton />
+            {!session && <SignInProviders providers={providers} />}
+            {session && (
+              <>
+                <p className="text-xl mx-auto text-center mb-3">
+                  Already logged in
+                </p>
+                <LoginButton />
+              </>
+            )}
             <LegalInfo />
           </div>
         </div>
@@ -66,9 +76,7 @@ export default function Home() {
                   Get started today,
                   <br /> it&apos;s free.
                 </p>
-                <LoginButton loginText="Create new account" />
-                <p className="text-xl mx-auto my-2 text-center">or</p>
-                <LoginButton />
+                <SignInProviders providers={providers} />
                 <LegalInfo />
               </>
             )}
@@ -77,4 +85,13 @@ export default function Home() {
       </div>
     </Layout>
   );
+}
+
+export async function getServerSideProps() {
+  const providers = await getProviders();
+  return {
+    props: {
+      providers: providers ?? [],
+    },
+  };
 }
