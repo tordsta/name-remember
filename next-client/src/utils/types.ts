@@ -28,10 +28,17 @@ export type User = {
   id: string;
   name: string;
   email: string;
-  verified_email: boolean;
+  email_verified: boolean;
   image?: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at?: string;
+  updated_at?: string;
   subscription_plan: "free" | "basic" | "standard" | "premium" | "professional";
   stripe_customer_id?: string;
+  hashed_password?: string;
+  salt?: string;
+};
+
+export type Session = {
+  expires: string;
+  user: User;
 };

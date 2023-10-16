@@ -9,10 +9,15 @@ import { authOptions } from "../api/auth/[...nextauth]";
 import Memorization from "@/components/Memorization";
 import Layout from "@/components/navigation/Layout";
 import getList from "@/database/getList";
+import { Session } from "@/utils/types";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req, res } = context;
-  const session = await getServerSession(req, res, authOptions);
+  const session: Session | null | undefined = await getServerSession(
+    req,
+    res,
+    authOptions as any
+  );
 
   if (!session) {
     return {

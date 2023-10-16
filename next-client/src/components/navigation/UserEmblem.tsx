@@ -1,14 +1,14 @@
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import FeedbackForm from "@/components/FeedbackForm";
 
 export default function UserEmblem() {
   const { data: session, status } = useSession();
+
   const router = useRouter();
 
   if (status === "loading") {
-    return <p>Loading...</p>;
+    return <p className="mx-auto p-2">Loading...</p>;
   }
 
   return (

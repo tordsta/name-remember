@@ -1,4 +1,4 @@
-import sendMemorizerReminder from "@/utils/sendMemorizerReminder";
+import sendMemorizerReminder from "@/lib/postmarkEmail/sendMemorizerReminder";
 import sql from "@/database/pgConnect";
 import { NextApiRequest, NextApiResponse } from "next";
 import { RRule } from "rrule";

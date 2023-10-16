@@ -3,12 +3,17 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { stripeServer } from "@/lib/stripe";
 import sql from "@/database/pgConnect";
+import { Session } from "@/utils/types";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string>
 ) {
-  const session = await getServerSession(req, res, authOptions);
+  const session: Session | null | undefined = await getServerSession(
+    req,
+    res,
+    authOptions as any
+  );
   if (!session) {
     res.status(401).json("Unauthorized");
     return;
