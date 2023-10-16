@@ -18,9 +18,9 @@ export default function LoginButton({ loginText }: { loginText?: string }) {
   if (session) {
     return (
       <FramedButton
-        onClick={() => {
+        onClick={async () => {
           trackAmplitudeData("Sign Out");
-          signOut();
+          await signOut();
           router.push("/");
         }}
       >

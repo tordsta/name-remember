@@ -17,6 +17,7 @@ const useDeleteList = () => {
     onSettled: (id) => {
       queryClient.invalidateQueries(["peopleLists"]);
       queryClient.invalidateQueries(["peopleList", id]);
+      queryClient.refetchQueries(["peopleLists"]);
     },
   });
 };

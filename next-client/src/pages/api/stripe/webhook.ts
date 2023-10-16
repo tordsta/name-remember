@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { stripeServer } from "@/lib/stripe";
 import getRawBody from "raw-body";
 import Stripe from "stripe";
-import sql from "@/database/pgConnect";
+import sql from "@/lib/pgConnect";
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 

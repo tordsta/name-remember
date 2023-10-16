@@ -13,7 +13,7 @@ const addReminder = async ({
   nextReminder: number | null;
 }) => {
   await notifyPromiseFetch({
-    url: "/api/crud/addReminder",
+    url: "/api/crud/createReminder",
     body: JSON.stringify({ listId, rrule, rruleStart, nextReminder }),
     pending: "... processing",
     success: `Reminder updated!`,

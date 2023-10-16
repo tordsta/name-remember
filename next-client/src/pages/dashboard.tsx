@@ -1,11 +1,11 @@
 import Layout from "@/components/navigation/Layout";
-import Lists from "@/components/Lists";
+import Lists from "@/components/peopleLists/Lists";
 import { getServerSession } from "next-auth";
 import { QueryClient, dehydrate } from "react-query";
 import { authOptions } from "./api/auth/[...nextauth]";
 import { GetServerSidePropsContext } from "next";
-import getLists from "@/database/getLists";
-import { usePeopleLists } from "@/hooks/usePeopleLists";
+import getLists from "@/lib/reactQuery/serverHydration/getLists";
+import { usePeopleLists } from "@/lib/reactQuery/clientHooks/usePeopleLists";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { setAmplitudeUserId, trackAmplitudeData } from "@/lib/amplitude";

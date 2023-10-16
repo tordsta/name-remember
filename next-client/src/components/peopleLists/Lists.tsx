@@ -1,12 +1,12 @@
 import { useState } from "react";
-import Modal from "react-modal";
 import { Lists } from "@/utils/types";
-import Button, { FramedButton } from "./Button";
-import DefaultModal from "./Modal";
-import useCreateList from "@/hooks/useCreateList";
+import Button, { FramedButton } from "../Button";
+import DefaultModal from "../Modal";
+import useCreateList from "@/lib/reactQuery/clientHooks/useCreateList";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { trackAmplitudeData } from "@/lib/amplitude";
+import { RRule } from "rrule";
 
 export default function Lists({
   data,
@@ -40,39 +40,60 @@ export default function Lists({
           </Button>
         </div>
       </div>
-      <ul className="mb-4 w-full">
+      <ul className="w-full">
         {isLoading && <li>Loading... </li>}
         {!isLoading && !isError && data && Array.isArray(data) && (
           <>
             {data.map((list) => {
+              let rule: RRule | null = null;
+              let ruleText = "";
+              if (list.rrule) {
+                let ruleOption = RRule.parseString(list.rrule);
+                rule = new RRule(ruleOption);
+                ruleText = rule.toText();
+              }
               return (
                 <li
                   key={list.id}
-                  className="flex flex-col w-full p-2 mt-4 h-28 md:h-32 bg-white border border-black"
+                  className="flex flex-col w-full my-6 p-2 h-32 bg-white border border-black"
                 >
-                  <div className="flex justify-between items-start">
-                    <p className="text-3xl ml-2 pt-2 pl-2">{list.name}</p>
-                    <button
-                      className="w-7 h-7 md:w-10 md:h-10 relative"
+                  <div className="flex justify-between items-center">
+                    <p className="text-3xl pl-2 md:pl-4">{list.name}</p>
+                    <div
+                      className="flex justify-center items-center gap-1 cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
                         router.push(`/edit/${list.id}`);
                       }}
                     >
-                      <Image
-                        src="/icons/settingsFramed110x110.png"
-                        alt="edit icon"
-                        fill
-                        sizes="100%"
-                      />
-                    </button>
+                      <div className="flex flex-col">
+                        <p className="pt-1 text-lg leading-none">Edit</p>
+                        <p className="pt-1 text-lg leading-none">here</p>
+                      </div>
+                      <div className="w-12 h-12 relative">
+                        <Image
+                          src="/icons/settingsFramed110x110.png"
+                          alt="edit icon"
+                          fill
+                          sizes="100%"
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex h-full justify-end items-end text-xl pb-1">
+                  <div className="flex h-full justify-between items-end text-xl pb-1">
+                    <div className="ml-2 text-md">
+                      <p>Members: {list.people_in_lists_count}</p>
+                      {list.rrule && (
+                        <p className="hidden md:block">Reminder: {ruleText}</p>
+                      )}
+                    </div>
                     <FramedButton
                       onClick={(e) => {
                         e.stopPropagation();
                         router.push(`/memorize/${list.id}`);
                       }}
+                      width={150}
+                      height={40}
                     >
                       Memorize
                     </FramedButton>
@@ -109,5 +130,3 @@ export default function Lists({
     </div>
   );
 }
-
-Modal.setAppElement("#__next");

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
-import getList from "@/database/getList";
+import getList from "@/lib/reactQuery/serverHydration/getList";
 import { Session } from "@/utils/types";
 
 export default async function handler(

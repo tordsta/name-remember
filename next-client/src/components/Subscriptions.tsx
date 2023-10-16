@@ -12,6 +12,7 @@ import {
 } from "./Notify";
 import { User } from "@/utils/types";
 import { FramedButton } from "./Button";
+import { useSession } from "next-auth/react";
 
 export default function Subscriptions() {
   const [openSignal, setOpenSignal] = useState(true);
@@ -21,9 +22,10 @@ export default function Subscriptions() {
     undefined
   );
   const router = useRouter();
+  const { status } = useSession();
 
   useEffect(() => {
-    if (products.length == 0) {
+    if (products.length == 0 && status == "authenticated") {
       try {
         fetch("/api/stripe/getProducts")
           .then((res) => {
@@ -37,7 +39,7 @@ export default function Subscriptions() {
     }
     if (!user || router.query.redirect_status) {
       try {
-        fetch("/api/crud/getUser")
+        fetch("/api/crud/readUser")
           .then((res) => res.json())
           .then((res) => setUser(res));
       } catch (err) {

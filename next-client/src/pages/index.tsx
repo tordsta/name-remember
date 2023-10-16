@@ -39,9 +39,8 @@ export default function Home({ providers }: any) {
           </h2>
           <ol className="text-lg md:text-2xl text-left list-decimal list-inside">
             <li>Create groups</li>
-            <li>Upload photos</li>
-            <li>Set memorization interval</li>
-            <li>Get reminders and memorize</li>
+            <li>Import photos</li>
+            <li>Memorize</li>
             <li>Never forget a name again</li>
           </ol>
           {/* Hidden on desktop */}

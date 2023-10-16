@@ -1,7 +1,7 @@
-import sql from "@/database/pgConnect";
+import sql from "@/lib/pgConnect";
 import { Session } from "next-auth";
 
-export default async function getList({ session }: { session: Session }) {
+export default async function getLists({ session }: { session: Session }) {
   if (typeof window !== "undefined") {
     throw new Error("Database functions should not be executed on the client");
   }
@@ -16,7 +16,16 @@ export default async function getList({ session }: { session: Session }) {
     WITH user_id AS (
       SELECT id FROM users WHERE email = $1
     )
-    SELECT id, name, owner_id FROM people_lists WHERE owner_id = (SELECT id FROM user_id);`,
+    SELECT 
+      pl.id, 
+      pl.name, 
+      pl.owner_id, 
+      pl.rrule,
+      COALESCE(COUNT(p.list_id), 0) AS people_in_lists_count 
+    FROM people_lists pl
+    LEFT JOIN people p ON pl.id = p.list_id
+    WHERE pl.owner_id = (SELECT id FROM user_id)
+    GROUP BY pl.id, pl.name, pl.owner_id, pl.rrule;`,
       values: [email],
     });
     return rows;

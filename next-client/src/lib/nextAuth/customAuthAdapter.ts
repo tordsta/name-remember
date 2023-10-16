@@ -1,4 +1,5 @@
-import sql from "@/database/pgConnect";
+import sql from "@/lib/pgConnect";
+import createWelcomeList from "@/utils/createWelcomeList";
 import { Account } from "next-auth";
 import {
   Adapter,
@@ -17,9 +18,11 @@ export default function customAuthAdapter(): Adapter {
         query: `
         INSERT INTO users (name, email, image) 
         VALUES ($1, $2, $3) 
-        RETURNING id, name, email, email_verified, image`,
+        RETURNING id, name, email, email_verified, image;`,
         values: [user.name, user.email, user.image],
       });
+      createWelcomeList({ userId: rows[0].id });
+
       const newUser: AdapterUser = {
         ...rows[0],
         id: rows[0].id.toString(),
@@ -336,39 +339,3 @@ export default function customAuthAdapter(): Adapter {
     throw error;
   }
 }
-
-// interface DatabaseUser extends User {
-//   id: string;
-//   name: string;
-//   email: string;
-//   email_verified: string;
-//   image: string;
-// }
-
-// interface DatabaseAccount extends Account {
-//   id: string;
-//   user_id: string;
-//   provider_id: string;
-//   provider_type: string;
-//   provider_account_id: string;
-//   refresh_token: string;
-//   access_token: string;
-//   expires_at: number;
-//   token_type: string;
-//   scope: string;
-//   id_token: string;
-//   session_state: string;
-// }
-
-// interface DatabaseVerificationToken extends VerificationToken {
-//   identifier: string;
-//   token: string;
-//   expires: Date;
-// }
-
-// interface DatabaseAuthSession extends Session {
-//   id: string;
-//   expires: string;
-//   session_token: string;
-//   user_id: string;
-// }

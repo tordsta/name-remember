@@ -1,11 +1,11 @@
 import React, { useLayoutEffect, useState } from "react";
-import Button, { FramedButton } from "./Button";
+import Button, { FramedButton } from "../Button";
 import { Frequency, RRule } from "rrule";
-import { notifyError, notifyWarning } from "./Notify";
-import Modal from "./Modal";
-import useAddReminder from "@/hooks/useAddReminder";
+import { notifyError, notifyWarning } from "../Notify";
+import Modal from "../Modal";
+import useAddReminder from "@/lib/reactQuery/clientHooks/useAddReminder";
 import { trackAmplitudeData } from "@/lib/amplitude";
-import useDeleteReminder from "@/hooks/useDeleteReminder";
+import useDeleteReminder from "@/lib/reactQuery/clientHooks/useDeleteReminder";
 
 export default function ReminderInput({
   id,
@@ -118,6 +118,7 @@ export default function ReminderInput({
       listId: id,
       rrule: newRrule.toString(),
     });
+    setOpenSignal(false);
   };
 
   const handleDelete = () => {
@@ -147,22 +148,24 @@ export default function ReminderInput({
             setInterval(1);
           }}
         >
-          Edit Reminder
+          Set Reminder
         </FramedButton>
-        <FramedButton
-          onClick={() => {
-            handleDelete();
-          }}
-        >
-          Delete Reminder
-        </FramedButton>
+        {rruleText && (
+          <FramedButton
+            onClick={() => {
+              handleDelete();
+            }}
+          >
+            Remove Reminder
+          </FramedButton>
+        )}
       </div>
       <Modal openSignal={openSignal} setOpenSignal={setOpenSignal}>
         <form
           onSubmit={handleSubmit}
           className="flex flex-col justify-center items-center gap-4"
         >
-          <p className="text-xl">Edit reminder</p>
+          <p className="text-xl">Set reminder</p>
           <div className="flex flex-col items-center justify-center">
             <div className="flex justify-center items-center gap-2 m-2">
               <p>On a </p>

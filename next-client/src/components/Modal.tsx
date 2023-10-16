@@ -23,6 +23,7 @@ export default function DefaultModal({
 
   return (
     <Modal
+      ariaHideApp={false}
       isOpen={modalIsOpen}
       onRequestClose={closeModal}
       style={{

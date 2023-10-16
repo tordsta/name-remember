@@ -12,11 +12,11 @@ export default function FeedbackForm() {
   const handleSendFeedback = async (event: React.FormEvent) => {
     event.preventDefault();
     setOpenSignal(false);
-    const type = (event.target as any)["type"].value;
-    const description = (event.target as any)["description"].value;
+    const type = (event.target as any)["type"].value as string;
+    const description = (event.target as any)["description"].value as string;
 
     await notifyPromiseFetch({
-      url: "/api/crud/addFeedback",
+      url: "/api/crud/createFeedback",
       body: JSON.stringify({
         type,
         message: description,

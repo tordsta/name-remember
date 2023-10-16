@@ -12,14 +12,17 @@ export default function EmailSignUp() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const name = (event.target as any)["name"].value;
-    const email = (event.target as any)["email"].value;
-    const password = (event.target as any)["password"].value;
-    const verifyPassword = (event.target as any)["verify_password"].value;
+    const name = (event.target as any)["name"].value.trim();
+    const email = (event.target as any)["email"].value.trim();
+    const password = (event.target as any)["password"].value.trim();
+    const verifyPassword = (event.target as any)[
+      "verify_password"
+    ].value.trim();
 
     if (
       String(email)
         .toLowerCase()
+        .trim()
         .match(
           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         ) == null

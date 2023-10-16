@@ -43,9 +43,12 @@ export default function Memorization({
       index: { value: number };
     };
     const person: Person = JSON.parse(target.person.value);
-    const fnameRes = target.fname.value.trim() == person.fname;
-    const mnameRes = target.mname.value.trim() == person.mname;
-    const lnameRes = target.lname.value.trim() == person.lname;
+    const fnameRes =
+      target.fname.value.trim().toLowerCase() == person.fname?.toLowerCase();
+    const mnameRes =
+      target.mname.value.trim().toLowerCase() == person.mname?.toLowerCase();
+    const lnameRes =
+      target.lname.value.trim().toLowerCase() == person.lname?.toLowerCase();
     const index = target.index.value;
     setAnswers([...answers, { fnameRes, mnameRes, lnameRes, index, person }]);
 
