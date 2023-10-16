@@ -63,9 +63,9 @@ export default async function handler(
       await sql({
         query: `
                 UPDATE users
-                SET salt = $1, hashed_password = $2
-                WHERE email = $3`,
-        values: [salt, hash, email],
+                SET hashed_password = $1
+                WHERE email = $2`,
+        values: [hash, email],
       });
       res.status(200).json("Success");
     }

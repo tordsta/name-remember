@@ -46,10 +46,10 @@ export default async function handler(
   try {
     const { rows } = await sql({
       query: `
-            INSERT INTO users (name, email, salt, hashed_password) 
-            VALUES ($1, $2, $3, $4)
+            INSERT INTO users (name, email, hashed_password) 
+            VALUES ($1, $2, $3)
             RETURNING id;`,
-      values: [name, email, salt, hash],
+      values: [name, email, hash],
     });
     createWelcomeList({ userId: rows[0].id });
     res.status(200).json("Success");

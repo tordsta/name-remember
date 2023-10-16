@@ -24,9 +24,9 @@ export default function ListOfPeople({ currentList }: { currentList: string }) {
               return (
                 <div
                   key={person.id}
-                  className="flex h-12 justify-start items-center gap-4 mt-2 px-2 border-b border-black"
+                  className="flex h-12 justify-start items-center gap-4 mt-2 pb-2 px-2 border-b border-black"
                 >
-                  <div className="relative w-10 h-10 rounded-full overflow-hidden">
+                  <div className="relative w-10 h-10 rounded-full overflow-hidden border border-black">
                     <NextImage
                       src={person.image ?? "/icons/person110x110.png"}
                       alt="Uploaded image"

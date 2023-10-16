@@ -5,4 +5,4 @@ ALTER TABLE accounts DROP CONSTRAINT accounts_user_id_fkey, ADD CONSTRAINT accou
 ALTER TABLE people ADD COLUMN list_id UUID REFERENCES people_lists(id) ON DELETE CASCADE;
 DROP TABLE IF EXISTS people_in_lists;
 DROP FUNCTION IF EXISTS delete_person;
-
+ALTER TABLE users DROP COLUMN salt;

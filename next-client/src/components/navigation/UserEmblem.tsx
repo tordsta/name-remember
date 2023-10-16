@@ -22,15 +22,14 @@ export default function UserEmblem() {
           <p className="text-lg">{session?.user?.name}</p>
           <p className="text-sm">{session?.user?.email}</p>
         </div>
-        {session?.user?.image && (
-          <Image
-            src={session?.user?.image}
-            style={{ borderRadius: "50%" }}
-            alt="Profile Picture"
-            width={50}
-            height={50}
-          />
-        )}
+
+        <Image
+          src={session?.user?.image ?? "/icons/person110x110.png"}
+          style={{ borderRadius: "50%", border: "1px solid #000" }}
+          alt="Profile Picture"
+          width={50}
+          height={50}
+        />
       </div>
     </>
   );

@@ -57,7 +57,7 @@ export const authOptions = {
 
         if (!userExists.email_verified)
           return { error: "Email not verified." } as any;
-        if (!userExists.hashed_password || !userExists.salt) {
+        if (!userExists.hashed_password) {
           return {
             error:
               "Log in with a provider, go to your profile and set a password there.",
