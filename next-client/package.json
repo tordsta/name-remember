@@ -33,7 +33,7 @@
     "next-auth": "^4.23.2",
     "next-sitemap": "^4.1.3",
     "pg": "^8.11.3",
-    "postcss": "8.4.21",
+    "postcss": "8.4.31",
     "postgres": "^3.3.4",
     "postmark": "^3.0.18",
     "raw-body": "^2.5.2",
