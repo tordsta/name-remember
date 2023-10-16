@@ -20,7 +20,10 @@ export default async function handler(
 
   try {
     const product = await stripeServer.products.retrieve(
-      process.env.STRIPE_PREMIUM_PRODUCT_ID!
+      process.env.STRIPE_PREMIUM_PRODUCT_ID!,
+      {
+        expand: ["default_price", "default_price.currency_options"],
+      }
     );
 
     if (!product) res.status(404).json("Product not found");

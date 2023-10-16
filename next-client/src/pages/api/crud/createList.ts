@@ -35,8 +35,9 @@ export default async function handler(
       WITH user_id AS (
         SELECT id FROM users WHERE email = $1
       )
-      INSERT INTO people_lists (name, owner_id)
-      VALUES ($2, (SELECT id FROM user_id))
+      INSERT INTO people_lists (owner_id, name, rrule, rrule_start, reminder_trigger_time)
+      VALUES ((SELECT id FROM user_id), $2, 'DTSTART:20231014T180817Z
+      RRULE:FREQ=WEEKLY;INTERVAL=1;BYHOUR=7;BYMINUTE=0;BYSECOND=0', NOW(), NOW() + INTERVAL '1 day')
       RETURNING id, name, owner_id;`,
         values: [email, name],
       });

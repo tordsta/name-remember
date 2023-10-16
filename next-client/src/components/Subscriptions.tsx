@@ -18,6 +18,8 @@ export default function Subscriptions() {
   const [openSignal, setOpenSignal] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [products, setProducts] = useState<Stripe.Product[]>([]);
+  const [currency, setCurrency] = useState<string>("usd");
+  const [price, setPrice] = useState<number>(2);
   const [clientSecret, setClientSecret] = useState<string | undefined>(
     undefined
   );
@@ -66,7 +68,7 @@ export default function Subscriptions() {
       }
       router.replace("/profile", undefined, { shallow: true });
     }
-  }, [router, products, user]);
+  }, [router, products, user, status]);
 
   const handleSubscription = async ({
     priceId,
@@ -81,6 +83,7 @@ export default function Subscriptions() {
         },
         body: JSON.stringify({
           priceId: priceId,
+          currency: currency,
         }),
       });
       const data = await res.json();
@@ -104,6 +107,7 @@ export default function Subscriptions() {
     if (res.ok) {
       notifySuccess("Subscription cancelled.");
       setUser(null);
+      setProducts([]);
     } else {
       notifyError("Something went wrong.");
     }
@@ -124,6 +128,39 @@ export default function Subscriptions() {
               className="w-72 flex flex-col justify-center items-center text-center bg-white rounded-lg border py-4 px-6"
             >
               <h3 className="font-bold text-xl">{product.name}</h3>
+              {(product.default_price as any).id &&
+                user &&
+                user.subscription_plan == "free" && (
+                  <div className="flex text-lg">
+                    {price}
+                    <select
+                      className="border border-black border-dashed rounded-lg mx-2 py-0 leading-none"
+                      value={currency}
+                      onChange={(e) => {
+                        setCurrency(e.target.value);
+                        setPrice(
+                          (product.default_price as any).currency_options[
+                            e.target.value
+                          ].unit_amount / 100
+                        );
+                      }}
+                    >
+                      {Object.keys(
+                        (product.default_price as any).currency_options
+                      ).map((currency) => (
+                        <>
+                          <option value={currency}>
+                            {currency.toUpperCase()}
+                          </option>
+                        </>
+                      ))}
+                    </select>
+                    /
+                    {(
+                      product.default_price as any
+                    ).recurring.interval.toUpperCase()}
+                  </div>
+                )}
               {user && user.subscription_plan == "premium" && (
                 <h3 className="font-bold m-1">Status: Active</h3>
               )}
@@ -131,7 +168,9 @@ export default function Subscriptions() {
               {(!user || user.subscription_plan == "free") && (
                 <FramedButton
                   onClick={() =>
-                    handleSubscription({ priceId: product.default_price })
+                    handleSubscription({
+                      priceId: (product.default_price as any).id,
+                    })
                   }
                 >
                   Upgrade
@@ -158,6 +197,8 @@ export default function Subscriptions() {
             clientSecret={clientSecret}
             openSignal={openSignal}
             setOpenSignal={setOpenSignal}
+            price={price}
+            currency={currency}
           />
         </Elements>
       )}
