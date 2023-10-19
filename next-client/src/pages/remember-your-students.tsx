@@ -1,7 +1,8 @@
 import Button from "@/components/Button";
 import Layout from "@/components/navigation/Layout";
 import { useRouter } from "next/router";
-import Faq from "@/components/faq";
+import Faq from "@/components/salesPages/Faq";
+import Features from "@/components/salesPages/Features";
 
 export default function RememberYourStudents() {
   const router = useRouter();
@@ -32,56 +33,11 @@ export default function RememberYourStudents() {
         <Button style="green" onClick={() => router.push("/email-sign-up")}>
           Sign up now
         </Button>
-        <div>
-          <h2 className="text-2xl">Features ✨</h2>
-          <ul className="list-inside pl-4">
-            <li className="text-lg py-1">
-              📌 Photo Integration: Upload class photos and tag each student
-              with their name.
-            </li>
-            <li className="text-lg py-1">
-              📌 Quizzes: Challenge yourself with quizzes that test your name
-              recall ability.
-            </li>
-            <li className="text-lg py-1">
-              📌 Mobile Friendly: Practice on-the-go with our mobile-optimized
-              website.
-            </li>
-            <li className="text-lg py-1">
-              📌 Email Reminders: Receive daily or weekly reminders directly in
-              your inbox, helping you stay consistent in your practice.
-            </li>
-            {/* <li>📌 Track Progress: Watch your improvement over time with our analytics dashboard.</li> */}
-          </ul>
-        </div>
+        <Features />
         {/* Implement when actual testimonial */}
-        {/* <div>
-            <h2 className="text-2xl">
-              💬 Here’s What Other Teachers Are Saying:
-            </h2>
-            <p className="text-lg pl-4 pt-1">
-              &quot;With NameRemember, the start of the school year has never
-              been smoother. I could confidently call each student by their name
-              within a week!&quot; - Ms. Johnson, 4th Grade Teacher
-            </p>
-            <p className="text-lg pl-4 pt-1">
-              &quot;The personalized memory techniques are a game changer. It's
-              not just about rote memorization, it's about really connecting
-              with each student.&quot; - Mr. Garcia, High School History Teacher
-            </p>
-          </div> */}
-        {/* implement this when premium features are implemented */}
-        {/* <div>
-            <h2 className="text-2xl">🎁 Limited Time Offer!</h2>
-            <Button style="green" onClick={() => router.push("/email-sign-up")}>
-              cta
-            </Button>
-            <p className="text-lg pl-4 pt-1">
-              Sign up today and get 30 days FREE premium access to all features
-              of NameRemember. That’s a whole month to witness the
-              transformation in your classroom interactions.
-            </p>
-          </div> */}
+        {/* <Testimonial display={[true, true, false]} title={"💬 Here’s What Other Teachers Are Saying:"} /> */}
+        {/* Implement this when premium features are implemented */}
+        {/* <LimitedTimeOffer /> */}
         <Faq />
       </div>
     </Layout>

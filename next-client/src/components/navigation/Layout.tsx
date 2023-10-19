@@ -101,6 +101,7 @@ export default function Layout({
         {width && height && (
           <MemoCanvasBackground width={width} height={height} />
         )}
+        {!nav && router.pathname === "/" && <>{children}</>}
         {!nav && router.pathname !== "/" && (
           <div className="flex flex-col w-full">
             <p
