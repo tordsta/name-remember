@@ -38,6 +38,7 @@
     "postmark": "^3.0.18",
     "raw-body": "^2.5.2",
     "react": "18.2.0",
+    "react-collapsible": "^2.10.0",
     "react-dom": "18.2.0",
     "react-gtm-module": "^2.0.11",
     "react-modal": "^3.16.1",

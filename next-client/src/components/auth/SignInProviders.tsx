@@ -30,7 +30,7 @@ export default function SignInProviders({
       return notifyError("Please enter an email and password");
     const res = await signIn("credentials", {
       redirect: false,
-      email: email,
+      email: email.trim(),
       password: password,
     });
 
