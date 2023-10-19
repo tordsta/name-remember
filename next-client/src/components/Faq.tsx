@@ -8,7 +8,8 @@ export default function Faq() {
         <Collapsible title={"🔸 Is NameRemember secure?"}>
           <p className="text-lg pl-6 pb-2">
             Absolutely! All uploaded photos and names are securely stored. We
-            prioritize your privacy, your data is not shared with anyone.
+            prioritize your privacy, your data is not shared with, or sold to
+            third parties.
           </p>
         </Collapsible>
         <Collapsible title={"🔸 Can I use NameRemember with multiple groups?"}>
