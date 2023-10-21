@@ -9,6 +9,7 @@ import { trackAmplitudeData } from "@/lib/amplitude";
 import { RRule } from "rrule";
 import { notifyInfo } from "../Notify";
 import { useUser } from "@/lib/reactQuery/clientHooks/useUser";
+import LoadingAnimation from "../navigation/LoadingAnimation";
 
 export default function Lists({
   data,
@@ -53,7 +54,12 @@ export default function Lists({
         </div>
       </div>
       <ul className="w-full">
-        {isLoading && <li>Loading... </li>}
+        {isLoading && (
+          <div className="m-20">
+            <LoadingAnimation size="medium" />
+          </div>
+        )}
+
         {!isLoading && !isError && data && Array.isArray(data) && (
           <>
             number of lists: {data.length}{" "}

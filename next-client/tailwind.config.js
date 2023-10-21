@@ -15,6 +15,16 @@ module.exports = {
       fontFamily: {
         indieFlower: ["Indie Flower", "cursive"],
       },
+      // normal spin can also be used here, but it's a good template
+      animation: {
+        spin16steps: "spin16steps 2s steps(16, end) infinite",
+      },
+      keyframes: {
+        spin16steps: {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
+      },
     },
   },
   plugins: [],

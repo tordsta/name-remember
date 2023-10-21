@@ -14,6 +14,7 @@ import { FramedButton } from "./Button";
 import { useUser } from "@/lib/reactQuery/clientHooks/useUser";
 import { useProducts } from "@/lib/reactQuery/clientHooks/useProducts";
 import { useQueryClient } from "react-query";
+import LoadingAnimation from "./navigation/LoadingAnimation";
 
 export default function Subscriptions() {
   const [openSignal, setOpenSignal] = useState(true);
@@ -97,7 +98,6 @@ export default function Subscriptions() {
       setIsPremium(false);
       // Wait for stripe webhook and server communication
       setTimeout(() => {
-        console.log("invalidating queries");
         queryClient.invalidateQueries("user");
         queryClient.refetchQueries("user");
       }, 5000);
@@ -111,7 +111,7 @@ export default function Subscriptions() {
       <div className="flex justify-center gap-8">
         {!products && (
           <div className="w-72 h-72 flex flex-col justify-center items-center bg-white rounded-lg border">
-            <p className="m-auto">Loading...</p>
+            <LoadingAnimation size="medium" />
           </div>
         )}
         {products &&
