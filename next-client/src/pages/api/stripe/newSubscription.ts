@@ -20,7 +20,7 @@ export default async function handler(
   }
 
   const email = session.user?.email || null;
-  const name = session.user?.name || null;
+  const name = req.body.name;
   const priceId = req.body.priceId;
   const currency = req.body.currency;
   if (!email || !name || typeof priceId !== "string") {

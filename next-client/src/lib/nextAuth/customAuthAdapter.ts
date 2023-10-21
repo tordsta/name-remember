@@ -83,11 +83,8 @@ export default function customAuthAdapter(): Adapter {
       const user = rows[0]
         ? {
             email: rows[0].email,
-            image: rows[0].image,
-            name: rows[0].name,
             id: rows[0].id.toString(),
             email_verified: rows[0].email_verified,
-            subscription_plan: rows[0].subscription_plan,
           }
         : null;
       return user as any;

@@ -20,10 +20,9 @@ export default async function handler(
   }
 
   const email = session.user?.email || null;
-  const name = session.user?.name || null;
   const productId = req.body.productId;
 
-  if (!email || !name || !productId) {
+  if (!email || !productId) {
     res.status(400).json("Bad Request");
     return;
   }
@@ -34,6 +33,7 @@ export default async function handler(
       values: [email],
     });
     const { stripe_customer_id } = rows[0];
+    console.log("stripe_customer_id", stripe_customer_id);
 
     const { rows: rows2 } = await sql({
       query:
@@ -45,6 +45,12 @@ export default async function handler(
       return;
     }
     const { subscription_id } = rows2[0];
+    console.log("subscription_id", subscription_id);
+    if (!subscription_id) {
+      console.log("Error: no subscription found");
+      res.status(500).json("Error: no subscription found");
+      return;
+    }
 
     const deletedSubscription = await stripeServer.subscriptions.cancel(
       subscription_id

@@ -30,7 +30,6 @@ export default async function handler(
       return;
     }
     try {
-      console.log(email, person.list_id);
       const verifyOwner = await sql({
         query: `
         SELECT * 

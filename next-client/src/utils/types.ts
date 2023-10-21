@@ -25,20 +25,24 @@ export type Person = {
   list_id?: string;
 };
 
+//Defines the session object returned by next auth
+export type SessionUser = {
+  id: string;
+  email: string;
+  email_verified: boolean;
+};
+
+//Defines readUser.ts or the useUser hook
 export type User = {
   id: string;
   name: string;
   email: string;
-  email_verified: boolean;
   image?: string;
-  created_at?: string;
-  updated_at?: string;
   subscription_plan: "free" | "basic" | "standard" | "premium" | "professional";
   stripe_customer_id?: string;
-  hashed_password?: string;
 };
 
 export type Session = {
   expires: string;
-  user: User;
+  user: SessionUser;
 };
