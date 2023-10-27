@@ -26,13 +26,15 @@ export default function UserEmblem() {
               <p className="text-lg">{user?.name}</p>
               <p className="text-sm">{user?.email}</p>
             </div>
-            <Image
-              src={user?.image ?? "/icons/person110x110.png"}
-              style={{ borderRadius: "50%", border: "1px solid #000" }}
-              alt="Profile Picture"
-              width={50}
-              height={50}
-            />
+            <div className="relative w-[50px] h-[50px] rounded-full overflow-hidden border border-black">
+              <Image
+                src={user?.image ?? "/icons/person110x110.png"}
+                alt="Uploaded image"
+                fill
+                sizes="100%"
+                style={{ objectFit: "cover" }}
+              />
+            </div>
           </>
         )}
       </div>

@@ -18,23 +18,26 @@ export default async function handler(
     return;
   }
   const email = session.user?.email || null;
+  const name: string | null = req.body.name || null;
   const image: string | null = req.body.image || null;
   if (!email) {
     res.status(401).json("Unauthorized");
     return;
   }
+  if (!name) {
+    res.status(400).json("Bad request");
+    return;
+  }
 
   try {
-    if (image) {
-      await sql({
-        query: `
+    await sql({
+      query: `
             UPDATE users
-            SET image = $1
+            SET image = $1, name = $2
             WHERE email = $3
         `,
-        values: [image, email],
-      });
-    }
+      values: [image, name, email],
+    });
     res.status(200).json("Success");
     return;
   } catch (error) {

@@ -8,6 +8,7 @@ import Subscriptions from "@/components/Subscriptions";
 import UpdatePassword from "@/components/auth/UpdatePassword";
 import DeleteProfileModal from "@/components/peopleLists/DeleteProfileModal";
 import { useUser } from "@/lib/reactQuery/clientHooks/useUser";
+import UpdateProfileModal from "@/components/UpdateProfileModal";
 
 export default function Profile() {
   const user = useUser();
@@ -30,9 +31,11 @@ export default function Profile() {
               alt="Profile Picture"
               width={100}
               height={100}
+              style={{ border: "1px solid black" }}
             />
             <p>{user?.name}</p>
             <p>{user?.email}</p>
+            <UpdateProfileModal />
             <UpdatePassword />
             <LoginButton />
           </div>
