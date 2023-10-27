@@ -8,6 +8,7 @@ import Script from "next/script";
 import { useRouter } from "next/router";
 import { GTM_ID, pageview } from "../lib/gtm";
 import { initAmplitude } from "../lib/amplitude";
+import CookieConsentWrapper from "@/lib/CookieConsentWrapper";
 
 export default function App({
   Component,
@@ -66,8 +67,10 @@ export default function App({
       <QueryClientProvider client={queryClient.current}>
         <Hydrate state={pageProps.dehydratedState}>
           <SessionProvider session={session}>
-            <Component {...pageProps} />
-            <NotifyContainer />
+            <CookieConsentWrapper>
+              <Component {...pageProps} />
+              <NotifyContainer />
+            </CookieConsentWrapper>
           </SessionProvider>
         </Hydrate>
       </QueryClientProvider>
