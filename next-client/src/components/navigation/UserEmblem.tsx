@@ -10,31 +10,32 @@ export default function UserEmblem() {
 
   return (
     <>
-      <div className="hidden md:block w-40 h-32 mx-auto my-4" />
       <div
         onClick={() => router.push("/profile")}
-        className="flex flex-row md:fixed md:bottom-0 gap-4 mx-4 my-auto md:my-4 cursor-pointer"
+        className="flex flex-col md:fixed md:bottom-0 w-auto justify-between mx-4 my-auto md:m-0 md:p-4 cursor-pointer overflow-clip"
       >
-        {!user && (
-          <div className="flex flex-col">
-            <LoadingAnimation size="small" />
-          </div>
-        )}
+        {!user && <LoadingAnimation size="small" />}
         {user && (
           <>
-            <div className="hidden sm:block">
-              <p className="text-lg">{user?.name}</p>
-              <p className="text-sm">{user?.email}</p>
+            <div className="flex">
+              <p className="hidden md:block text-lg overflow-ellipsis break-words w-28 min-h-[3.2em] pr-2">
+                {user?.name}
+              </p>
+              <div className="w-[50px] h-[50px]">
+                <div className="relative w-[50px] h-[50px] rounded-full overflow-hidden border border-black">
+                  <Image
+                    src={user?.image ?? "/icons/person110x110.png"}
+                    alt="Uploaded image"
+                    fill
+                    sizes="100%"
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="relative w-[50px] h-[50px] rounded-full overflow-hidden border border-black">
-              <Image
-                src={user?.image ?? "/icons/person110x110.png"}
-                alt="Uploaded image"
-                fill
-                sizes="100%"
-                style={{ objectFit: "cover" }}
-              />
-            </div>
+            <p className="hidden md:block text-sm break-words w-40">
+              {user?.email}
+            </p>
           </>
         )}
       </div>
