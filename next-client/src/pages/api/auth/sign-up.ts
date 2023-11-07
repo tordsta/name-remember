@@ -1,8 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import sql from "@/lib/pgConnect";
-import { User } from "@/utils/types";
 import bcrypt from "bcrypt";
-import { create } from "domain";
 import createWelcomeList from "@/utils/createWelcomeList";
 
 export default async function handler(
@@ -26,7 +24,7 @@ export default async function handler(
             `,
     values: [email],
   });
-  const user: User = rows[0];
+  const user = rows[0];
   if (user && user.email_verified) {
     res
       .status(400)

@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import sql from "@/lib/pgConnect";
 import bcrypt from "bcrypt";
 import { getServerSession } from "next-auth";
-import validateUser from "@/lib/nextAuth/validateUser";
 import validatePassword from "@/lib/nextAuth/validatePassword";
 import { authOptions } from "./[...nextauth]";
 import { Session } from "@/utils/types";
@@ -21,8 +20,8 @@ export default async function handler(
     return;
   }
   const email = session.user.email;
-  const oldPassword = req.body.oldPassword || null;
-  const newPassword = req.body.newPassword || null;
+  const oldPassword: string | null = req.body.oldPassword || null;
+  const newPassword: string | null = req.body.newPassword || null;
 
   if (!newPassword || !email) {
     res.status(400).json("Missing password or email or name");
@@ -30,12 +29,26 @@ export default async function handler(
   }
 
   try {
-    const validatedUser = await validateUser({ email });
-    if (!validatedUser) {
+    const { rows } = await sql({
+      query: `
+            SELECT *
+            FROM users
+            WHERE email = $1;
+          `,
+      values: [email],
+    });
+    if (!rows[0]) {
       res.status(404).json("User not found");
       return;
     }
-    if (validatedUser.hashed_password !== null) {
+
+    //If the user has a password set, check if the old password is correct
+    //If the user does not have a password set, allow the user to set a password
+    if (rows[0].hashed_password !== null) {
+      if (!oldPassword) {
+        res.status(401).json("Wrong password");
+        return;
+      }
       const validatedPassword = await validatePassword({
         email,
         password: oldPassword,

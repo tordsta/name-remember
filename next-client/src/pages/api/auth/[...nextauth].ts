@@ -6,7 +6,7 @@ import SlackProvider from "next-auth/providers/slack";
 import customAuthAdapter from "@/lib/nextAuth/customAuthAdapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import validatePassword from "@/lib/nextAuth/validatePassword";
-import validateUser from "@/lib/nextAuth/validateUser";
+import validateCredentialsUser from "@/lib/nextAuth/validateCredentialsUser";
 
 export const authOptions = {
   secret: process.env.NEXT_AUTH as string,
@@ -46,23 +46,10 @@ export const authOptions = {
         if (!credentials || !credentials.email || !credentials.password)
           return { error: "Missing credentials." } as any;
 
-        const userExists = await validateUser({
+        const userExists = await validateCredentialsUser({
           email: credentials.email,
         });
-        if (!userExists)
-          return {
-            error:
-              "User does not exist. You must create a user before you sign in.",
-          } as any;
-
-        if (!userExists.email_verified)
-          return { error: "Email not verified." } as any;
-        if (!userExists.hashed_password) {
-          return {
-            error:
-              "Log in with a provider, go to your profile and set a password there.",
-          } as any;
-        }
+        if (typeof userExists === "string") return { error: userExists } as any;
 
         const user = await validatePassword({
           email: credentials.email,

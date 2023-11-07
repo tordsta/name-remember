@@ -20,9 +20,10 @@ export default function Testimonial({
       {display[1] && (
         <>
           <p className="text-lg pl-4 pt-1">
-            &quot;The personalized memory techniques are a game changer. It's
-            not just about rote memorization, it's about really connecting with
-            each student.&quot; - Mr. Garcia, High School History Teacher
+            &quot;The personalized memory techniques are a game changer.
+            It&apos;s not just about rote memorization, it&apos;s about really
+            connecting with each student.&quot; - Mr. Garcia, High School
+            History Teacher
           </p>
         </>
       )}
