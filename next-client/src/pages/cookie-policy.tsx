@@ -21,6 +21,7 @@ export default function CookiePolicy() {
           <button
             className="bg-white border border-black px-2 py-1"
             onClick={() => {
+              //Fix for visual bug
               if (consent.length == 0) {
                 setConsent(["necessary"]);
               }
