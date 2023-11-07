@@ -50,14 +50,14 @@ export default function CookieConsentWrapper({
 }: {
   children: React.ReactNode;
 }) {
-  const [theme, setTheme] = useState<Theme>(consentOptions.theme ?? "light");
+  //const [theme, setTheme] = useState<Theme>(consentOptions.theme ?? "light");
 
-  const onThemeToggle = useCallback(() => {
-    setTheme((theme) => (theme === "light" ? "dark" : "light"));
-  }, []);
+  // const onThemeToggle = useCallback(() => {
+  //   setTheme((theme) => (theme === "light" ? "dark" : "light"));
+  // }, []);
 
   return (
-    <ConsentProvider options={{ ...consentOptions, theme }}>
+    <ConsentProvider options={{ ...consentOptions }}>
       {/* <button onClick={onThemeToggle}>Toggle theme</button> */}
       <div className=" font-sans">
         <ConsentBanner

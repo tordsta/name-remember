@@ -11,7 +11,7 @@ import { useConsent } from "react-hook-consent";
 // Make it as easy for users to withdraw their consent as it was for them to give their consent in the first place.
 
 export default function CookiePolicy() {
-  const { consent, setConsent, isBannerVisible, toggleBanner } = useConsent();
+  const { consent, setConsent, toggleBanner } = useConsent();
 
   return (
     <Layout title="Privacy Policy" auth={false} nav={false}>
