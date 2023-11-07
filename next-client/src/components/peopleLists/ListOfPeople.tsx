@@ -4,6 +4,7 @@ import NextImage from "next/image";
 import { trackAmplitudeData } from "@/lib/amplitude";
 import Button from "../Button";
 import EditPersonModal from "./EditPersonModal";
+import LoadingAnimation from "../navigation/LoadingAnimation";
 
 export default function ListOfPeople({ currentList }: { currentList: string }) {
   const { data, isLoading, error } = usePeopleList({
@@ -14,7 +15,7 @@ export default function ListOfPeople({ currentList }: { currentList: string }) {
 
   return (
     <>
-      {isLoading && <div>Loading... </div>}
+      {isLoading && <LoadingAnimation size="small" />}
       {!isLoading && !error && data && (
         <div className="flex flex-col">
           <p className="text-2xl font-bold w-52">Group members</p>

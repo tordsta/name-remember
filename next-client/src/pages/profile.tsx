@@ -1,5 +1,4 @@
 import LoginButton from "@/components/auth/LoginButton";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Layout from "@/components/navigation/Layout";
 import FeedbackForm from "@/components/FeedbackForm";
@@ -8,9 +7,11 @@ import { useEffect } from "react";
 import Subscriptions from "@/components/Subscriptions";
 import UpdatePassword from "@/components/auth/UpdatePassword";
 import DeleteProfileModal from "@/components/peopleLists/DeleteProfileModal";
+import { useUser } from "@/lib/reactQuery/clientHooks/useUser";
+import UpdateProfileModal from "@/components/UpdateProfileModal";
 
 export default function Profile() {
-  const { data: session } = useSession();
+  const user = useUser();
 
   useEffect(() => {
     trackAmplitudeData("Loaded Page Profile");
@@ -25,16 +26,16 @@ export default function Profile() {
             <FeedbackForm />
           </div>
           <div className="flex flex-col gap-4 justify-center items-center m-8">
-            <p>{session?.user?.name}</p>
-            <p>{session?.user?.email}</p>
-            {session?.user?.image && (
-              <Image
-                src={session?.user?.image}
-                alt="Profile Picture"
-                width={100}
-                height={100}
-              />
-            )}
+            <Image
+              src={user?.image ?? "/icons/personFramed110x110.png"}
+              alt="Profile Picture"
+              width={100}
+              height={100}
+              style={{ border: "1px solid black" }}
+            />
+            <p>{user?.name}</p>
+            <p>{user?.email}</p>
+            <UpdateProfileModal />
             <UpdatePassword />
             <LoginButton />
           </div>

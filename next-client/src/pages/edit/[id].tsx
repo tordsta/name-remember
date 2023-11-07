@@ -13,6 +13,8 @@ import ReminderInput from "@/components/peopleLists/ReminderInput";
 import getList from "@/lib/reactQuery/serverHydration/getList";
 import { Session } from "@/utils/types";
 import DeleteListButton from "@/components/peopleLists/DeleteListButton";
+import ErrorPage from "@/components/navigation/ErrorPage";
+import LoadingPage from "@/components/navigation/LoadingPage";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req, res } = context;
@@ -66,8 +68,8 @@ export default function EditListPage() {
     trackAmplitudeData("Loaded Page Edit List", { id: id });
   }, [id]);
 
-  if (isLoading || typeof id !== "string") return <p>Loading...</p>;
-  if (isError) return <p>Error</p>;
+  if (isLoading || typeof id !== "string") return <LoadingPage />;
+  if (isError) return <ErrorPage />;
 
   return (
     <Layout>

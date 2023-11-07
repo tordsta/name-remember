@@ -24,7 +24,7 @@ export default function Layout({
 
   const router = useRouter();
 
-  if (status === "unauthenticated" && router.pathname !== "/" && auth) {
+  if (status === "unauthenticated" && auth) {
     router.push("/");
   }
 
@@ -101,32 +101,48 @@ export default function Layout({
         {width && height && (
           <MemoCanvasBackground width={width} height={height} />
         )}
-        {nav && (
-          // Row layout for mobile, column layout for desktop, items hidden based on media query
-          <div className="flex flex-row md:flex-col justify-stretch w-full md:max-w-min mx-auto md:mx-0 border-b md:border-b-0 md:border-r border-black">
-            <div className="md:mx-4 my-6 ml-6 mr-auto flex flex-row">
-              <div className="md:hidden my-auto mr-2">
-                <BackButton justChevron />
-              </div>
-              <div
-                className="text-3xl sm:text-4xl"
-                onClick={() => {
-                  router.push("/dashboard");
-                }}
-              >
-                Name Remember
-              </div>
-            </div>
-            <div className="hidden md:block mx-4 mb-8">
-              <FeedbackForm />
-            </div>
-            <div className="hidden md:block">
-              <BackButton />
-            </div>
-            <UserEmblem />
+        {!nav && router.pathname === "/" && <>{children}</>}
+        {!nav && router.pathname !== "/" && (
+          <div className="flex flex-col w-full">
+            <p
+              className="text-3xl sm:text-4xl ml-auto pt-6 pr-6 md:pt-8 md:pr-8 cursor-pointer"
+              onClick={() => {
+                router.push("/");
+              }}
+            >
+              Name Remember
+            </p>
+            {children}
           </div>
         )}
-        {children}
+        {nav && (
+          // Row layout for mobile, column layout for desktop, items hidden based on media query
+          <>
+            <div className="flex flex-row md:flex-col justify-stretch w-full md:max-w-min mx-auto md:mx-0 border-b md:border-b-0 md:border-r border-black">
+              <div className="md:mx-4 my-6 ml-6 mr-auto flex flex-row">
+                <div className="md:hidden my-auto mr-2">
+                  <BackButton justChevron />
+                </div>
+                <div
+                  className="text-3xl sm:text-4xl"
+                  onClick={() => {
+                    router.push("/dashboard");
+                  }}
+                >
+                  Name Remember
+                </div>
+              </div>
+              <div className="hidden md:block mx-4 mb-8">
+                <FeedbackForm />
+              </div>
+              <div className="hidden md:block">
+                <BackButton />
+              </div>
+              <UserEmblem />
+            </div>
+            {children}
+          </>
+        )}
       </main>
     </>
   );

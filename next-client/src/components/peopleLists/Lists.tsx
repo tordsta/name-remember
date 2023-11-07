@@ -7,6 +7,9 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { trackAmplitudeData } from "@/lib/amplitude";
 import { RRule } from "rrule";
+import { notifyInfo } from "../Notify";
+import { useUser } from "@/lib/reactQuery/clientHooks/useUser";
+import LoadingAnimation from "../navigation/LoadingAnimation";
 
 export default function Lists({
   data,
@@ -20,6 +23,7 @@ export default function Lists({
   const [openSignal, setOpenSignal] = useState(false);
   const createList = useCreateList();
   const router = useRouter();
+  const user = useUser();
 
   const handleCreateList = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -35,15 +39,30 @@ export default function Lists({
       <div className="flex flex-col md:flex-row items-center justify-between mx-auto w-full md:mx-0">
         <p className="text-3xl mx-auto md:mx-0">Groups to remember</p>
         <div className="mx-auto mt-3 mb-1 md:m-0">
-          <Button style="small" onClick={() => setOpenSignal(true)}>
+          <Button
+            style="small"
+            onClick={() => {
+              if (data.length < 3 || user?.subscription_plan === "premium") {
+                setOpenSignal(true);
+              } else {
+                notifyInfo("Upgrade to premium to create more groups");
+              }
+            }}
+          >
             Create new group
           </Button>
         </div>
       </div>
       <ul className="w-full">
-        {isLoading && <li>Loading... </li>}
+        {isLoading && (
+          <div className="m-20">
+            <LoadingAnimation size="medium" />
+          </div>
+        )}
+
         {!isLoading && !isError && data && Array.isArray(data) && (
           <>
+            number of lists: {data.length}{" "}
             {data.map((list) => {
               let rule: RRule | null = null;
               let ruleText = "";

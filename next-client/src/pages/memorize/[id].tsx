@@ -10,6 +10,8 @@ import Memorization from "@/components/Memorization";
 import Layout from "@/components/navigation/Layout";
 import getList from "@/lib/reactQuery/serverHydration/getList";
 import { Session } from "@/utils/types";
+import LoadingPage from "@/components/navigation/LoadingPage";
+import ErrorPage from "@/components/navigation/ErrorPage";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req, res } = context;
@@ -53,8 +55,8 @@ export default function MemorizeListPage() {
     trackAmplitudeData("Loaded Page Memorize List", { id: id });
   }, [id]);
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error :</p>;
+  if (isLoading) return <LoadingPage />;
+  if (isError) return <ErrorPage />;
 
   return (
     <Layout>

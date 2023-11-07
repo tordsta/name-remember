@@ -10,41 +10,31 @@ import {
   notifySuccess,
   notifyWarning,
 } from "./Notify";
-import { User } from "@/utils/types";
 import { FramedButton } from "./Button";
-import { useSession } from "next-auth/react";
+import { useUser } from "@/lib/reactQuery/clientHooks/useUser";
+import { useProducts } from "@/lib/reactQuery/clientHooks/useProducts";
+import { useQueryClient } from "react-query";
+import LoadingAnimation from "./navigation/LoadingAnimation";
 
 export default function Subscriptions() {
   const [openSignal, setOpenSignal] = useState(true);
-  const [user, setUser] = useState<User | null>(null);
-  const [products, setProducts] = useState<Stripe.Product[]>([]);
+  const [currency, setCurrency] = useState<string>("usd");
+  const [price, setPrice] = useState<number>(2);
   const [clientSecret, setClientSecret] = useState<string | undefined>(
     undefined
   );
+  const [isPremium, setIsPremium] = useState<boolean>(false);
   const router = useRouter();
-  const { status } = useSession();
+  const user = useUser();
+  const products: Stripe.Product[] = useProducts();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (products.length == 0 && status == "authenticated") {
-      try {
-        fetch("/api/stripe/getProducts")
-          .then((res) => {
-            if (!res.ok) throw Error("Error fetching products");
-            return res.json();
-          })
-          .then((res) => setProducts(res));
-      } catch (err) {
-        console.error(err);
-      }
+    if (user && user.subscription_plan == "premium") {
+      setIsPremium(true);
     }
-    if (!user || router.query.redirect_status) {
-      try {
-        fetch("/api/crud/readUser")
-          .then((res) => res.json())
-          .then((res) => setUser(res));
-      } catch (err) {
-        console.error(err);
-      }
+    if (user && user.subscription_plan == "free") {
+      setIsPremium(false);
     }
     if (router.query.redirect_status) {
       switch (router.query.redirect_status) {
@@ -66,7 +56,7 @@ export default function Subscriptions() {
       }
       router.replace("/profile", undefined, { shallow: true });
     }
-  }, [router, products, user]);
+  }, [router, user]);
 
   const handleSubscription = async ({
     priceId,
@@ -81,6 +71,8 @@ export default function Subscriptions() {
         },
         body: JSON.stringify({
           priceId: priceId,
+          currency: currency,
+          name: user?.name,
         }),
       });
       const data = await res.json();
@@ -103,7 +95,12 @@ export default function Subscriptions() {
     });
     if (res.ok) {
       notifySuccess("Subscription cancelled.");
-      setUser(null);
+      setIsPremium(false);
+      // Wait for stripe webhook and server communication
+      setTimeout(() => {
+        queryClient.invalidateQueries("user");
+        queryClient.refetchQueries("user");
+      }, 5000);
     } else {
       notifyError("Something went wrong.");
     }
@@ -112,9 +109,9 @@ export default function Subscriptions() {
   return (
     <div className="flex flex-col items-center m-8">
       <div className="flex justify-center gap-8">
-        {products.length == 0 && (
+        {!products && (
           <div className="w-72 h-72 flex flex-col justify-center items-center bg-white rounded-lg border">
-            <p className="m-auto">Loading...</p>
+            <LoadingAnimation size="medium" />
           </div>
         )}
         {products &&
@@ -124,20 +121,51 @@ export default function Subscriptions() {
               className="w-72 flex flex-col justify-center items-center text-center bg-white rounded-lg border py-4 px-6"
             >
               <h3 className="font-bold text-xl">{product.name}</h3>
-              {user && user.subscription_plan == "premium" && (
-                <h3 className="font-bold m-1">Status: Active</h3>
+              {(product.default_price as any).id && !isPremium && (
+                <div className="flex text-lg">
+                  {price}
+                  <select
+                    className="border border-black border-dashed rounded-lg mx-2 py-0 leading-none"
+                    value={currency}
+                    onChange={(e) => {
+                      setCurrency(e.target.value);
+                      setPrice(
+                        (product.default_price as any).currency_options[
+                          e.target.value
+                        ].unit_amount / 100
+                      );
+                    }}
+                  >
+                    {Object.keys(
+                      (product.default_price as any).currency_options
+                    ).map((currency) => (
+                      <>
+                        <option key={currency} value={currency}>
+                          {currency.toUpperCase()}
+                        </option>
+                      </>
+                    ))}
+                  </select>
+                  /
+                  {(
+                    product.default_price as any
+                  ).recurring.interval.toUpperCase()}
+                </div>
               )}
+              {isPremium && <h3 className="font-bold m-1">Status: Active</h3>}
               <p className="mb-4">{product.description}</p>
-              {(!user || user.subscription_plan == "free") && (
+              {!isPremium && (
                 <FramedButton
                   onClick={() =>
-                    handleSubscription({ priceId: product.default_price })
+                    handleSubscription({
+                      priceId: (product.default_price as any).id,
+                    })
                   }
                 >
                   Upgrade
                 </FramedButton>
               )}
-              {user && user.subscription_plan == "premium" && (
+              {isPremium && (
                 <FramedButton
                   onClick={() =>
                     handleCancelSubscription({ productId: product.id })
@@ -158,6 +186,8 @@ export default function Subscriptions() {
             clientSecret={clientSecret}
             openSignal={openSignal}
             setOpenSignal={setOpenSignal}
+            price={price}
+            currency={currency}
           />
         </Elements>
       )}

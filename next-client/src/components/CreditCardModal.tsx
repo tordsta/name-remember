@@ -11,10 +11,14 @@ export default function CreditCardModal({
   clientSecret,
   openSignal,
   setOpenSignal,
+  price,
+  currency,
 }: {
   clientSecret: string;
   openSignal: boolean;
   setOpenSignal: (arg: boolean) => void;
+  price: number;
+  currency: string;
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -51,6 +55,12 @@ export default function CreditCardModal({
         onSubmit={handleCardInfo}
         className="flex flex-col justify-center gap-8"
       >
+        <div className="flex flex-col justify-center items-center mt-4">
+          <p className="text-3xl">NameRemember Premium</p>
+          <p className="text-xl">
+            Subscription price: {price} {currency.toUpperCase()}/month
+          </p>
+        </div>
         <PaymentElement />
         <div className="flex gap-3">
           <FramedButton onClick={() => setOpenSignal(false)}>

@@ -1,5 +1,5 @@
 import sql from "@/lib/pgConnect";
-import { User } from "../../utils/types";
+import { SessionUser, User } from "../../utils/types";
 import bcrypt from "bcrypt";
 
 export default async function validatePassword({
@@ -8,7 +8,7 @@ export default async function validatePassword({
 }: {
   email: string;
   password: string;
-}): Promise<User | null> {
+}): Promise<SessionUser | null> {
   const { rows } = await sql({
     query: `
           SELECT *
@@ -30,11 +30,8 @@ export default async function validatePassword({
     //To expand the session user object add more information here. (and in customAuthAdapter.ts)
     return {
       id: user.id,
-      name: user.name,
       email: user.email,
       email_verified: user.email_verified,
-      image: user.image,
-      subscription_plan: user.subscription_plan,
     };
   }
 }
