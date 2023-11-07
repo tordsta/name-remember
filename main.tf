@@ -216,7 +216,7 @@ resource "google_cloud_scheduler_job" "send_out_reminders" {
 
   http_target {
     http_method = "POST"
-    uri         = "https://nameremember.com/api/cron/hourlyMailSender"
+    uri         = "https://nameremember.com/api/cron/hourly-mail-sender"
     body        = base64encode("")
     headers = {
       "Content-Type" = "application/json"
