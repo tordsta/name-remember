@@ -50,6 +50,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (session && session.user && session.user.email) {
+      console.log("setting amplitude user id", session.user.email);
       setAmplitudeUserId(session.user.email);
     }
   }, [session]);
