@@ -9,6 +9,7 @@ import UpdatePassword from "@/components/auth/UpdatePassword";
 import DeleteProfileModal from "@/components/peopleLists/DeleteProfileModal";
 import { useUser } from "@/lib/reactQuery/clientHooks/useUser";
 import UpdateProfileModal from "@/components/UpdateProfileModal";
+import PaymentHistory from "@/components/PaymentHistory";
 
 export default function Profile() {
   const user = useUser();
@@ -20,10 +21,13 @@ export default function Profile() {
   return (
     <Layout>
       <div className="flex flex-col items-center justify-center w-full gap-4 md:gap-20 md:mt-32">
-        <div className="flex flex-col items-center md:flex-row-reverse gap-4 md:justify-evenly w-full">
-          <Subscriptions />
-          <div className="display md:hidden mx-auto">
+        <div className="flex flex-col items-center md:flex-row-reverse md:justify-evenly w-full">
+          <div className="display md:hidden mx-auto mt-8">
             <FeedbackForm />
+          </div>
+          <div>
+            <Subscriptions />
+            <PaymentHistory />
           </div>
           <div className="flex flex-col gap-4 justify-center items-center m-8">
             <Image

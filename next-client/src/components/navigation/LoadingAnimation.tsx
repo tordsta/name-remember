@@ -33,6 +33,7 @@ export default function LoadingAnimation({
         alt="Loading..."
         width={widthAndHeight}
         height={widthAndHeight}
+        priority
         className="animate-spin16steps"
       />
     </div>

@@ -8,6 +8,7 @@ import Script from "next/script";
 import { useRouter } from "next/router";
 import { GTM_ID, pageview } from "../lib/gtm";
 import CookieConsentWrapper from "@/lib/CookieConsentWrapper";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 export default function App({
   Component,
@@ -66,6 +67,7 @@ export default function App({
             </CookieConsentWrapper>
           </SessionProvider>
         </Hydrate>
+        <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
       </QueryClientProvider>
     </>
   );

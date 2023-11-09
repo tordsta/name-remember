@@ -139,11 +139,9 @@ export default function Subscriptions() {
                     {Object.keys(
                       (product.default_price as any).currency_options
                     ).map((currency) => (
-                      <>
-                        <option key={currency} value={currency}>
-                          {currency.toUpperCase()}
-                        </option>
-                      </>
+                      <option key={currency} value={currency}>
+                        {currency.toUpperCase()}
+                      </option>
                     ))}
                   </select>
                   /
