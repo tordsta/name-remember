@@ -1,0 +1,1 @@
+ALTER TABLE accounts ADD CONSTRAINT accounts_prevent_duplicate UNIQUE (user_id, provider_id, token_type);

@@ -114,7 +114,7 @@ export default function Subscriptions() {
             <LoadingAnimation size="medium" />
           </div>
         )}
-        {products &&
+        {Array.isArray(products) &&
           products.map((product) => (
             <div
               key={product.id}

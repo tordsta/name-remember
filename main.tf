@@ -74,8 +74,8 @@ resource "google_cloud_run_v2_service" "default" {
         value = var.FACEBOOK_SECRET
       }
       env {
-        name = "SLACK_ID"
-        value = var.SLACK_ID
+        name = "NEXT_PUBLIC_SLACK_ID"
+        value = var.NEXT_PUBLIC_SLACK_ID
       }
       env {
         name = "SLACK_SECRET"

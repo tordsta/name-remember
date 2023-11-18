@@ -30,12 +30,16 @@ variable "FACEBOOK_SECRET" {
     description = "Facebook OAuth Secret"
     type        = string
 }
-variable "SLACK_ID" {
+variable "NEXT_PUBLIC_SLACK_ID" {
     description = "Slack OAuth ID"
     type        = string
 }
 variable "SLACK_SECRET" {
     description = "Slack OAuth Secret"
+    type        = string
+}
+variable "NEXT_PUBLIC_SLACK_APP_REDIRECT_URI" {
+    description = "Slack redirect URI for app installation"
     type        = string
 }
 variable "POSTMARK_API_KEY" {

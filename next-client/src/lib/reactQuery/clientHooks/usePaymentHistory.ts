@@ -5,7 +5,6 @@ export type Page = {
   starting_after: string | undefined;
   ending_before: string | undefined;
   limit: number;
-  index: number;
 };
 
 const fetchPaymentHistory = async ({
