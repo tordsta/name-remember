@@ -22,7 +22,15 @@ export default async function handler(
     return;
   }
 
-  const token = await slackGetAccessToken(session);
+  console.log("getChannels req.body", req.body);
+  const workspaceId: string | undefined = JSON.parse(req.body).workspaceId;
+  console.log("workspaceId server", workspaceId);
+  if (!workspaceId) {
+    res.status(400).json("Error bad request");
+    return;
+  }
+
+  const token = await slackGetAccessToken({ session, workspaceId });
   if (!token) {
     res.status(500).json("Error no token");
     return;

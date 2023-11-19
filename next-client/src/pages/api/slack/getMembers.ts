@@ -21,13 +21,16 @@ export default async function handler(
     res.status(401).json("Unauthorized");
     return;
   }
-  const conversationId: string | undefined = req.body.id;
-  if (!conversationId) {
+  const conversationId: string | undefined = JSON.parse(
+    req.body
+  ).conversationId;
+  const workspaceId: string | undefined = JSON.parse(req.body).workspaceId;
+  if (!conversationId || !workspaceId) {
     res.status(400).json("Error no channel id");
     return;
   }
 
-  const token = await slackGetAccessToken(session);
+  const token = await slackGetAccessToken({ session, workspaceId });
   if (!token) {
     res.status(500).json("Error no token");
     return;

@@ -25,7 +25,13 @@ export const slackTradeCodeForToken = async (code: string) => {
   }
 };
 
-export const slackGetAccessToken = async (session: Session) => {
+export const slackGetAccessToken = async ({
+  session,
+  workspaceId,
+}: {
+  session: Session;
+  workspaceId: string;
+}) => {
   let account;
   try {
     const user = await sql({
@@ -38,11 +44,10 @@ export const slackGetAccessToken = async (session: Session) => {
     const { rows } = await sql({
       query: `
         SELECT *
-        FROM accounts
+        FROM slack_workspaces
         WHERE user_id = $1
-            AND provider_id = $2
-            AND token_type = $3;`,
-      values: [user.rows[0].id, "slack", "user"],
+            AND workspace_id = $2;`,
+      values: [user.rows[0].id, workspaceId],
     });
     account = rows[0];
   } catch (error: any) {
@@ -91,12 +96,18 @@ export const storeSlackToken = async ({
   session: Session;
   response: OauthV2AccessResponse;
 }) => {
-  const { authed_user } = response;
+  console.log("storeSlackToken", response);
+  const { authed_user, team } = response;
   if (!authed_user) {
     return null;
   }
   const { id, scope, access_token, token_type, refresh_token, expires_in } =
     authed_user;
+  const workspaceId = team?.id ? team.id : "";
+  const workspaceName = team?.name ? team.name : "";
+  const enterprise = response.enterprise;
+  const isEnterpriseInstall = response.is_enterprise_install;
+
   const expires_at = new Date(Date.now() + expires_in! * 1000 - 60000);
 
   try {
@@ -110,8 +121,8 @@ export const storeSlackToken = async ({
     const userId = rows[0].id;
     await sql({
       query: `
-            INSERT INTO accounts (
-                user_id, 
+            INSERT INTO slack_workspaces (
+                user_id,
                 provider_id, 
                 provider_type, 
                 provider_account_id, 
@@ -119,15 +130,22 @@ export const storeSlackToken = async ({
                 access_token, 
                 expires_at, 
                 token_type, 
-                scope)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-            ON CONFLICT (user_id, provider_id, token_type) DO UPDATE 
+                scope,
+                workspace_id,
+                workspace_name,
+                enterprise,
+                is_enterprise_install)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+            ON CONFLICT (user_id, workspace_id, token_type) DO UPDATE 
             SET provider_type = $3,
                 provider_account_id = $4,
                 refresh_token = $5, 
                 access_token = $6, 
                 expires_at = $7, 
-                scope = $9;
+                scope = $9,
+                workspace_name = $11,
+                enterprise = $12,
+                is_enterprise_install = $13;
             `,
       values: [
         userId,
@@ -139,6 +157,10 @@ export const storeSlackToken = async ({
         expires_at,
         token_type,
         scope,
+        workspaceId,
+        workspaceName,
+        enterprise,
+        isEnterpriseInstall,
       ],
     });
     return true;

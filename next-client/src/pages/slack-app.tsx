@@ -1,17 +1,16 @@
-import {
-  ConversationsMembersResponse,
-  UsersConversationsResponse,
-} from "@slack/web-api";
+import { useSlackConversations } from "@/lib/reactQuery/clientHooks/useSlackConversations";
+import { useSlackMembers } from "@/lib/reactQuery/clientHooks/useSlackMembers";
+import { useSlackWorkspaces } from "@/lib/reactQuery/clientHooks/useSlackWorkspaces";
+import { ConversationsMembersResponse } from "@slack/web-api";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export default function SlackApp() {
-  const [conversations, setConversations] = useState<
-    UsersConversationsResponse["channels"] | null
-  >(null);
-  const [members, setMembers] = useState<
-    ConversationsMembersResponse["members"] | null
-  >(null);
+  const workspaces = useSlackWorkspaces();
+  const [workspaceId, setWorkspaceId] = useState<string | null>(null);
+  const conversations = useSlackConversations(workspaceId);
+  const [channelId, setChannelId] = useState<string | null>(null);
+  const members = useSlackMembers({ workspaceId, conversationId: channelId });
 
   const router = useRouter();
   const clientId = process.env.NEXT_PUBLIC_SLACK_ID;
@@ -36,19 +35,53 @@ export default function SlackApp() {
   }, [code, state, router]);
 
   return (
-    <div>
+    <div className="m-10">
       <h1>Slack App</h1>
+      <h2>My slack workspaces</h2>
+      <div className="flex flex-row">
+        {workspaces.isFetched &&
+          workspaces.data.map(
+            (workspace: { workspace_id: string; workspace_name: string }) => {
+              return (
+                <div
+                  key={workspace.workspace_id}
+                  onClick={() => setWorkspaceId(workspace.workspace_id)}
+                >
+                  <div>{workspace.workspace_name} &gt;</div>
+                </div>
+              );
+            }
+          )}
+        <div className="mx-2">
+          {conversations.isFetched &&
+            conversations.data &&
+            conversations.data.map((conversation: any) => {
+              return (
+                <div
+                  key={conversation.id}
+                  onClick={async () => {
+                    setChannelId(conversation.id);
+                  }}
+                >
+                  {conversation.name} &gt;
+                </div>
+              );
+            })}
+        </div>
+        <div className="mx-2">
+          {members.isFetched &&
+            members.data &&
+            members.data.map((member: any) => {
+              return <div key={member.real_name}>{member.real_name}</div>;
+            })}
+        </div>
+        {members.isFetched && (
+          <button className="border border-black px-3 py-2">Make list</button>
+        )}
+      </div>
       <div className="flex flex-col gap-2">
         <button
-          onClick={async () => {
-            const res = await fetch(`/api/slack/getChannels`);
-            const data = await res.json();
-            setConversations(data);
-          }}
-        >
-          get data
-        </button>
-        <button
+          className="border border-black px-3 py-2"
           onClick={() => {
             router.push(
               `https://slack.com/oauth/v2/authorize?
@@ -81,33 +114,8 @@ export default function SlackApp() {
           fill="#ecb22e"
           ></path>
         </svg> */}
-          Add to Slack
+          Import from Slack Workspace
         </button>
-        {conversations && (
-          <div>
-            {conversations.map((conversation) => {
-              return (
-                <div
-                  key={conversation.id}
-                  onClick={async () => {
-                    const res = await fetch(`/api/slack/getMembers`, {
-                      method: "POST",
-                      body: JSON.stringify({ id: conversation.id }),
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                    });
-                    const data = await res.json();
-                    setMembers(data);
-                  }}
-                >
-                  {conversation.name}
-                </div>
-              );
-            })}
-          </div>
-        )}
-        {members && JSON.stringify(members)}
       </div>
     </div>
   );
