@@ -42,6 +42,10 @@ variable "NEXT_PUBLIC_SLACK_APP_REDIRECT_URI" {
     description = "Slack redirect URI for app installation"
     type        = string
 }
+variable "NEXT_PUBLIC_SLACK_DASHBOARD_REDIRECT_URI" {
+    description = "Slack redirect URI for workspace auth"
+    type        = string
+}
 variable "POSTMARK_API_KEY" {
     description = "Postmark API Key"
     type        = string

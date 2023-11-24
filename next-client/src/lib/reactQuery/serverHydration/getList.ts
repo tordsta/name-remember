@@ -27,7 +27,7 @@ export default async function getList({
             json_agg(
               CASE WHEN p.id IS NOT NULL THEN
                 row_to_json(
-                  (SELECT tmp FROM (SELECT p.id, p.fname, p.mname, p.lname, p.image, p.list_id) tmp)
+                  (SELECT tmp FROM (SELECT p.id, p.fname, p.mname, p.lname, p.image, p.image_url, p.list_id) tmp)
                 )
               ELSE
                 NULL

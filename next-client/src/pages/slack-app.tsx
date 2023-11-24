@@ -1,7 +1,6 @@
 import { useSlackConversations } from "@/lib/reactQuery/clientHooks/useSlackConversations";
 import { useSlackMembers } from "@/lib/reactQuery/clientHooks/useSlackMembers";
 import { useSlackWorkspaces } from "@/lib/reactQuery/clientHooks/useSlackWorkspaces";
-import { ConversationsMembersResponse } from "@slack/web-api";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -22,7 +21,7 @@ export default function SlackApp() {
     if (code) {
       fetch(`/api/slack/oauth`, {
         method: "POST",
-        body: JSON.stringify({ code, state }),
+        body: JSON.stringify({ code, state, redirectUri }),
         headers: {
           "Content-Type": "application/json",
         },
@@ -32,53 +31,10 @@ export default function SlackApp() {
         }
       });
     }
-  }, [code, state, router]);
+  }, [code, state, router, redirectUri]);
 
   return (
     <div className="m-10">
-      <h1>Slack App</h1>
-      <h2>My slack workspaces</h2>
-      <div className="flex flex-row">
-        {workspaces.isFetched &&
-          workspaces.data.map(
-            (workspace: { workspace_id: string; workspace_name: string }) => {
-              return (
-                <div
-                  key={workspace.workspace_id}
-                  onClick={() => setWorkspaceId(workspace.workspace_id)}
-                >
-                  <div>{workspace.workspace_name} &gt;</div>
-                </div>
-              );
-            }
-          )}
-        <div className="mx-2">
-          {conversations.isFetched &&
-            conversations.data &&
-            conversations.data.map((conversation: any) => {
-              return (
-                <div
-                  key={conversation.id}
-                  onClick={async () => {
-                    setChannelId(conversation.id);
-                  }}
-                >
-                  {conversation.name} &gt;
-                </div>
-              );
-            })}
-        </div>
-        <div className="mx-2">
-          {members.isFetched &&
-            members.data &&
-            members.data.map((member: any) => {
-              return <div key={member.real_name}>{member.real_name}</div>;
-            })}
-        </div>
-        {members.isFetched && (
-          <button className="border border-black px-3 py-2">Make list</button>
-        )}
-      </div>
       <div className="flex flex-col gap-2">
         <button
           className="border border-black px-3 py-2"

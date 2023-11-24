@@ -22,9 +22,7 @@ export default async function handler(
     return;
   }
 
-  console.log("getChannels req.body", req.body);
   const workspaceId: string | undefined = JSON.parse(req.body).workspaceId;
-  console.log("workspaceId server", workspaceId);
   if (!workspaceId) {
     res.status(400).json("Error bad request");
     return;
@@ -46,7 +44,6 @@ export default async function handler(
       return;
     }
 
-    console.log("channels response", response);
     res.status(200).json(response.channels as any);
     return;
   } catch (error: any) {

@@ -5,9 +5,14 @@ import { Session } from "@/utils/types";
 export const slackClient = new WebClient();
 const clientId = process.env.NEXT_PUBLIC_SLACK_ID;
 const clientSecret = process.env.SLACK_SECRET;
-const redirectUri = process.env.NEXT_PUBLIC_SLACK_APP_REDIRECT_URI;
 
-export const slackTradeCodeForToken = async (code: string) => {
+export const slackTradeCodeForToken = async ({
+  code,
+  redirectUri,
+}: {
+  code: string;
+  redirectUri: string;
+}) => {
   try {
     if (!clientId || !clientSecret) {
       throw new Error("No slack client id or secret");

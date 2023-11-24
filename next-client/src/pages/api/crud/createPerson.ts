@@ -42,14 +42,15 @@ export default async function handler(
 
       const people = await sql({
         query: `
-        INSERT INTO people (fname, mname, lname, image, list_id)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO people (fname, mname, lname, image, image_url, list_id)
+        VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING id, fname;`,
         values: [
           person.fname,
           person.mname,
           person.lname,
           person.image,
+          person.image_url,
           listId,
         ],
       });

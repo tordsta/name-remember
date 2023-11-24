@@ -19,9 +19,10 @@ export default async function handler(
   }
   const code: string | undefined = req.body.code;
   const state: string | undefined = req.body.state;
+  const redirectUri: string | undefined = req.body.redirectUri;
 
-  if (code) {
-    const resToken = await slackTradeCodeForToken(code);
+  if (code && redirectUri) {
+    const resToken = await slackTradeCodeForToken({ code, redirectUri });
     if (!resToken || !resToken.authed_user) {
       res.status(500).json("Error getting token");
       return;

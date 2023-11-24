@@ -15,6 +15,8 @@ import { Session } from "@/utils/types";
 import DeleteListButton from "@/components/peopleLists/DeleteListButton";
 import ErrorPage from "@/components/navigation/ErrorPage";
 import LoadingPage from "@/components/navigation/LoadingPage";
+import ImportSlackChannelModal from "@/components/peopleLists/ImportSlackChannelModal";
+import { useUser } from "@/lib/reactQuery/clientHooks/useUser";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req, res } = context;
@@ -63,6 +65,7 @@ export default function EditListPage() {
   const router = useRouter();
   const { id } = router.query;
   const { data, isError, isLoading } = usePeopleList({ id: id as string });
+  const user = useUser();
 
   useEffect(() => {
     trackAmplitudeData("Loaded Page Edit List", { id: id });
@@ -80,6 +83,8 @@ export default function EditListPage() {
             <div className="flex flex-col items-center justify-center gap-4">
               <p className="text-xl">Upload methods</p>
               <AddPersonToListModal listId={id} />
+              {user?.subscription_plan !== "premium" && <p>Premium required</p>}
+              <ImportSlackChannelModal listId={id} />
             </div>
             <ReminderInput id={id} rrule={data?.rrule} />
             <div className="flex flex-col items-center justify-center gap-4">

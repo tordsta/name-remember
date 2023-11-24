@@ -1,4 +1,4 @@
--- ALTER TABLE accounts ADD CONSTRAINT accounts_prevent_duplicate UNIQUE (user_id, provider_id, token_type);
+ALTER TABLE accounts ADD CONSTRAINT accounts_prevent_duplicate UNIQUE (user_id, provider_id, token_type);
 CREATE TABLE IF NOT EXISTS slack_workspaces (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     workspace_name VARCHAR(255) NOT NULL,
@@ -19,3 +19,6 @@ CREATE TABLE IF NOT EXISTS slack_workspaces (
     CONSTRAINT slack_workspaces_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT slack_workspaces_unique UNIQUE (workspace_id, user_id, token_type)
 );
+ALTER TABLE people ADD COLUMN image_url TEXT;
+ALTER TABLE people ALTER COLUMN mname DROP NOT NULL;
+ALTER TABLE people ALTER COLUMN lname DROP NOT NULL;
