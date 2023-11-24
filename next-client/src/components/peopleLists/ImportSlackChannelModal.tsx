@@ -81,7 +81,7 @@ export default function ImportSlackChannelModal({
             )}
             {channelId && (
               <h2 className="row-span-1 col-span-1 underline text-lg">
-                Select members
+                Members
               </h2>
             )}
             <div className="row-start-2 row-end-3 col-start-1 col-end-2">

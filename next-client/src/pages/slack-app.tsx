@@ -1,21 +1,30 @@
-import { useSlackConversations } from "@/lib/reactQuery/clientHooks/useSlackConversations";
-import { useSlackMembers } from "@/lib/reactQuery/clientHooks/useSlackMembers";
-import { useSlackWorkspaces } from "@/lib/reactQuery/clientHooks/useSlackWorkspaces";
+import { FramedButton } from "@/components/Button";
+import Layout from "@/components/navigation/Layout";
+import { getProviders, signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import Image from "next/image";
 
-export default function SlackApp() {
-  const workspaces = useSlackWorkspaces();
-  const [workspaceId, setWorkspaceId] = useState<string | null>(null);
-  const conversations = useSlackConversations(workspaceId);
-  const [channelId, setChannelId] = useState<string | null>(null);
-  const members = useSlackMembers({ workspaceId, conversationId: channelId });
-
+export default function SlackApp({
+  providers,
+}: {
+  providers: {
+    [key: string]: {
+      id: string;
+      name: string;
+      type: string;
+      signinUrl: string;
+      callbackUrl: string;
+    };
+  };
+}) {
   const router = useRouter();
   const clientId = process.env.NEXT_PUBLIC_SLACK_ID;
   const redirectUri = process.env.NEXT_PUBLIC_SLACK_APP_REDIRECT_URI;
   const code = router.query.code;
   const state = router.query.state;
+
+  const session = useSession();
 
   useEffect(() => {
     if (code) {
@@ -34,45 +43,160 @@ export default function SlackApp() {
   }, [code, state, router, redirectUri]);
 
   return (
-    <div className="m-10">
-      <div className="flex flex-col gap-2">
-        <button
-          className="border border-black px-3 py-2"
-          onClick={() => {
-            router.push(
-              `https://slack.com/oauth/v2/authorize?
-            user_scope=channels:read,groups:read,users.profile:read&
-            redirect_uri=${redirectUri}&
-            client_id=${clientId}`
-            );
-          }}
-          //style="align-items:center;color:#000;background-color:#fff;border:1px solid #ddd;border-radius:4px;display:inline-flex;font-family:Lato, sans-serif;font-size:16px;font-weight:600;height:48px;justify-content:center;text-decoration:none;width:236px"
-        >
-          {/* <svg
-          xmlns="http://www.w3.org/2000/svg"
-          style="height:20px;width:20px;margin-right:12px"
-          viewBox="0 0 122.8 122.8"
-          >
-          <path
-          d="M25.8 77.6c0 7.1-5.8 12.9-12.9 12.9S0 84.7 0 77.6s5.8-12.9 12.9-12.9h12.9v12.9zm6.5 0c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9v32.3c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V77.6z"
-          fill="#e01e5a"
-          ></path>
-          <path
-          d="M45.2 25.8c-7.1 0-12.9-5.8-12.9-12.9S38.1 0 45.2 0s12.9 5.8 12.9 12.9v12.9H45.2zm0 6.5c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H12.9C5.8 58.1 0 52.3 0 45.2s5.8-12.9 12.9-12.9h32.3z"
-          fill="#36c5f0"
-          ></path>
-          <path
-          d="M97 45.2c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9-5.8 12.9-12.9 12.9H97V45.2zm-6.5 0c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V12.9C64.7 5.8 70.5 0 77.6 0s12.9 5.8 12.9 12.9v32.3z"
-          fill="#2eb67d"
-          ></path>
-          <path
-          d="M77.6 97c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9-12.9-5.8-12.9-12.9V97h12.9zm0-6.5c-7.1 0-12.9-5.8-12.9-12.9s5.8-12.9 12.9-12.9h32.3c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H77.6z"
-          fill="#ecb22e"
-          ></path>
-        </svg> */}
-          Import from Slack Workspace
-        </button>
+    <Layout auth={false} nav={false}>
+      <div className="flex flex-col gap-4 m-10 md:mx-20 md:my-10">
+        <h1 className="text-3xl">
+          Integrate NameRemember with Your Slack Workspace
+        </h1>
+        <p>
+          NameRemember, the app designed to help you match names to faces, now
+          offers an Slack integration. With just a few clicks, harness the power
+          of NameRemember directly within your Slack workspace.
+        </p>
+        <div className="block md:hidden">
+          {session.status === "loading" && <p>Loading...</p>}
+          {session.status === "unauthenticated" &&
+            Object.values(providers)
+              .filter((provider) => provider.name == "Slack")
+              .map((provider) => (
+                <div
+                  key={provider.name}
+                  className="flex flex-col justify-center items-center text-center gap-2 my-2"
+                >
+                  <p>Log in with {provider.name} before connecting</p>
+                  <FramedButton onClick={() => signIn(provider.id)}>
+                    Log in with {provider.name}
+                  </FramedButton>
+                </div>
+              ))}
+          {session.status === "authenticated" && (
+            <div className="flex justify-center items-center">
+              <FramedButton
+                width={250}
+                onClick={() => {
+                  router.push(
+                    `https://slack.com/oauth/v2/authorize?
+                  user_scope=channels:read,groups:read,users.profile:read&
+                  redirect_uri=${redirectUri}&
+                  client_id=${clientId}`
+                  );
+                }}
+              >
+                <div className="flex flex-row justify-center items-center gap-2">
+                  Connect to Slack
+                  <Image
+                    src={"/slack.svg"}
+                    width={20}
+                    height={20}
+                    alt={"Slack icon"}
+                  />
+                </div>
+              </FramedButton>
+            </div>
+          )}
+        </div>
+
+        <p className="text-xl">Key Feature:</p>
+        <ul className="ml-5">
+          <li>
+            - Effortless Integration: Connect NameRemember with your Slack
+            workspace in seconds.
+          </li>
+          <li>
+            - Automated Memorization Lists: Generate lists from your Slack
+            channels effortlessly.
+          </li>
+          <li>
+            - Interactive Learning: Engage with names and faces through
+            interactive quizzes and reminders.
+          </li>
+          <li>
+            - Privacy-Centric: We value your privacy. NameRemember only uses
+            information you choose to share.
+          </li>
+        </ul>
+        <p className="text-xl">Step-by-Step Integration Guide:</p>
+        <ol className="ml-5">
+          <li>1. Sign in and return to www.nameremember.com/slack-app.</li>
+          <li>
+            2. Connect with your Slack workspace: Click &apos;Connect to
+            Slack&apos; below to initiate the integration process.
+          </li>
+          <li>
+            3. Authorize & Confirm: Grant NameRemember access to your Slack
+            workspace. We request only necessary permissions to create
+            memorization lists from your channels.
+          </li>
+          <li className="flex flex-col gap-2 mb-3 justify-center items-center text-left w-full">
+            <p className="w-full">
+              4. Import slack channel: Create a list, click edit, import members
+              from your slack channels.
+            </p>
+            <FramedButton onClick={() => router.push("/dashboard")}>
+              Go to Dashboard
+            </FramedButton>
+          </li>
+          <li>
+            5. Start Memorizing: Dive into a your learning journey, and never
+            forget a name again!
+          </li>
+        </ol>
+        <p>
+          Don&apos;t let another name slip your mind. Integrate NameRemember
+          with your Slack workspace today and improve the way you connect with
+          your coworkers!
+        </p>
+        {session.status === "loading" && <p>Loading...</p>}
+        {session.status === "unauthenticated" &&
+          Object.values(providers)
+            .filter((provider) => provider.name == "Slack")
+            .map((provider) => (
+              <div
+                key={provider.name}
+                className="flex flex-col justify-center items-center text-center gap-2 my-2"
+              >
+                <p>Log in with {provider.name} before connecting</p>
+                <FramedButton onClick={() => signIn(provider.id)}>
+                  Log in with {provider.name}
+                </FramedButton>
+              </div>
+            ))}
+        {session.status === "authenticated" && (
+          <div className="flex justify-center items-center">
+            <FramedButton
+              width={250}
+              onClick={() => {
+                router.push(
+                  `https://slack.com/oauth/v2/authorize?
+                user_scope=channels:read,groups:read,users.profile:read&
+                redirect_uri=${redirectUri}&
+                client_id=${clientId}`
+                );
+              }}
+            >
+              <div className="flex flex-row justify-center items-center gap-2">
+                Connect to Slack
+                <Image
+                  src={"/slack.svg"}
+                  width={20}
+                  height={20}
+                  alt={"Slack icon"}
+                />
+              </div>
+            </FramedButton>
+          </div>
+        )}
+        <p>NameRemember - Remember Names, Build Better Connections.</p>
       </div>
-    </div>
+    </Layout>
   );
+}
+
+export async function getServerSideProps() {
+  const providers = await getProviders();
+  return {
+    props: {
+      providers: providers ?? [],
+    },
+  };
 }
