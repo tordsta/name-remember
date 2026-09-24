@@ -3,9 +3,9 @@ import * as amplitude from "@amplitude/analytics-browser";
 const options = {};
 
 export const initAmplitude = () => {
-  const api = process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY
-    ? process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY
-    : "";
+  const api = process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY;
+  // Without a key analytics is a no-op: events are never sent
+  if (!api) return;
   amplitude.init(api, undefined, options);
 };
 

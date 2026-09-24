@@ -62,7 +62,6 @@ END;
 $$;
 
 
-ALTER FUNCTION public.delete_person(user_email text, person_id uuid) OWNER TO "default";
 
 SET default_tablespace = '';
 
@@ -88,7 +87,6 @@ CREATE TABLE public.accounts (
 );
 
 
-ALTER TABLE public.accounts OWNER TO "default";
 
 --
 -- Name: accounts_id_seq; Type: SEQUENCE; Schema: public; Owner: default
@@ -103,7 +101,6 @@ CREATE SEQUENCE public.accounts_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.accounts_id_seq OWNER TO "default";
 
 --
 -- Name: accounts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: default
@@ -124,7 +121,6 @@ CREATE TABLE public.auth_sessions (
 );
 
 
-ALTER TABLE public.auth_sessions OWNER TO "default";
 
 --
 -- Name: auth_sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: default
@@ -139,7 +135,6 @@ CREATE SEQUENCE public.auth_sessions_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.auth_sessions_id_seq OWNER TO "default";
 
 --
 -- Name: auth_sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: default
@@ -163,7 +158,6 @@ CREATE TABLE public.people (
 );
 
 
-ALTER TABLE public.people OWNER TO "default";
 
 --
 -- Name: people_in_lists; Type: TABLE; Schema: public; Owner: default
@@ -176,7 +170,6 @@ CREATE TABLE public.people_in_lists (
 );
 
 
-ALTER TABLE public.people_in_lists OWNER TO "default";
 
 --
 -- Name: people_lists; Type: TABLE; Schema: public; Owner: default
@@ -194,7 +187,6 @@ CREATE TABLE public.people_lists (
 );
 
 
-ALTER TABLE public.people_lists OWNER TO "default";
 
 --
 -- Name: user_feedback; Type: TABLE; Schema: public; Owner: default
@@ -209,7 +201,6 @@ CREATE TABLE public.user_feedback (
 );
 
 
-ALTER TABLE public.user_feedback OWNER TO "default";
 
 --
 -- Name: user_feedback_id_seq; Type: SEQUENCE; Schema: public; Owner: default
@@ -224,7 +215,6 @@ CREATE SEQUENCE public.user_feedback_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.user_feedback_id_seq OWNER TO "default";
 
 --
 -- Name: user_feedback_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: default
@@ -248,7 +238,6 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO "default";
 
 --
 -- Name: verification_tokens; Type: TABLE; Schema: public; Owner: default
@@ -261,7 +250,6 @@ CREATE TABLE public.verification_tokens (
 );
 
 
-ALTER TABLE public.verification_tokens OWNER TO "default";
 
 --
 -- Name: accounts id; Type: DEFAULT; Schema: public; Owner: default

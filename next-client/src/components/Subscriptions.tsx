@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Stripe from "stripe";
 import CreditCardModal from "./CreditCardModal";
 import { Elements } from "@stripe/react-stripe-js";
-import { stripeClientPromise } from "@/lib/stripe";
+import { stripeClientPromise } from "@/lib/stripeClient";
 import { useRouter } from "next/router";
 import {
   notifyError,
@@ -76,6 +76,11 @@ export default function Subscriptions() {
         }),
       });
       const data = await res.json();
+      if (data.mock) {
+        notifySuccess("Premium activated (demo mode, no payment taken).");
+        queryClient.invalidateQueries("user");
+        return;
+      }
       setClientSecret(data.clientSecret);
     }
     setOpenSignal(true);

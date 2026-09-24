@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { stripeServer } from "@/lib/stripe";
+import { mocked } from "@/lib/integrations";
 import sql from "@/lib/pgConnect";
 import { Session } from "@/utils/types";
 
@@ -72,6 +73,8 @@ export default async function handler(
     res.status(200).json({
       subscriptionId: subscription.id,
       clientSecret: client_secret,
+      // Mocked subscriptions are active immediately, there is no payment step
+      mock: mocked.stripe,
     } as unknown as string);
     return;
   } catch (error) {
