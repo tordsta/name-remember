@@ -11,34 +11,52 @@ import validateCredentialsUser from "@/lib/nextAuth/validateCredentialsUser";
 export const authOptions = {
   secret: process.env.NEXT_AUTH as string,
   adapter: customAuthAdapter(),
+  // OAuth providers are only registered when configured, so no broken
+  // sign-in buttons show up. Email/password (credentials) is always on.
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_ID as string,
-      clientSecret: process.env.GOOGLE_SECRET as string,
-      authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code",
-        },
-      },
-      allowDangerousEmailAccountLinking: true,
-    }),
-    SlackProvider({
-      clientId: process.env.NEXT_PUBLIC_SLACK_ID as string,
-      clientSecret: process.env.SLACK_SECRET as string,
-      allowDangerousEmailAccountLinking: true,
-    }),
-    FacebookProvider({
-      clientId: process.env.FACEBOOK_ID as string,
-      clientSecret: process.env.FACEBOOK_SECRET as string,
-      allowDangerousEmailAccountLinking: true,
-    }),
-    GithubProvider({
-      clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET as string,
-      allowDangerousEmailAccountLinking: true,
-    }),
+    ...(process.env.GOOGLE_ID
+      ? [
+          GoogleProvider({
+            clientId: process.env.GOOGLE_ID as string,
+            clientSecret: process.env.GOOGLE_SECRET as string,
+            authorization: {
+              params: {
+                prompt: "consent",
+                access_type: "offline",
+                response_type: "code",
+              },
+            },
+            allowDangerousEmailAccountLinking: true,
+          }),
+        ]
+      : []),
+    ...(process.env.NEXT_PUBLIC_SLACK_ID
+      ? [
+          SlackProvider({
+            clientId: process.env.NEXT_PUBLIC_SLACK_ID as string,
+            clientSecret: process.env.SLACK_SECRET as string,
+            allowDangerousEmailAccountLinking: true,
+          }),
+        ]
+      : []),
+    ...(process.env.FACEBOOK_ID
+      ? [
+          FacebookProvider({
+            clientId: process.env.FACEBOOK_ID as string,
+            clientSecret: process.env.FACEBOOK_SECRET as string,
+            allowDangerousEmailAccountLinking: true,
+          }),
+        ]
+      : []),
+    ...(process.env.GITHUB_ID
+      ? [
+          GithubProvider({
+            clientId: process.env.GITHUB_ID as string,
+            clientSecret: process.env.GITHUB_SECRET as string,
+            allowDangerousEmailAccountLinking: true,
+          }),
+        ]
+      : []),
     CredentialsProvider({
       type: "credentials",
       credentials: {},

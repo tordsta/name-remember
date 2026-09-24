@@ -22,7 +22,7 @@ const sendEmail = (list: List) => {
     recipientEmail: list.email,
     recipientName: list.user_name,
     listName: list.name,
-    memorizerUrl: "https://nameremember.com/memorize/" + list.id,
+    memorizerUrl: `${process.env.NEXTAUTH_URL}/memorize/${list.id}`,
   });
 };
 
@@ -34,6 +34,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // Called by Cloud Scheduler with a shared secret. Closed if none is configured.
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret || req.headers.authorization !== `Bearer ${cronSecret}`) {
+    res.status(401).json("Unauthorized");
+    return;
+  }
+
   console.log("Starting hourlyMailSender");
 
   let rows: List[] = [];

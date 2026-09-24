@@ -1,0 +1,8 @@
+# Host builds of native modules (bcrypt, sharp) must not leak into the Linux image
+node_modules
+.next
+.env*
+!.env.example
+trace
+npm-debug.log*
+yarn-error.log*

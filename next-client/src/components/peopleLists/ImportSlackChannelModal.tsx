@@ -9,6 +9,7 @@ import { useSlackConversations } from "@/lib/reactQuery/clientHooks/useSlackConv
 import { useSlackMembers } from "@/lib/reactQuery/clientHooks/useSlackMembers";
 import { useRouter } from "next/router";
 import useAddPeople from "@/lib/reactQuery/clientHooks/useAddPeople";
+import slackAuthorizeUrl from "@/lib/slackAuthorizeUrl";
 
 export default function ImportSlackChannelModal({
   listId,
@@ -24,7 +25,6 @@ export default function ImportSlackChannelModal({
   const members = useSlackMembers({ workspaceId, conversationId: channelId });
 
   const router = useRouter();
-  const clientId = process.env.NEXT_PUBLIC_SLACK_ID;
   const redirectUri = process.env.NEXT_PUBLIC_SLACK_DASHBOARD_REDIRECT_URI;
   const addPeople = useAddPeople();
 
@@ -60,12 +60,7 @@ export default function ImportSlackChannelModal({
           <FramedButton
             width={250}
             onClick={() => {
-              router.push(
-                `https://slack.com/oauth/v2/authorize?
-                          user_scope=channels:read,groups:read,users.profile:read&
-                          redirect_uri=${redirectUri}&
-                          client_id=${clientId}`
-              );
+              router.push(slackAuthorizeUrl(redirectUri));
             }}
           >
             Authorize new slack workspace

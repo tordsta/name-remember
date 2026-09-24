@@ -1,8 +1,10 @@
 import { ErrorCode, OauthV2AccessResponse, WebClient } from "@slack/web-api";
 import sql from "./pgConnect";
 import { Session } from "@/utils/types";
+import { mocked } from "./integrations";
+import mockSlackClient from "./mocks/mockSlack";
 
-export const slackClient = new WebClient();
+export const slackClient = mocked.slack ? mockSlackClient : new WebClient();
 const clientId = process.env.NEXT_PUBLIC_SLACK_ID;
 const clientSecret = process.env.SLACK_SECRET;
 
@@ -14,7 +16,7 @@ export const slackTradeCodeForToken = async ({
   redirectUri: string;
 }) => {
   try {
-    if (!clientId || !clientSecret) {
+    if (!mocked.slack && (!clientId || !clientSecret)) {
       throw new Error("No slack client id or secret");
     }
     const resp = await slackClient.oauth.v2.access({
@@ -78,7 +80,7 @@ export const slackGetAccessToken = async ({
 
 export const refreshSlackToken = async (token: string) => {
   try {
-    if (!clientId || !clientSecret) {
+    if (!mocked.slack && (!clientId || !clientSecret)) {
       throw new Error("No slack client id or secret");
     }
     const resp = await slackClient.oauth.v2.access({
