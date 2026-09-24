@@ -47,7 +47,7 @@ export default function AddPersonToListModal({ listId }: { listId: string }) {
           <AddPerson listId={listId} />
           <div className="flex flex-col justify-center items-center gap-2 mt-4">
             <p>Submit all individuals before exiting</p>
-            <Button onClick={() => setOpenSignal(false)}>Done</Button>
+            <Button onClick={() => setOpenSignal(false)}>Exit</Button>
           </div>
         </div>
       </DefaultModal>

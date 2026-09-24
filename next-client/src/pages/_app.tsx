@@ -7,8 +7,8 @@ import { useEffect } from "react";
 import Script from "next/script";
 import { useRouter } from "next/router";
 import { GTM_ID, pageview } from "../lib/gtm";
-import { initAmplitude } from "../lib/amplitude";
 import CookieConsentWrapper from "@/lib/CookieConsentWrapper";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 export default function App({
   Component,
@@ -18,12 +18,6 @@ export default function App({
   pageProps: any;
 }) {
   const router = useRouter();
-
-  useEffect(() => {
-    if (router.isReady) {
-      initAmplitude();
-    }
-  }, [router.isReady]);
 
   useEffect(() => {
     router.events.on("routeChangeComplete", pageview);
@@ -73,6 +67,7 @@ export default function App({
             </CookieConsentWrapper>
           </SessionProvider>
         </Hydrate>
+        <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
       </QueryClientProvider>
     </>
   );

@@ -22,6 +22,7 @@ export type Person = {
   mname?: string | null;
   lname?: string | null;
   image?: string | null;
+  image_url?: string | null;
   list_id?: string;
 };
 

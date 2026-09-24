@@ -10,6 +10,7 @@ import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { setAmplitudeUserId, trackAmplitudeData } from "@/lib/amplitude";
 import { Session } from "@/utils/types";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req, res } = context;
@@ -47,6 +48,27 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 export default function Dashboard() {
   const { data, isLoading, isError } = usePeopleLists();
   const { data: session } = useSession();
+
+  const redirectUri = process.env.NEXT_PUBLIC_SLACK_DASHBOARD_REDIRECT_URI;
+  const router = useRouter();
+  const code = router.query.code;
+  const state = router.query.state;
+
+  useEffect(() => {
+    if (code) {
+      fetch(`/api/slack/oauth`, {
+        method: "POST",
+        body: JSON.stringify({ code, state, redirectUri }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then((res) => {
+        if (res.ok) {
+          router.replace("/dashboard", undefined, { shallow: true });
+        }
+      });
+    }
+  }, [code, state, router, redirectUri]);
 
   useEffect(() => {
     if (session && session.user && session.user.email) {

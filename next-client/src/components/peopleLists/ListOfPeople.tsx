@@ -22,6 +22,8 @@ export default function ListOfPeople({ currentList }: { currentList: string }) {
           {data.people_in_list &&
             data.people_in_list.length > 0 &&
             data.people_in_list.map((person) => {
+              let image = person.image ?? person.image_url;
+              if (!image) image = "/icons/person110x110.png";
               return (
                 <div
                   key={person.id}
@@ -29,7 +31,7 @@ export default function ListOfPeople({ currentList }: { currentList: string }) {
                 >
                   <div className="relative w-10 h-10 rounded-full overflow-hidden border border-black">
                     <NextImage
-                      src={person.image ?? "/icons/person110x110.png"}
+                      src={image}
                       alt="Uploaded image"
                       fill
                       sizes="100%"

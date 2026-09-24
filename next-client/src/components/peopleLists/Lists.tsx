@@ -62,7 +62,6 @@ export default function Lists({
 
         {!isLoading && !isError && data && Array.isArray(data) && (
           <>
-            number of lists: {data.length}{" "}
             {data.map((list) => {
               let rule: RRule | null = null;
               let ruleText = "";

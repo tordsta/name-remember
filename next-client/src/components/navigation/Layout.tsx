@@ -7,6 +7,8 @@ import { memo, useEffect, useRef, useState } from "react";
 import FeedbackForm from "@/components/FeedbackForm";
 import BackButton from "./BackButton";
 import { Session } from "@/utils/types";
+import { useConsent } from "react-hook-consent";
+import { initAmplitude, stopAmplitude } from "@/lib/amplitude";
 
 export default function Layout({
   children,
@@ -23,6 +25,8 @@ export default function Layout({
   const session = useSession().data as Session;
 
   const router = useRouter();
+
+  const { consent } = useConsent();
 
   if (status === "unauthenticated" && auth) {
     router.push("/");
@@ -48,6 +52,23 @@ export default function Layout({
       window.removeEventListener("scroll", set);
     };
   }, []);
+
+  useEffect(() => {
+    if (consent.includes("analytics")) {
+      initAmplitude();
+    } else {
+      stopAmplitude();
+    }
+    fetch("/api/crud/updateConsent", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        consent: consent,
+      }),
+    });
+  }, [consent]);
 
   return (
     <>

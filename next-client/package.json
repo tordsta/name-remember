@@ -16,6 +16,7 @@
   "dependencies": {
     "@amplitude/analytics-browser": "^1.10.8",
     "@next/env": "^14.0.1",
+    "@slack/web-api": "^6.10.0",
     "@stripe/react-stripe-js": "^2.3.0",
     "@stripe/stripe-js": "^2.1.6",
     "@types/amplitude-js": "^8.16.2",

@@ -25,7 +25,7 @@ export const authOptions = {
       allowDangerousEmailAccountLinking: true,
     }),
     SlackProvider({
-      clientId: process.env.SLACK_ID as string,
+      clientId: process.env.NEXT_PUBLIC_SLACK_ID as string,
       clientSecret: process.env.SLACK_SECRET as string,
       allowDangerousEmailAccountLinking: true,
     }),

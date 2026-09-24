@@ -78,21 +78,24 @@ export function FramedButton({
       type={typeSubmit ? "submit" : "button"}
       style={{
         position: "relative",
-        backgroundColor: "white",
+        backgroundColor: disabled ? "gray" : "white",
         boxShadow: "0px 0px 20px 10px white",
         borderWidth: "1px",
         borderColor: "black",
         width: width ? width : 160,
         height: height ? height : 40,
+        textDecorationLine: disabled ? " line-through" : "none",
       }}
       disabled={disabled}
     >
-      <CanvasBackground
-        // @ts-ignore
-        width={width ? width - 2 : 158}
-        height={height ? height - 2 : 38}
-        style={{ position: "absolute", top: -0, left: -0, zIndex: "auto" }}
-      />
+      {!disabled && (
+        <CanvasBackground
+          // @ts-ignore
+          width={width ? width - 2 : 158}
+          height={height ? height - 2 : 38}
+          style={{ position: "absolute", top: -0, left: -0, zIndex: "auto" }}
+        />
+      )}
       <div className="relative">{children && children}</div>
     </button>
   );

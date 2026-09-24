@@ -97,149 +97,153 @@ export default function Memorization({
           data.people_in_list &&
           data.people_in_list.length > 0 &&
           currentList &&
-          data.people_in_list.map((person: Person, i: number) => (
-            <li
-              key={i}
-              style={{
-                width: "100%",
-                flexShrink: 0,
-                flexGrow: 1,
-                color: "#000",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <p className="text-3xl my-4">
-                {activePageIndex + 1} / {pages.length}
-              </p>
-              <div className="relative w-52 h-52 bg-slate-200">
-                <Image
-                  src={person.image ?? "/icons/person110x110.png"}
-                  alt="Uploaded image"
-                  fill
-                  sizes="100%"
-                  style={{ objectFit: "contain" }}
-                />
-              </div>
-              <form
-                onSubmit={handleAnswerCheck}
-                className="flex flex-col items-end justify-center gap-4 my-6"
+          data.people_in_list.map((person: Person, i: number) => {
+            let image = person.image ?? person.image_url;
+            if (!image) image = "/icons/person110x110.png";
+            return (
+              <li
+                key={i}
+                style={{
+                  width: "100%",
+                  flexShrink: 0,
+                  flexGrow: 1,
+                  color: "#000",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
               >
-                <label
-                  htmlFor="fname"
-                  className={person.fname ? "block" : "hidden"}
-                >
-                  First name{"  "}
-                  <input
-                    id="fname"
-                    name="fname"
-                    type="text"
-                    className="border border-black px-1"
+                <p className="text-3xl my-4">
+                  {activePageIndex + 1} / {pages.length}
+                </p>
+                <div className="relative w-52 h-52 bg-slate-200">
+                  <Image
+                    src={image}
+                    alt="Uploaded image"
+                    fill
+                    sizes="100%"
+                    style={{ objectFit: "contain" }}
                   />
-                </label>
-                <label
-                  htmlFor="mname"
-                  className={person.mname ? "block" : "hidden"}
-                >
-                  Middle name{"  "}
-                  <input
-                    id="mname"
-                    name="mname"
-                    type="text"
-                    className="border border-black px-1"
-                  />
-                </label>
-                <label
-                  htmlFor="lname"
-                  className={person.lname ? "block" : "hidden"}
-                >
-                  Last name{"  "}
-                  <input
-                    id="lname"
-                    name="lname"
-                    type="text"
-                    className="border border-black px-1"
-                  />
-                </label>
-                <input
-                  id="person"
-                  name="person"
-                  type="hidden"
-                  value={JSON.stringify(person)}
-                />
-                <input id="index" name="index" type="hidden" value={i} />
-                <div className="mx-auto mt-4">
-                  <FramedButton typeSubmit={true}>Check answer</FramedButton>
                 </div>
-              </form>
-              {answers.filter((answer) => answer.index == i).length == 0 && (
-                <div className="h-14 mb-8" />
-              )}
-              {answers.filter((answer) => answer.index == i).length > 0 && (
-                <div className="flex flex-row items-center justify-evenly w-full h-14 mb-8 max-w-[500px]">
-                  <div
-                    className={`${
-                      person.fname ? "flex" : "hidden"
-                    } flex-col items-center justify-center`}
+                <form
+                  onSubmit={handleAnswerCheck}
+                  className="flex flex-col items-end justify-center gap-4 my-6"
+                >
+                  <label
+                    htmlFor="fname"
+                    className={person.fname ? "block" : "hidden"}
                   >
-                    <Image
-                      src={
-                        answers
-                          .filter((answer) => answer.index == i)
-                          .slice(-1)[0].fnameRes
-                          ? "/icons/checkmarkFramed110x110.png"
-                          : "/icons/crossFramed110x110.png"
-                      }
-                      alt="checkmark"
-                      width={30}
-                      height={30}
+                    First name{"  "}
+                    <input
+                      id="fname"
+                      name="fname"
+                      type="text"
+                      className="border border-black px-1"
                     />
-                    <p>First Name</p>
-                  </div>
-                  <div
-                    className={`${
-                      person.mname ? "flex" : "hidden"
-                    } flex-col items-center justify-center`}
+                  </label>
+                  <label
+                    htmlFor="mname"
+                    className={person.mname ? "block" : "hidden"}
                   >
-                    <Image
-                      src={
-                        answers
-                          .filter((answer) => answer.index == i)
-                          .slice(-1)[0].mnameRes
-                          ? "/icons/checkmarkFramed110x110.png"
-                          : "/icons/crossFramed110x110.png"
-                      }
-                      alt="checkmark"
-                      width={30}
-                      height={30}
+                    Middle name{"  "}
+                    <input
+                      id="mname"
+                      name="mname"
+                      type="text"
+                      className="border border-black px-1"
                     />
-                    <p>Middle Name</p>
-                  </div>
-                  <div
-                    className={`${
-                      person.lname ? "flex" : "hidden"
-                    } flex-col items-center justify-center`}
+                  </label>
+                  <label
+                    htmlFor="lname"
+                    className={person.lname ? "block" : "hidden"}
                   >
-                    <Image
-                      src={
-                        answers
-                          .filter((answer) => answer.index == i)
-                          .slice(-1)[0].lnameRes
-                          ? "/icons/checkmarkFramed110x110.png"
-                          : "/icons/crossFramed110x110.png"
-                      }
-                      alt="checkmark"
-                      width={30}
-                      height={30}
+                    Last name{"  "}
+                    <input
+                      id="lname"
+                      name="lname"
+                      type="text"
+                      className="border border-black px-1"
                     />
-                    <p>Last Name</p>
+                  </label>
+                  <input
+                    id="person"
+                    name="person"
+                    type="hidden"
+                    value={JSON.stringify(person)}
+                  />
+                  <input id="index" name="index" type="hidden" value={i} />
+                  <div className="mx-auto mt-4">
+                    <FramedButton typeSubmit={true}>Check answer</FramedButton>
                   </div>
-                </div>
-              )}
-            </li>
-          ))}
+                </form>
+                {answers.filter((answer) => answer.index == i).length == 0 && (
+                  <div className="h-14 mb-8" />
+                )}
+                {answers.filter((answer) => answer.index == i).length > 0 && (
+                  <div className="flex flex-row items-center justify-evenly w-full h-14 mb-8 max-w-[500px]">
+                    <div
+                      className={`${
+                        person.fname ? "flex" : "hidden"
+                      } flex-col items-center justify-center`}
+                    >
+                      <Image
+                        src={
+                          answers
+                            .filter((answer) => answer.index == i)
+                            .slice(-1)[0].fnameRes
+                            ? "/icons/checkmarkFramed110x110.png"
+                            : "/icons/crossFramed110x110.png"
+                        }
+                        alt="checkmark"
+                        width={30}
+                        height={30}
+                      />
+                      <p>First Name</p>
+                    </div>
+                    <div
+                      className={`${
+                        person.mname ? "flex" : "hidden"
+                      } flex-col items-center justify-center`}
+                    >
+                      <Image
+                        src={
+                          answers
+                            .filter((answer) => answer.index == i)
+                            .slice(-1)[0].mnameRes
+                            ? "/icons/checkmarkFramed110x110.png"
+                            : "/icons/crossFramed110x110.png"
+                        }
+                        alt="checkmark"
+                        width={30}
+                        height={30}
+                      />
+                      <p>Middle Name</p>
+                    </div>
+                    <div
+                      className={`${
+                        person.lname ? "flex" : "hidden"
+                      } flex-col items-center justify-center`}
+                    >
+                      <Image
+                        src={
+                          answers
+                            .filter((answer) => answer.index == i)
+                            .slice(-1)[0].lnameRes
+                            ? "/icons/checkmarkFramed110x110.png"
+                            : "/icons/crossFramed110x110.png"
+                        }
+                        alt="checkmark"
+                        width={30}
+                        height={30}
+                      />
+                      <p>Last Name</p>
+                    </div>
+                  </div>
+                )}
+              </li>
+            );
+          })}
       </ul>
       <div className="md:hidden flex flex-row justify-evenly items-center gap-4 sm:gap-20 my-4">
         <FramedButton
