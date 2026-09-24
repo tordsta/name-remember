@@ -1,153 +1,188 @@
-provider "google" {
-  project     = "name-remember-23"
-  region      = "us-central1"
+data "google_project" "this" {}
+
+locals {
+  service_name = "name-remember-web-service"
+  # Cloud Run's deterministic URL, known before the service exists
+  run_url     = "https://${local.service_name}-${data.google_project.this.number}.${var.region}.run.app"
+  service_url = var.domain != "" ? "https://${var.domain}" : local.run_url
+  image_repo  = "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.repository.repository_id}"
+}
+
+# APIs used by the resources below
+resource "google_project_service" "services" {
+  for_each = toset([
+    "artifactregistry.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "cloudscheduler.googleapis.com",
+    "compute.googleapis.com",
+    "iam.googleapis.com",
+    "iamcredentials.googleapis.com",
+    "run.googleapis.com",
+    "servicenetworking.googleapis.com",
+    "sqladmin.googleapis.com",
+    "sts.googleapis.com",
+  ])
+  service            = each.key
+  disable_on_destroy = false
 }
 
 #Cloud Run Service for web app
+resource "google_service_account" "webapp" {
+  account_id   = "name-remember-webapp"
+  display_name = "Cloud Run runtime for the web app"
+  depends_on   = [google_project_service.services]
+}
+
 resource "google_cloud_run_v2_service" "default" {
-  name     = "name-remember-web-service"
-  location = "us-central1"
-  traffic {
-    type = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
-    percent = 100
-  }
+  name                = local.service_name
+  location            = var.region
+  deletion_protection = false
+  depends_on          = [google_project_service.services]
+
   template {
+    service_account = google_service_account.webapp.email
     scaling {
+      min_instance_count = 0
       max_instance_count = 2
     }
+    # Direct VPC egress reaches Cloud SQL's private IP without a connector.
+    # Internet traffic (Stripe, Postmark, OAuth) leaves directly, so no NAT.
     vpc_access {
-      connector = google_vpc_access_connector.webapp.id
-      egress = "ALL_TRAFFIC"
+      network_interfaces {
+        network    = google_compute_network.nameremember-vpc.id
+        subnetwork = google_compute_subnetwork.webapp.id
+      }
+      egress = "PRIVATE_RANGES_ONLY"
     }
     containers {
-      image = "${google_artifact_registry_repository.repository.location}-docker.pkg.dev/name-remember-23/${google_artifact_registry_repository.repository.name}/name-remember:latest"
+      # Placeholder until CI deploys the app image, see lifecycle below
+      image = "us-docker.pkg.dev/cloudrun/container/hello"
       env {
-        name="DB_USER"
-        value=google_sql_user.default.name
+        name  = "DB_USER"
+        value = google_sql_user.default.name
       }
       env {
-        name="DB_PASSWORD"
-        value=random_password.pwd.result
+        name  = "DB_PASSWORD"
+        value = random_password.pwd.result
       }
       env {
-        name="DB_HOST"
-        value=google_sql_database_instance.default.private_ip_address
+        name  = "DB_HOST"
+        value = google_sql_database_instance.default.private_ip_address
       }
       env {
-        name="DB_PORT"
-        value="5432"
+        name  = "DB_PORT"
+        value = "5432"
       }
       env {
-        name="DB_DATABASE"
-        value=google_sql_database.default.name
+        name  = "DB_DATABASE"
+        value = google_sql_database.default.name
       }
       env {
-        name = "NEXTAUTH_URL"
-        value = var.NEXTAUTH_URL
+        name  = "NEXTAUTH_URL"
+        value = local.service_url
       }
       env {
-        name = "NEXT_AUTH"
-        value = var.NEXT_AUTH
+        name  = "NEXT_AUTH"
+        value = random_password.nextauth_secret.result
       }
       env {
-        name = "GITHUB_ID"
+        name  = "CRON_SECRET"
+        value = random_password.cron_secret.result
+      }
+      env {
+        name  = "GITHUB_ID"
         value = var.GITHUB_ID
       }
       env {
-        name = "GITHUB_SECRET"
+        name  = "GITHUB_SECRET"
         value = var.GITHUB_SECRET
       }
       env {
-        name = "GOOGLE_ID"
+        name  = "GOOGLE_ID"
         value = var.GOOGLE_ID
       }
       env {
-        name = "GOOGLE_SECRET"
+        name  = "GOOGLE_SECRET"
         value = var.GOOGLE_SECRET
       }
       env {
-        name = "FACEBOOK_ID"
+        name  = "FACEBOOK_ID"
         value = var.FACEBOOK_ID
       }
       env {
-        name = "FACEBOOK_SECRET"
+        name  = "FACEBOOK_SECRET"
         value = var.FACEBOOK_SECRET
       }
       env {
-        name = "NEXT_PUBLIC_SLACK_ID"
+        name  = "NEXT_PUBLIC_SLACK_ID"
         value = var.NEXT_PUBLIC_SLACK_ID
       }
       env {
-        name = "SLACK_SECRET"
+        name  = "SLACK_SECRET"
         value = var.SLACK_SECRET
       }
       env {
-        name = "POSTMARK_API_KEY"
+        name  = "POSTMARK_API_KEY"
         value = var.POSTMARK_API_KEY
       }
       env {
-        name = "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID"
-        value = var.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
+        name  = "ADMIN_EMAIL"
+        value = var.ADMIN_EMAIL
       }
       env {
-        name = "NEXT_PUBLIC_AMPLITUDE_API_KEY"
-        value = var.NEXT_PUBLIC_AMPLITUDE_API_KEY
-      }
-      env {
-        name = "STRIPE_SECRET_KEY"
+        name  = "STRIPE_SECRET_KEY"
         value = var.STRIPE_SECRET_KEY
       }
       env {
-        name = "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"
-        value = var.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-      }
-      env {
-        name = "NEXT_PUBLIC_STRIPE_RETURN_URL"
-        value = var.NEXT_PUBLIC_STRIPE_RETURN_URL
-      }
-      env {
-        name = "STRIPE_WEBHOOK_SECRET"
+        name  = "STRIPE_WEBHOOK_SECRET"
         value = var.STRIPE_WEBHOOK_SECRET
       }
       env {
-        name = "STRIPE_PREMIUM_PRODUCT_ID"
+        name  = "STRIPE_PREMIUM_PRODUCT_ID"
         value = var.STRIPE_PREMIUM_PRODUCT_ID
-      }
-      env {
-        name = "ADMIN_EMAIL"
-        value = var.ADMIN_EMAIL
       }
     }
   }
+
+  lifecycle {
+    # GitHub Actions deploys new images and labels them; don't roll that back
+    ignore_changes = [
+      template[0].containers[0].image,
+      template[0].labels,
+      labels,
+      client,
+      client_version,
+    ]
+  }
+}
+
+resource "random_password" "nextauth_secret" {
+  length  = 32
+  special = false
+}
+
+# Shared secret between Cloud Scheduler and /api/cron/hourly-mail-sender
+resource "random_password" "cron_secret" {
+  length  = 32
+  special = false
 }
 
 # Make Cloud Run Service (web app) public
-resource "google_cloud_run_service_iam_member" "public" {
-  service  = google_cloud_run_v2_service.default.name
+resource "google_cloud_run_v2_service_iam_member" "public" {
+  name     = google_cloud_run_v2_service.default.name
   location = google_cloud_run_v2_service.default.location
   role     = "roles/run.invoker"
   member   = "allUsers"
 }
 
-# Domains setup 
-resource "google_cloud_run_domain_mapping" "apex_domain" {
-  location    = "us-central1"
-  name        = "nameremember.com" 
+# Optional custom domain (set var.domain)
+resource "google_cloud_run_domain_mapping" "domain" {
+  count    = var.domain == "" ? 0 : 1
+  location = var.region
+  name     = var.domain
 
   metadata {
-    namespace = "name-remember-23"
-  }
-
-  spec {
-    route_name = google_cloud_run_v2_service.default.name
-  }
-}
-resource "google_cloud_run_domain_mapping" "www_domain" {
-  location    = "us-central1"
-  name        = "www.nameremember.com" 
-
-  metadata {
-    namespace = "name-remember-23"
+    namespace = var.project_id
   }
 
   spec {
@@ -159,48 +194,69 @@ resource "google_cloud_run_domain_mapping" "www_domain" {
 resource "google_artifact_registry_repository" "repository" {
   repository_id = "webapp-name-remember"
   format        = "DOCKER"
-  location      = "us-central1"
-}
-resource "random_integer" "id" {
-  min = 100000
-  max = 999999
+  location      = var.region
+  depends_on    = [google_project_service.services]
 }
 
-# Set up Service account for Github Actions to access Container Registry
-module "workload-identity-federation-multi-provider" {
-  source  = "SudharsaneSivamany/workload-identity-federation-multi-provider/google"
-  version = "1.1.0"
-  project_id = "name-remember-23"
-  pool_id = "github-actions-pool-${random_integer.id.result}"
-  wif_providers = [{ 
-    provider_id = "github-actions"
-    select_provider = "oidc"
-    provider_config = {
-      issuer_uri = "https://token.actions.githubusercontent.com"
-      allowed_audiences = "https://iam.googleapis.com/projects/471648801973/locations/global/workloadIdentityPools/github-actions-pool-${random_integer.id.result}/providers/github-actions" 
-    }
-    disabled = false
-    attribute_mapping    = {
-      "attribute.actor"      = "assertion.actor"
-      "attribute.repository" = "assertion.repository"
-      "google.subject"       = "assertion.sub"
-    } 
-  }]
-  service_accounts = [
-    {
-      name           = "ga-push-to-registry"
-      attribute      = "attribute.repository/tordsta/name-remember"
-      all_identities = true
-      roles          = ["roles/storage.admin", "roles/artifactregistry.admin"]
-    },
-    {
-      name           = "ga-deploy-to-cloud-run"
-      attribute      = "attribute.repository/tordsta/name-remember"
-      all_identities = true
-      roles          = ["roles/run.admin", "roles/iam.serviceAccountUser"]
-    } 
- 
-  ]
+# GitHub Actions authenticates through Workload Identity Federation (no keys)
+resource "random_id" "pool_suffix" {
+  byte_length = 3
+}
+
+resource "google_iam_workload_identity_pool" "github" {
+  # Deleted pool IDs stay reserved for 30 days, hence the suffix
+  workload_identity_pool_id = "github-${random_id.pool_suffix.hex}"
+  display_name              = "GitHub Actions"
+  depends_on                = [google_project_service.services]
+}
+
+resource "google_iam_workload_identity_pool_provider" "github" {
+  workload_identity_pool_id          = google_iam_workload_identity_pool.github.workload_identity_pool_id
+  workload_identity_pool_provider_id = "github-actions"
+  display_name                       = "GitHub Actions OIDC"
+  attribute_mapping = {
+    "google.subject"       = "assertion.sub"
+    "attribute.actor"      = "assertion.actor"
+    "attribute.repository" = "assertion.repository"
+  }
+  # Only tokens issued to this repository are accepted
+  attribute_condition = "assertion.repository == '${var.github_repo}'"
+  oidc {
+    issuer_uri = "https://token.actions.githubusercontent.com"
+  }
+}
+
+resource "google_service_account" "github_deployer" {
+  account_id   = "github-deployer"
+  display_name = "GitHub Actions: build and deploy the web app"
+  depends_on   = [google_project_service.services]
+}
+
+resource "google_service_account_iam_member" "github_deployer_wif" {
+  service_account_id = google_service_account.github_deployer.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository/${var.github_repo}"
+}
+
+resource "google_artifact_registry_repository_iam_member" "github_deployer_push" {
+  location   = google_artifact_registry_repository.repository.location
+  repository = google_artifact_registry_repository.repository.name
+  role       = "roles/artifactregistry.writer"
+  member     = "serviceAccount:${google_service_account.github_deployer.email}"
+}
+
+resource "google_cloud_run_v2_service_iam_member" "github_deployer_deploy" {
+  name     = google_cloud_run_v2_service.default.name
+  location = google_cloud_run_v2_service.default.location
+  role     = "roles/run.developer"
+  member   = "serviceAccount:${google_service_account.github_deployer.email}"
+}
+
+# Deploying a revision that runs as the webapp service account
+resource "google_service_account_iam_member" "github_deployer_act_as_webapp" {
+  service_account_id = google_service_account.webapp.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${google_service_account.github_deployer.email}"
 }
 
 resource "google_cloud_scheduler_job" "send_out_reminders" {
@@ -208,7 +264,9 @@ resource "google_cloud_scheduler_job" "send_out_reminders" {
   description      = "Send out reminder emails to users via Postmark"
   schedule         = "0 * * * *"
   time_zone        = "Europe/Oslo"
+  region           = var.region
   attempt_deadline = "320s"
+  depends_on       = [google_project_service.services]
 
   retry_config {
     retry_count = 1
@@ -216,10 +274,11 @@ resource "google_cloud_scheduler_job" "send_out_reminders" {
 
   http_target {
     http_method = "POST"
-    uri         = "https://nameremember.com/api/cron/hourly-mail-sender"
+    uri         = "${local.service_url}/api/cron/hourly-mail-sender"
     body        = base64encode("")
     headers = {
-      "Content-Type" = "application/json"
+      "Content-Type"  = "application/json"
+      "Authorization" = "Bearer ${random_password.cron_secret.result}"
     }
   }
 }
@@ -228,27 +287,29 @@ resource "google_cloud_scheduler_job" "send_out_reminders" {
 
 # Cloud SQL Database Service
 resource "google_sql_database_instance" "default" {
-  name             = "name-remember-db"
-  database_version = "POSTGRES_13"
-  region           = "us-central1"
+  name                = "name-remember-db"
+  database_version    = "POSTGRES_16"
+  region              = var.region
   deletion_protection = false
-  depends_on = [google_service_networking_connection.default]
-
+  depends_on          = [google_service_networking_connection.default]
 
   settings {
-    tier = "db-f1-micro"
+    # Shared-core tiers need the Enterprise edition (PG16+ defaults to Enterprise Plus)
+    edition = "ENTERPRISE"
+    tier    = "db-f1-micro"
 
     ip_configuration {
+      # Public IP only serves the Cloud SQL Auth Proxy (IAM auth, no authorized networks)
       ipv4_enabled    = true
-      require_ssl     = false
+      ssl_mode        = "ALLOW_UNENCRYPTED_AND_ENCRYPTED"
       private_network = google_compute_network.nameremember-vpc.id
     }
 
     backup_configuration {
-      enabled = true
-      point_in_time_recovery_enabled = true
+      enabled                        = true
+      point_in_time_recovery_enabled = false
       backup_retention_settings {
-        retained_backups = 50
+        retained_backups = 7
       }
     }
 
@@ -283,25 +344,18 @@ resource "google_sql_user" "default" {
   password = random_password.pwd.result
 }
 
-# Set up Cloud SQL Proxy
-resource "google_service_account" "sql_proxy" {
-  account_id   = "sql-proxy"
-  display_name = "Service Account for Cloud SQL Proxy"
-}
-resource "google_project_iam_member" "sql_proxy_iam" {
-  role    = "roles/cloudsql.client"
-  member  = "serviceAccount:${google_service_account.sql_proxy.email}"
-  project = "name-remember-23"
-}
-resource "google_service_account_key" "sql_proxy_key" {
-  service_account_id = google_service_account.sql_proxy.name
-}
-
 
 # VPC Networking
 resource "google_compute_network" "nameremember-vpc" {
   name                    = "nameremember-vpc"
   auto_create_subnetworks = "false"
+  depends_on              = [google_project_service.services]
+}
+resource "google_compute_subnetwork" "webapp" {
+  name          = "webapp-subnet"
+  network       = google_compute_network.nameremember-vpc.id
+  region        = var.region
+  ip_cidr_range = "10.10.0.0/24"
 }
 resource "google_compute_global_address" "internal_ip_address" {
   name          = "internal-ip-address"
@@ -320,33 +374,4 @@ resource "google_compute_network_peering_routes_config" "peering_routes" {
   network              = google_compute_network.nameremember-vpc.name
   import_custom_routes = true
   export_custom_routes = true
-}
-resource "google_vpc_access_connector" "webapp" {
-  name               = "webapp-connector"
-  network            = google_compute_network.nameremember-vpc.id
-  ip_cidr_range      = "10.8.0.0/28"
-  region             = "us-central1"
-}  
-
-resource "google_compute_router" "public_router" {
-  name    = "public-router"
-  region  = "us-central1"
-  network = google_compute_network.nameremember-vpc.id
-
-  bgp {
-    asn = 64514
-  }
-}
-
-resource "google_compute_router_nat" "public_cloud_nat" {
-  name                               = "public-cloud-nat"
-  router                             = google_compute_router.public_router.name
-  region                             = google_compute_router.public_router.region
-  nat_ip_allocate_option             = "AUTO_ONLY"
-  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
-
-  log_config {
-    enable = true
-    filter = "ERRORS_ONLY"
-  }
 }
