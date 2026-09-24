@@ -11,6 +11,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
       - name: Build the Docker image
         run: docker build ./next-client --file ./next-client/Dockerfile --tag my-image-name:$(date +%s)

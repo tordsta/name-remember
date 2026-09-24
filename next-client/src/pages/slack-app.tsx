@@ -4,6 +4,8 @@ import { getProviders, signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import slackAuthorizeUrl from "@/lib/slackAuthorizeUrl";
 
 export default function SlackApp({
   providers,
@@ -19,12 +21,14 @@ export default function SlackApp({
   };
 }) {
   const router = useRouter();
-  const clientId = process.env.NEXT_PUBLIC_SLACK_ID;
   const redirectUri = process.env.NEXT_PUBLIC_SLACK_APP_REDIRECT_URI;
   const code = router.query.code;
   const state = router.query.state;
 
   const session = useSession();
+  const hasSlackLogin = Object.values(providers).some(
+    (provider) => provider.name == "Slack"
+  );
 
   useEffect(() => {
     if (code) {
@@ -55,6 +59,14 @@ export default function SlackApp({
         </p>
         <div className="block md:hidden">
           {session.status === "loading" && <p>Loading...</p>}
+          {session.status === "unauthenticated" && !hasSlackLogin && (
+            <p className="text-center my-2">
+              <Link href="/" className="underline">
+                Log in
+              </Link>{" "}
+              before connecting
+            </p>
+          )}
           {session.status === "unauthenticated" &&
             Object.values(providers)
               .filter((provider) => provider.name == "Slack")
@@ -74,12 +86,7 @@ export default function SlackApp({
               <FramedButton
                 width={250}
                 onClick={() => {
-                  router.push(
-                    `https://slack.com/oauth/v2/authorize?
-                  user_scope=channels:read,groups:read,users.profile:read&
-                  redirect_uri=${redirectUri}&
-                  client_id=${clientId}`
-                  );
+                  router.push(slackAuthorizeUrl(redirectUri));
                 }}
               >
                 <div className="flex flex-row justify-center items-center gap-2">
@@ -147,6 +154,14 @@ export default function SlackApp({
           your coworkers!
         </p>
         {session.status === "loading" && <p>Loading...</p>}
+        {session.status === "unauthenticated" && !hasSlackLogin && (
+          <p className="text-center my-2">
+            <Link href="/" className="underline">
+              Log in
+            </Link>{" "}
+            before connecting
+          </p>
+        )}
         {session.status === "unauthenticated" &&
           Object.values(providers)
             .filter((provider) => provider.name == "Slack")
@@ -166,12 +181,7 @@ export default function SlackApp({
             <FramedButton
               width={250}
               onClick={() => {
-                router.push(
-                  `https://slack.com/oauth/v2/authorize?
-                user_scope=channels:read,groups:read,users.profile:read&
-                redirect_uri=${redirectUri}&
-                client_id=${clientId}`
-                );
+                router.push(slackAuthorizeUrl(redirectUri));
               }}
             >
               <div className="flex flex-row justify-center items-center gap-2">

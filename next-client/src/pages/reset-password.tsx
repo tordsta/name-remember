@@ -1,14 +1,17 @@
 import { FramedButton } from "@/components/Button";
 import { notifyError, notifyPromiseFetch } from "@/components/Notify";
 import Layout from "@/components/navigation/Layout";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 export default function ResetPassword() {
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
-  const email = searchParams.get("email");
+  // Read from the pages router: next/navigation's useSearchParams stays empty
+  // on a hard page load, which is how users arrive here from an email link.
   const router = useRouter();
+  const token =
+    typeof router.query.token === "string" ? router.query.token : null;
+  const email =
+    typeof router.query.email === "string" ? router.query.email : null;
   const [newPassword, setNewPassword] = useState("");
   const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
 

@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  experimental: {
+    // Enables src/instrumentation.ts (startup log of mocked integrations)
+    instrumentationHook: true,
+  },
   images: {
     remotePatterns: [
       {

@@ -46,22 +46,30 @@ export default function SignInProviders({
 
   if (providers === undefined) return <></>;
 
+  const oauthProviders = Object.values(providers).filter(
+    (provider) => provider.type != "credentials"
+  );
+
   return (
     <div className="flex flex-col justify-center items-center gap-4 lg:flex-row lg:gap-20">
-      <div className="flex flex-col">
-        <p className="text-xl my-2 text-center">Select a sign in provider</p>
-        {Object.values(providers)
-          .filter((provider) => provider.type != "credentials")
-          .map((provider) => (
+      {oauthProviders.length > 0 && (
+        <div className="flex flex-col">
+          <p className="text-xl my-2 text-center">Select a sign in provider</p>
+          {oauthProviders.map((provider) => (
             <div key={provider.name} className="mx-auto my-2">
               <FramedButton onClick={() => signIn(provider.id)}>
                 {provider.name}
               </FramedButton>
             </div>
           ))}
-      </div>
+        </div>
+      )}
       <div className="flex flex-col gap-4 justify-center items-center">
-        <p className="text-xl text-center">or sign in with email</p>
+        <p className="text-xl text-center">
+          {oauthProviders.length > 0
+            ? "or sign in with email"
+            : "Sign in with email"}
+        </p>
         {Object.values(providers)
           .filter((provider) => provider.type == "credentials")
           .map((provider) => (
