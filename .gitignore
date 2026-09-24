@@ -7,3 +7,5 @@ terraform.tfstate.backup
 backups/*
 todo
 secret.auto.tfvars
+.terraform/
+next-client/.env.local
